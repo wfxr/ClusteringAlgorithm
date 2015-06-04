@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using ClusteringAlgorithm.Observation;
 using Xunit;
 
 namespace ClusteringAlgorithm
 {
-    public class KMeansUnitTest
+    public class UnitTestKMeans
     {
         [Fact]
         public void TestCategoriesCount()
