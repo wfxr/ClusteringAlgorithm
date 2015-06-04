@@ -42,8 +42,8 @@ namespace ClusteringAlgorithm
 
             var categories = km.Classify(2);
 
-            //Assert.Equal(categories[0].Observations, new List<int> {1, 2, 3});
-            //Assert.Equal(categories[1].Observations, new List<int> {7, 8, 9});
+            Assert.Equal(categories[0].Observations, new List<int> { 1, 2, 3 });
+            Assert.Equal(categories[1].Observations, new List<int> { 7, 8, 9 });
         }
     }
 }
