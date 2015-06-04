@@ -1,18 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using ClusteringAlgorithm.Observation;
 using Xunit;
 
 namespace ClusteringAlgorithm
 {
-    public class UnitTestKMeans
-    {
+    public class UnitTestKMeans {
+        private double Distance(double obs1, double obs2) => Math.Abs(obs1 - obs2);
+        private double Average(ObservationSet<double> observationSet) => observationSet.Average();
         [Fact]
         public void TestCategoriesCount()
         {
-            IEnumerable<IntObervation> samples = new List<IntObervation> {1, 2, 3, 7, 8, 9};
-            var km = new KMeans<int>(samples);
+            ObservationSet<double> observationSet = new ObservationSet<double> {1, 2, 3, 7, 8, 9};
+            var km = new KMeans<double>(observationSet, Distance, Average);
 
             Assert.Equal(km.Classify(1).Count, 1);
             Assert.Equal(km.Classify(3).Count, 3);
@@ -22,8 +22,8 @@ namespace ClusteringAlgorithm
         [Fact]
         public void TestInvalidCategroiesCount()
         {
-            IEnumerable<IntObervation> samples = new List<IntObervation> {1, 2, 3, 7, 8, 9};
-            var km = new KMeans<int>(samples);
+            ObservationSet<double> observationSet = new ObservationSet<double> {1, 2, 3, 7, 8, 9};
+            var km = new KMeans<double>(observationSet, Distance, Average);
 
             Assert.Throws<ArgumentOutOfRangeException>(() => km.Classify(0));
             Assert.Throws<ArgumentOutOfRangeException>(() => km.Classify(7));
@@ -31,8 +31,8 @@ namespace ClusteringAlgorithm
         [Fact]
         public void TestCentroiesOfResults()
         {
-            IEnumerable<IntObervation> samples = new List<IntObervation> {1, 2, 3, 7, 8, 9};
-            var km = new KMeans<int>(samples);
+            ObservationSet<double> observationSet = new ObservationSet<double> {1, 2, 3, 7, 8, 9};
+            var km = new KMeans<double>(observationSet, Distance, Average);
 
             var categories = km.Classify(2);
 
@@ -42,13 +42,13 @@ namespace ClusteringAlgorithm
         [Fact]
         public void TestSetsOfResults()
         {
-            IEnumerable<IntObervation> samples = new List<IntObervation> {1, 2, 3, 7, 8, 9};
-            var km = new KMeans<int>(samples);
+            ObservationSet<double> observationSet = new ObservationSet<double> {1, 2, 3, 7, 8, 9};
+            var km = new KMeans<double>(observationSet, Distance, Average);
 
             var categories = km.Classify(2);
 
-            Assert.Equal(categories[0].Observations, new List<IntObervation> { 1, 2, 3 });
-            Assert.Equal(categories[1].Observations, new List<IntObervation> { 7, 8, 9 });
+            Assert.Equal(categories[0].Observations, new ObservationSet<double> { 1, 2, 3 });
+            Assert.Equal(categories[1].Observations, new ObservationSet<double> { 7, 8, 9 });
         }
     }
 }

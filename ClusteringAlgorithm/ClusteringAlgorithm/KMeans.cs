@@ -3,33 +3,54 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace ClusteringAlgorithm {
-    public class KMeans<T>{
-        private readonly IEnumerable<Observation<T>> _observations;
-        public KMeans(IEnumerable<Observation<T>> observations) { _observations = observations; }
+    public class KMeans<T> {
+        public delegate double DistanceDelegate(T obs1, T obs2);
+        public delegate T AverageDelegate(ObservationSet<T> observationSet);
+
+        private readonly ObservationSet<T> _observationSet;
+        private readonly DistanceDelegate _distanceDelegate;
+        private readonly AverageDelegate _averageDelegate;
+
+        public KMeans(ObservationSet<T> observationSet, DistanceDelegate distanceDelegate, AverageDelegate averageDelegate) {
+            _observationSet = observationSet;
+            _distanceDelegate = distanceDelegate;
+            _averageDelegate = averageDelegate;
+        }
+
+        private double Distance(T obs1, T obs2) => _distanceDelegate(obs1, obs2);
+
+        private double Distance(T obs, Category<T> category)
+            => _distanceDelegate(obs, category.Centroid);
+
+        private T Average(ObservationSet<T> observationSet) => _averageDelegate(observationSet);
 
         public List<Category<T>> Classify(int categoriesNumber, int iterations = 10) {
-            if (categoriesNumber > _observations.Count() || categoriesNumber < 1)
-                throw new ArgumentOutOfRangeException(
-                    $"categories number overflow: {categoriesNumber}");
-            if (iterations < 1)
-                throw new ArgumentOutOfRangeException($"Invalid iterations: {iterations}");
+            Validate(categoriesNumber, iterations);
 
             var categories = new List<Category<T>>();
 
             InitCategories(categories, categoriesNumber);
-            Classify(_observations, categories);
+            Classify(_observationSet, categories);
 
             while (iterations-- > 0) {
                 foreach (var category in categories) {
-                    category.UpdateCentroid();
+                    category.Centroid = Average(category.Observations);
                     category.ClearObservations();
                 }
-                Classify(_observations, categories);
+                Classify(_observationSet, categories);
             }
             return categories.OrderBy(category => category.Centroid).ToList();
         }
 
-        private void Classify(IEnumerable<Observation<T>> observations, List<Category<T>> categories) {
+        private void Validate(int categoriesNumber, int iterations) {
+            if (categoriesNumber > _observationSet.Count() || categoriesNumber < 1)
+                throw new ArgumentOutOfRangeException(
+                    $"categories number overflow: {categoriesNumber}");
+            if (iterations < 1)
+                throw new ArgumentOutOfRangeException($"Invalid iterations: {iterations}");
+        }
+
+        private void Classify(ObservationSet<T> observations, List<Category<T>> categories) {
             foreach (var observation in observations) {
                 var nearestCategory = FindNearestCategory(categories, observation);
                 nearestCategory.Observations.Add(observation);
@@ -38,10 +59,9 @@ namespace ClusteringAlgorithm {
 
         private void InitCategories(ICollection<Category<T>> categories, int categoriesNumber) {
             var r = new Random();
-            var observations = _observations.ToList();
-            var centroids = new List<double>();
+            var centroids = new List<T>();
             while (centroids.Count < categoriesNumber) {
-                var obsValue = observations[r.Next(0, observations.Count)].ToDouble;
+                var obsValue = _observationSet[r.Next(0, _observationSet.Count)];
                 if (!centroids.Contains(obsValue))
                     centroids.Add(obsValue);
             }
@@ -50,19 +70,16 @@ namespace ClusteringAlgorithm {
                 categories.Add(new Category<T>(centroid));
         }
 
-        private static Category<T> FindNearestCategory(List<Category<T>> categories, Observation<T> observation) {
+        private Category<T> FindNearestCategory(List<Category<T>> categories, T observation) {
             var minDistance = double.MaxValue;
             Category<T> nearestCategory = null;
             foreach (var category in categories) {
-                var distance = observation.DistanceTo(category);
+                var distance = Distance(observation, category);
                 if (!(minDistance > distance)) continue;
                 minDistance = distance;
                 nearestCategory = category;
             }
             return nearestCategory;
         }
-
-        private static double CalcDistance(int observation, double centroid)
-            => Math.Abs(observation - centroid);
     }
 }
