@@ -55,8 +55,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Category.cs" />
+    <Compile Include="DoubleCategory.cs" />
+    <Compile Include="DoubleObservation.cs" />
+    <Compile Include="IntCategory.cs" />
+    <Compile Include="IntObervation.cs" />
     <Compile Include="KMeans.cs" />
     <Compile Include="KMeansUnitTest.cs" />
+    <Compile Include="Observation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

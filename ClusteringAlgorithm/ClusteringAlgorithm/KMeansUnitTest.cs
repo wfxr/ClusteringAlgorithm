@@ -8,9 +8,10 @@ namespace ClusteringAlgorithm
     public class KMeansUnitTest
     {
         [Fact]
-        public void TestCategoriesCount() {
-            var samples = new List<int> {1, 2, 3, 7, 8, 9};
-            var km = new KMeans(samples);
+        public void TestCategoriesCount()
+        {
+            IEnumerable<IntObervation> samples = new List<IntObervation> {1, 2, 3, 7, 8, 9};
+            var km = new KMeans<int>(samples);
 
             Assert.Equal(km.Classify(1).Count, 1);
             Assert.Equal(km.Classify(3).Count, 3);
@@ -18,17 +19,19 @@ namespace ClusteringAlgorithm
         }
 
         [Fact]
-        public void TestInvalidCategroiesCount() {
-            var samples = new List<int> {1, 2, 3, 7, 8, 9};
-            var km = new KMeans(samples);
-            
+        public void TestInvalidCategroiesCount()
+        {
+            IEnumerable<IntObervation> samples = new List<IntObervation> {1, 2, 3, 7, 8, 9};
+            var km = new KMeans<int>(samples);
+
             Assert.Throws<ArgumentOutOfRangeException>(() => km.Classify(0));
             Assert.Throws<ArgumentOutOfRangeException>(() => km.Classify(7));
         }
         [Fact]
-        public void TestCentroiesOfResults() {
-            var samples = new List<int> {1, 2, 3, 7, 8, 9};
-            var km = new KMeans(samples);
+        public void TestCentroiesOfResults()
+        {
+            IEnumerable<IntObervation> samples = new List<IntObervation> {1, 2, 3, 7, 8, 9};
+            var km = new KMeans<int>(samples);
 
             var categories = km.Classify(2);
 
@@ -36,14 +39,15 @@ namespace ClusteringAlgorithm
             Assert.Equal(categories[1].Centroid, 8.0);
         }
         [Fact]
-        public void TestSetsOfResults() {
-            var samples = new List<int> {1, 2, 3, 7, 8, 9};
-            var km = new KMeans(samples);
+        public void TestSetsOfResults()
+        {
+            IEnumerable<IntObervation> samples = new List<IntObervation> {1, 2, 3, 7, 8, 9};
+            var km = new KMeans<int>(samples);
 
             var categories = km.Classify(2);
 
-            Assert.Equal(categories[0].Observations, new List<int> { 1, 2, 3 });
-            Assert.Equal(categories[1].Observations, new List<int> { 7, 8, 9 });
+            Assert.Equal(categories[0].Observations, new List<IntObervation> { 1, 2, 3 });
+            Assert.Equal(categories[1].Observations, new List<IntObervation> { 7, 8, 9 });
         }
     }
 }
