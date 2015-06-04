@@ -1,18 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using Xunit;
 using static System.Math;
 
 namespace ClusteringAlgorithm {
     public class UnitTestKMeans {
-        private double Distance(double obs1, double obs2) => Abs(obs1 - obs2);
-        private double Average(ObservationSet<double> observationSet) => observationSet.Average();
 
         [Fact]
         public void TestCategoriesCount() {
             var observationSet = new ObservationSet<double> {1, 2, 3, 4, 5, 6, 7, 8, 9};
-            var km = new KMeans<double>(observationSet, Distance, Average);
+            var km = new KMeans<double>(observationSet, Distance1D, Average1D);
 
             Assert.Equal(km.Classify(1).Count, 1);
             Assert.Equal(km.Classify(3).Count, 3);
@@ -22,7 +19,7 @@ namespace ClusteringAlgorithm {
         [Fact]
         public void TestInvalidCategroiesCount() {
             var observationSet = new ObservationSet<double> {1, 2, 3, 7, 8, 9};
-            var km = new KMeans<double>(observationSet, Distance, Average);
+            var km = new KMeans<double>(observationSet, Distance1D, Average1D);
 
             Assert.Throws<ArgumentOutOfRangeException>(() => km.Classify(0));
             Assert.Throws<ArgumentOutOfRangeException>(() => km.Classify(7));
@@ -31,7 +28,7 @@ namespace ClusteringAlgorithm {
         [Fact]
         public void TestCentroiesOfResults() {
             var observationSet = new ObservationSet<double> {1, 2, 3, 7, 8, 9};
-            var km = new KMeans<double>(observationSet, Distance, Average);
+            var km = new KMeans<double>(observationSet, Distance1D, Average1D);
 
             var categories = km.Classify(2);
 
@@ -42,7 +39,7 @@ namespace ClusteringAlgorithm {
         [Fact]
         public void TestSetsOfResults() {
             var observationSet = new ObservationSet<double> {1, 2, 3, 7, 8, 9};
-            var km = new KMeans<double>(observationSet, Distance, Average);
+            var km = new KMeans<double>(observationSet, Distance1D, Average1D);
 
             var categories = km.Classify(2);
 
@@ -62,7 +59,8 @@ namespace ClusteringAlgorithm {
                 Tuple.Create(4.0, 4.0)
             };
             var km = new KMeans<Tuple<double, double>>(observationSet, (obs1, obs2) =>
-                Sqrt(Pow((obs1.Item1 - obs2.Item1), 2) + Pow((obs1.Item2 - obs2.Item2), 2) ), Average2D);
+                Sqrt(Pow((obs1.Item1 - obs2.Item1), 2) + Pow((obs1.Item2 - obs2.Item2), 2)),
+                Average2D);
 
             var categories = km.Classify(2);
             Assert.Equal(categories[0].Centroid, Tuple.Create(2.0/3, 3.0/3));
@@ -87,6 +85,8 @@ namespace ClusteringAlgorithm {
             Assert.Equal(categories[1].Centroid, new Point(17.0/4, 18.0/4, 17.0/4));
         }
 
+        private static double Average1D(ObservationSet<double> observationSet)
+            => observationSet.Average();
         private static Tuple<double, double> Average2D(
             ObservationSet<Tuple<double, double>> observationSet) {
             var sum1 = 0.0;
@@ -98,7 +98,6 @@ namespace ClusteringAlgorithm {
             var count = observationSet.Count;
             return Tuple.Create(sum1/count, sum2/count);
         }
-
         private static Point Average3D(ObservationSet<Point> observationSet) {
             var point = new Point(0, 0, 0);
             foreach (var obs in observationSet)
@@ -106,5 +105,6 @@ namespace ClusteringAlgorithm {
             var count = observationSet.Count;
             return point/count;
         }
+        private static double Distance1D(double obs1, double obs2) => Abs(obs1 - obs2);
     }
 }
