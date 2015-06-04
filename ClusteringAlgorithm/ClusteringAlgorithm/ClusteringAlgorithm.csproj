@@ -58,6 +58,7 @@
     <Compile Include="Category.cs" />
     <Compile Include="ObservationSet.cs" />
     <Compile Include="KMeans.cs" />
+    <Compile Include="Point.cs" />
     <Compile Include="UnitTestKMeans.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UnitTestObservationSet.cs" />

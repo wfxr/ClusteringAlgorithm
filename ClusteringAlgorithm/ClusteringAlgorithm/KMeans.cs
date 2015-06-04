@@ -20,37 +20,41 @@ namespace ClusteringAlgorithm {
         }
 
         private double Distance(T obs1, T obs2) => _distanceDelegate(obs1, obs2);
-
-        private double Distance(T obs, Category<T> category)
-            => _distanceDelegate(obs, category.Centroid);
-
+        private double Distance(T obs, Category<T> category) => Distance(obs, category.Centroid);
         private T Average(ObservationSet<T> observationSet) => _averageDelegate(observationSet);
 
-        public List<Category<T>> Classify(int categoriesCount, int iterations = 10) {
-            ValidateArgument(categoriesCount, iterations);
+        public List<Category<T>> Classify(int categoriesCount, double precision = 0.01) {
+            ValidateArgument(categoriesCount, precision);
 
             var categories = new List<Category<T>>();
             SetRandomCentroids(categories, categoriesCount);
 
-            while (iterations-- > 0) {
+            ICollection<double> errs;
+            do {
                 ClassifyObservations(categories);
-                ComputeCentroids(categories);
-            }
+                ComputeCentroids(categories, out errs);
+            } while (errs.Max() > precision);
 
             return categories.OrderBy(category => category.Centroid).ToList();
         }
 
-        private void ComputeCentroids(IEnumerable<Category<T>> categories) {
-            foreach (var category in categories)
+        private void ComputeCentroids(IEnumerable<Category<T>> categories,
+            out ICollection<double> errs) {
+            errs = new List<double>();
+            foreach (var category in categories) {
+                var oldCentroid = category.Centroid;
                 category.SetCentroid(Average(category.Observations));
+                var newCentroid = category.Centroid;
+                errs.Add(Distance(oldCentroid, newCentroid));
+            }
         }
 
-        private void ValidateArgument(int categoriesNumber, int iterations) {
+        private void ValidateArgument(int categoriesNumber, double precision) {
             if (categoriesNumber > _observationSet.Count() || categoriesNumber < 1)
                 throw new ArgumentOutOfRangeException(
                     $"categories number overflow: {categoriesNumber}");
-            if (iterations < 1)
-                throw new ArgumentOutOfRangeException($"Invalid iterations: {iterations}");
+            if (precision <= 0)
+                throw new ArgumentOutOfRangeException($"Invalid {nameof(precision)}: {precision}");
         }
 
         private void ClassifyObservations(List<Category<T>> categories) {
@@ -75,27 +79,6 @@ namespace ClusteringAlgorithm {
 
             foreach (var centroid in centroids)
                 categories.Add(new Category<T> {Centroid = centroid});
-        }
-
-        /// <summary>
-        ///     将观测值进行随机分组
-        /// </summary>
-        /// <param name="categories"></param>
-        /// <param name="categoriesCount"></param>
-        private void RandomPartation(IList<Category<T>> categories, int categoriesCount) {
-            while (categories.Count < categoriesCount)
-                categories.Add(new Category<T>());
-            var r = new Random();
-            var perCategoryCount = _observationSet.Count/categoriesCount;
-            foreach (var observation in _observationSet) {
-                do {
-                    var randomCategory = categories[r.Next(0, categoriesCount)];
-                    if (randomCategory.Count < perCategoryCount) {
-                        randomCategory.Add(observation);
-                        break;
-                    }
-                } while (true);
-            }
         }
 
         private Category<T> FindNearestCategory(List<Category<T>> categories, T observation) {
