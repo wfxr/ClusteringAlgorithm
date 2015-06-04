@@ -1,16 +1,12 @@
 namespace ClusteringAlgorithm {
-    public class Category<T>{
-        public Category(T centroid) {
-            Centroid = centroid; 
-            Observations = new ObservationSet<T>();
-        }
+    public class Category<T> {
         public T Centroid;
+        public Category() { Observations = new ObservationSet<T>(); }
 
-        //public T Average(ObservationSet<T> observationSet) {
-
-        //}
-        //public void UpdateCentroid() => Centroid = Average(Observations);
-        public void ClearObservations() => Observations = new ObservationSet<T>();
         public ObservationSet<T> Observations { get; set; }
+        public void SetCentroid(T centroid) => Centroid = centroid;
+        public void Add(T observation) => Observations.Add(observation);
+        public int Count => Observations.Count;
+        public void ClearObservations() => Observations = new ObservationSet<T>();
     }
 }

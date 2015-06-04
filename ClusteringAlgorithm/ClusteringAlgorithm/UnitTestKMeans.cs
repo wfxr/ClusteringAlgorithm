@@ -11,7 +11,7 @@ namespace ClusteringAlgorithm
         [Fact]
         public void TestCategoriesCount()
         {
-            ObservationSet<double> observationSet = new ObservationSet<double> {1, 2, 3, 7, 8, 9};
+            ObservationSet<double> observationSet = new ObservationSet<double> {1, 2, 3, 4, 5, 6, 7, 8, 9};
             var km = new KMeans<double>(observationSet, Distance, Average);
 
             Assert.Equal(km.Classify(1).Count, 1);
