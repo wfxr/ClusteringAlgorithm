@@ -4,24 +4,24 @@ using System.Linq;
 
 namespace ClusteringAlgorithm {
     public class KMeans<T> {
-        public delegate T AverageDelegate(ObservationSet<T> observationSet);
+        public delegate T CentroidDelegate(ObservationSet<T> observationSet);
 
         public delegate double DistanceDelegate(T obs1, T obs2);
 
-        private readonly AverageDelegate _averageDelegate;
+        private readonly CentroidDelegate _centroidDelegate;
         private readonly DistanceDelegate _distanceDelegate;
         private readonly ObservationSet<T> _observationSet;
 
         public KMeans(ObservationSet<T> observationSet, DistanceDelegate distanceDelegate,
-            AverageDelegate averageDelegate) {
+            CentroidDelegate centroidDelegate) {
             _observationSet = observationSet;
             _distanceDelegate = distanceDelegate;
-            _averageDelegate = averageDelegate;
+            _centroidDelegate = centroidDelegate;
         }
 
         private double Distance(T obs1, T obs2) => _distanceDelegate(obs1, obs2);
         private double Distance(T obs, Category<T> category) => Distance(obs, category.Centroid);
-        private T Average(ObservationSet<T> observationSet) => _averageDelegate(observationSet);
+        private T ComputeCentroid(ObservationSet<T> observationSet) => _centroidDelegate(observationSet);
 
         public List<Category<T>> Classify(int categoriesCount, double precision = 0.01) {
             ValidateArgument(categoriesCount, precision);
@@ -32,18 +32,18 @@ namespace ClusteringAlgorithm {
             ICollection<double> errs;
             do {
                 ClassifyObservations(categories);
-                ComputeCentroids(categories, out errs);
+                UpdateCentroids(categories, out errs);
             } while (errs.Max() > precision);
 
             return categories.OrderBy(category => category.Centroid).ToList();
         }
 
-        private void ComputeCentroids(IEnumerable<Category<T>> categories,
+        private void UpdateCentroids(IEnumerable<Category<T>> categories,
             out ICollection<double> errs) {
             errs = new List<double>();
             foreach (var category in categories) {
                 var oldCentroid = category.Centroid;
-                category.SetCentroid(Average(category.Observations));
+                category.SetCentroid(ComputeCentroid(category.Observations));
                 var newCentroid = category.Centroid;
                 errs.Add(Distance(oldCentroid, newCentroid));
             }
