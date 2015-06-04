@@ -42,13 +42,10 @@ namespace ClusteringAlgorithm {
             var r = new Random();
             var count = observations.Count;
             var selected = new List<int>();
-            for (int i = 0; i < categoriesNumber; ++i) {
+            while (selected.Count < categoriesNumber) {
                 var num = r.Next(0, count);
-                if (selected.Contains(num)) {
-                    --i;
-                    continue;
-                }
-                selected.Add(num);
+                if (!selected.Contains(num))
+                    selected.Add(num);
             }
 
             foreach (var num in selected) {
