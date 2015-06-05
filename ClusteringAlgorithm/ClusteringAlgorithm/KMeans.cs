@@ -31,23 +31,23 @@ namespace ClusteringAlgorithm {
             var categories = new List<Category<T>>();
             SetRandomCentroids(categories, categoriesCount);
 
-            ICollection<double> errs;
+            ICollection<double> centroidErrors;
             do {
                 ClassifyObservations(categories);
-                UpdateCentroids(categories, out errs);
-            } while (errs.Max() > precision);
+                UpdateCentroids(categories, out centroidErrors);
+            } while (centroidErrors.Max() > precision);
 
             return categories.OrderBy(category => category.Centroid).ToList();
         }
 
         private void UpdateCentroids(IEnumerable<Category<T>> categories,
-            out ICollection<double> errs) {
-            errs = new List<double>();
+            out ICollection<double> centroidErrors) {
+            centroidErrors = new List<double>();
             foreach (var category in categories) {
                 var oldCentroid = category.Centroid;
                 category.SetCentroid(ComputeCentroid(category.Observations));
                 var newCentroid = category.Centroid;
-                errs.Add(Distance(oldCentroid, newCentroid));
+                centroidErrors.Add(Distance(oldCentroid, newCentroid));
             }
         }
 
@@ -60,7 +60,7 @@ namespace ClusteringAlgorithm {
         }
 
         private void ClassifyObservations(List<Category<T>> categories) {
-            // 清除先前分组
+            // 清除之前的分组
             foreach (var category in categories)
                 category.ClearObservations();
             // 重新分组
