@@ -3,7 +3,7 @@ using System.Linq;
 using Xunit;
 
 namespace ClusteringAlgorithm.UnitTest {
-    public class UnitTestKMeans {
+    public class TestKMeans {
         [Fact]
         public void TestCategoriesCount() {
             var observationSet = new ObservationSet<double> {1, 2, 3, 4, 5, 6, 7, 8, 9};

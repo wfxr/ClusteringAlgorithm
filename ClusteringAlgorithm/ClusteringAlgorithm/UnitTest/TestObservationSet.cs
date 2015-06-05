@@ -3,7 +3,7 @@ using System.Linq;
 using Xunit;
 
 namespace ClusteringAlgorithm.UnitTest {
-    public class UnitTestObservationSet {
+    public class TestObservationSet {
         [Fact]
         public void TestCount() {
             var intSets = new ObservationSet<int>();
