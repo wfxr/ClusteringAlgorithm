@@ -25,26 +25,25 @@ namespace ClusteringAlgorithm {
         private T ComputeCentroid(ObservationSet<T> observationSet)
             => _centroidDelegate(observationSet);
 
-        public List<Category<T>> Classify(int categoriesCount, double precision = 0.01) {
+        public CategorySet<T> Classify(int categoriesCount, double precision = 0.01) {
             ValidateArgument(categoriesCount, precision);
 
-            var categories = new List<Category<T>>();
-            SetRandomCentroids(categories, categoriesCount);
+            var categorySet = new CategorySet<T>();
+            SetRandomCentroids(categorySet, categoriesCount);
 
             ICollection<double> centroidErrors;
             do {
-                ClassifyObservations(categories);
-                UpdateCentroids(categories, out centroidErrors);
+                ClassifyObservations(categorySet);
+                UpdateCentroids(categorySet, out centroidErrors);
             } while (centroidErrors.Max() > precision);
 
-            return categories.OrderBy(category => category.Centroid).ToList();
+            return categorySet;
         }
 
-        // TODO:添加Categories类
-        private void UpdateCentroids(IEnumerable<Category<T>> categories,
+        private void UpdateCentroids(CategorySet<T> categorySet,
             out ICollection<double> centroidErrors) {
             centroidErrors = new List<double>();
-            foreach (var category in categories) {
+            foreach (var category in categorySet) {
                 var oldCentroid = category.Centroid;
                 category.SetCentroid(ComputeCentroid(category.Observations));
                 var newCentroid = category.Centroid;
@@ -52,37 +51,37 @@ namespace ClusteringAlgorithm {
             }
         }
 
-        private void ValidateArgument(int categoriesNumber, double precision) {
-            if (categoriesNumber > _observationSet.Count() || categoriesNumber < 1)
+        private void ValidateArgument(int categoriesCount, double precision) {
+            if (categoriesCount > _observationSet.Count() || categoriesCount < 1)
                 throw new ArgumentOutOfRangeException(
-                    $"categories number overflow: {categoriesNumber}");
+                    $"categories number overflow: {categoriesCount}");
             if (precision <= 0)
                 throw new ArgumentOutOfRangeException($"Invalid {nameof(precision)}: {precision}");
         }
 
-        private void ClassifyObservations(List<Category<T>> categories) {
+        private void ClassifyObservations(CategorySet<T> categorySet) {
             // 清除之前的分组
-            foreach (var category in categories)
+            foreach (var category in categorySet)
                 category.ClearObservations();
             // 重新分组
             foreach (var observation in _observationSet) {
-                var nearestCategory = NearestCategory(categories, observation);
+                var nearestCategory = NearestCategory(categorySet, observation);
                 nearestCategory.Observations.Add(observation);
             }
         }
 
-        private void SetRandomCentroids(ICollection<Category<T>> categories, int categoriesCount) {
-            var centroidSet = ObservationSet<T>.RandomSample(_observationSet.Distinct(), categoriesCount);
+        private void SetRandomCentroids(CategorySet<T> categorySet, int categoriesCount) {
+            var centroidSet = _observationSet.Distinct().RandomSample(categoriesCount);
 
             foreach (var centroid in centroidSet)
-                categories.Add(new Category<T> (centroid));
+                categorySet.Add(new Category<T>(centroid));
         }
 
 
-        private Category<T> NearestCategory(List<Category<T>> categories, T observation) {
+        private Category<T> NearestCategory(CategorySet<T> categorySet, T observation) {
             var minDistance = double.MaxValue;
             Category<T> nearestCategory = null;
-            foreach (var category in categories) {
+            foreach (var category in categorySet) {
                 var distance = Distance(observation, category);
                 if (!(minDistance > distance)) continue;
                 minDistance = distance;

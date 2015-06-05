@@ -25,6 +25,9 @@ namespace ClusteringAlgorithm {
 
         public ObservationSet<T> Distinct() => new ObservationSet<T>(_observations.Distinct());
 
+        public IEnumerable<T> RandomSample(int count) => RandomSample(this, count);
+
+
         public static IEnumerable<T> RandomSample(ObservationSet<T> observationSet, int count) {
             var r = new Random();
             var ret = new ObservationSet<T>();
@@ -41,7 +44,6 @@ namespace ClusteringAlgorithm {
         public static T RandomSample(ObservationSet<T> observationSet, Random r)
             => observationSet[r.Next(0, observationSet.Count)];
 
-        public static T RandomSample(ObservationSet<T> observationSet)
-            => observationSet[new Random().Next(0, observationSet.Count)];
+        public T RandomSample(Random r) => RandomSample(this, r);
     }
 }

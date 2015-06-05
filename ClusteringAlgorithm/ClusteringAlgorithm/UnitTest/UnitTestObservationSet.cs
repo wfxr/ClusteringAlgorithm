@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Xunit;
 
-namespace ClusteringAlgorithm {
+namespace ClusteringAlgorithm.UnitTest {
     public class UnitTestObservationSet {
         [Fact]
         public void TestCount() {

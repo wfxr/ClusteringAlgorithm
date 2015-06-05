@@ -1,9 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Xunit;
-using static System.Math;
 
-namespace ClusteringAlgorithm {
+namespace ClusteringAlgorithm.UnitTest {
     public class UnitTestKMeans {
         [Fact]
         public void TestCategoriesCount() {
@@ -30,6 +30,7 @@ namespace ClusteringAlgorithm {
             var km = new KMeans<double>(observationSet, Distance1D, Centroid1D);
 
             var categories = km.Classify(2);
+            categories.Sort();
 
             Assert.Equal(categories[0].Centroid, 2.0);
             Assert.Equal(categories[1].Centroid, 8.0);
@@ -61,6 +62,8 @@ namespace ClusteringAlgorithm {
                 Centroid2D);
 
             var categories = km.Classify(2);
+            categories.Sort();
+
             Assert.Equal(categories[0].Centroid, Tuple.Create(2.0/3, 3.0/3));
             Assert.Equal(categories[1].Centroid, Tuple.Create(17.0/4, 18.0/4));
         }
@@ -106,9 +109,9 @@ namespace ClusteringAlgorithm {
             return point/count;
         }
 
-        private static double Distance1D(double obs1, double obs2) => Abs(obs1 - obs2);
+        private static double Distance1D(double obs1, double obs2) => Math.Abs(obs1 - obs2);
 
         private static double Distance2D(Tuple<double, double> obs1, Tuple<double, double> obs2)
-            => Sqrt(Pow((obs1.Item1 - obs2.Item1), 2) + Pow((obs1.Item2 - obs2.Item2), 2));
+            => Math.Sqrt(Math.Pow((obs1.Item1 - obs2.Item1), 2) + Math.Pow((obs1.Item2 - obs2.Item2), 2));
     }
 }
