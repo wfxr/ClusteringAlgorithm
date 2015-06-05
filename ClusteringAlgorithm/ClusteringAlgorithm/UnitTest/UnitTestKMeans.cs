@@ -41,8 +41,8 @@ namespace ClusteringAlgorithm.UnitTest {
 
             var categories = km.Classify(2).OrderByCentroids();
 
-            Assert.Equal(categories[0].Observations, new ObservationSet<double> {1, 2, 3});
-            Assert.Equal(categories[1].Observations, new ObservationSet<double> {7, 8, 9});
+            Assert.Equal(categories[0].ObservationSet, new ObservationSet<double> {1, 2, 3});
+            Assert.Equal(categories[1].ObservationSet, new ObservationSet<double> {7, 8, 9});
         }
 
         [Fact]

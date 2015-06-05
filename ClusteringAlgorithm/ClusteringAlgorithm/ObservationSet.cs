@@ -26,6 +26,10 @@ namespace ClusteringAlgorithm {
             set { _observations[i] = value; }
         }
 
+        /// <summary>
+        /// 返回一个观察值集合的迭代器
+        /// </summary>
+        /// <returns></returns>
         public IEnumerator<T> GetEnumerator() => _observations.GetEnumerator();
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
@@ -82,5 +86,14 @@ namespace ClusteringAlgorithm {
         /// <param name="random">随机数产生器</param>
         /// <returns></returns>
         public T RandomSample(Random random) => RandomSample(this, random);
+
+        /// <summary>
+        /// 在集合的每一个元素上执行指定的action
+        /// </summary>
+        /// <param name="action"></param>
+        public void ForEach(Action<T> action) {
+            foreach (var observation in this)
+                action(observation);
+        }
     }
 }
