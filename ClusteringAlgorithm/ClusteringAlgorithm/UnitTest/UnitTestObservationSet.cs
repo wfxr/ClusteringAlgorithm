@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Xunit;
 
 namespace ClusteringAlgorithm.UnitTest {
@@ -24,22 +25,6 @@ namespace ClusteringAlgorithm.UnitTest {
             doubleSet.Add(3.5);
             Assert.Equal(doubleSet.Count, 1);
             Assert.Equal(doubleSet[0], 3.5);
-        }
-        //[Fact]
-        //public void TestAverage() {
-        //    var intSet = new ObservationSet<int> { 1, 2, 3, 7, 8, 9 };
-        //    Assert.Equal(intSet.Average(), 5);
-
-        //    var doubleSet = new ObservationSet<double> {1.2, 1.0, 1.1};
-        //    Assert.Equal(doubleSet.Average(), 1.1);
-        //}
-        [Fact]
-        public void TestToList() {
-            var intSet = new ObservationSet<int> { 1, 4, 8 };
-            Assert.Equal(intSet.ToList(), new List<int> { 1, 4, 8});
-
-            var doubleSet = new ObservationSet<double> {1.2, 1.0, 1.1};
-            Assert.Equal(doubleSet.ToList(), new List<double> { 1.2, 1.0, 1.1 });
         }
 
         [Fact]

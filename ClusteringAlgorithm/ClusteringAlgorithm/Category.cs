@@ -1,3 +1,5 @@
+using System;
+
 namespace ClusteringAlgorithm {
     public class Category<T> {
         public T Centroid;

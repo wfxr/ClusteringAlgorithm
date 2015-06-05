@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using Xunit;
 
@@ -29,8 +28,7 @@ namespace ClusteringAlgorithm.UnitTest {
             var observationSet = new ObservationSet<double> {1, 2, 3, 7, 8, 9};
             var km = new KMeans<double>(observationSet, Distance1D, Centroid1D);
 
-            var categories = km.Classify(2);
-            categories.Sort();
+            var categories = km.Classify(2).OrderByCentroids();
 
             Assert.Equal(categories[0].Centroid, 2.0);
             Assert.Equal(categories[1].Centroid, 8.0);
@@ -41,7 +39,7 @@ namespace ClusteringAlgorithm.UnitTest {
             var observationSet = new ObservationSet<double> {1, 2, 3, 7, 8, 9};
             var km = new KMeans<double>(observationSet, Distance1D, Centroid1D);
 
-            var categories = km.Classify(2);
+            var categories = km.Classify(2).OrderByCentroids();
 
             Assert.Equal(categories[0].Observations, new ObservationSet<double> {1, 2, 3});
             Assert.Equal(categories[1].Observations, new ObservationSet<double> {7, 8, 9});
@@ -61,8 +59,7 @@ namespace ClusteringAlgorithm.UnitTest {
             var km = new KMeans<Tuple<double, double>>(observationSet, Distance2D,
                 Centroid2D);
 
-            var categories = km.Classify(2);
-            categories.Sort();
+            var categories = km.Classify(2).OrderByCentroids();
 
             Assert.Equal(categories[0].Centroid, Tuple.Create(2.0/3, 3.0/3));
             Assert.Equal(categories[1].Centroid, Tuple.Create(17.0/4, 18.0/4));
@@ -81,7 +78,7 @@ namespace ClusteringAlgorithm.UnitTest {
             };
             var km = new KMeans<Point>(observationSet, Point.Distance, Centroid3D);
 
-            var categories = km.Classify(2);
+            var categories = km.Classify(2).OrderByCentroids();
             Assert.Equal(categories[0].Centroid, new Point(2.0/3, 3.0/3, 2.0/3));
             Assert.Equal(categories[1].Centroid, new Point(17.0/4, 18.0/4, 17.0/4));
         }
