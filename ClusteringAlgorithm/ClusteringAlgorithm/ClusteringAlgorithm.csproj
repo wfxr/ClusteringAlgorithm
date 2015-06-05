@@ -59,9 +59,9 @@
     <Compile Include="ObservationSet.cs" />
     <Compile Include="KMeans.cs" />
     <Compile Include="Point.cs" />
-    <Compile Include="UnitTestKMeans.cs" />
+    <Compile Include="UnitTest\UnitTestKMeans.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UnitTestObservationSet.cs" />
+    <Compile Include="UnitTest\UnitTestObservationSet.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

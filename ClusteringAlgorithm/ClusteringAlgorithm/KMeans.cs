@@ -40,6 +40,7 @@ namespace ClusteringAlgorithm {
             return categories.OrderBy(category => category.Centroid).ToList();
         }
 
+        // TODO:添加Categories类
         private void UpdateCentroids(IEnumerable<Category<T>> categories,
             out ICollection<double> centroidErrors) {
             centroidErrors = new List<double>();
