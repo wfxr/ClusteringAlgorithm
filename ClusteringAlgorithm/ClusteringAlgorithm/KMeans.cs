@@ -21,7 +21,9 @@ namespace ClusteringAlgorithm {
 
         private double Distance(T obs1, T obs2) => _distanceDelegate(obs1, obs2);
         private double Distance(T obs, Category<T> category) => Distance(obs, category.Centroid);
-        private T ComputeCentroid(ObservationSet<T> observationSet) => _centroidDelegate(observationSet);
+
+        private T ComputeCentroid(ObservationSet<T> observationSet)
+            => _centroidDelegate(observationSet);
 
         public List<Category<T>> Classify(int categoriesCount, double precision = 0.01) {
             ValidateArgument(categoriesCount, precision);
@@ -63,25 +65,20 @@ namespace ClusteringAlgorithm {
                 category.ClearObservations();
             // 重新分组
             foreach (var observation in _observationSet) {
-                var nearestCategory = FindNearestCategory(categories, observation);
+                var nearestCategory = NearestCategory(categories, observation);
                 nearestCategory.Observations.Add(observation);
             }
         }
 
         private void SetRandomCentroids(ICollection<Category<T>> categories, int categoriesCount) {
-            var r = new Random();
-            var centroids = new List<T>();
-            while (centroids.Count < categoriesCount) {
-                var observation = _observationSet[r.Next(0, _observationSet.Count)];
-                if (!centroids.Contains(observation))
-                    centroids.Add(observation);
-            }
+            var centroidSet = ObservationSet<T>.RandomSample(_observationSet.Distinct(), categoriesCount);
 
-            foreach (var centroid in centroids)
-                categories.Add(new Category<T> {Centroid = centroid});
+            foreach (var centroid in centroidSet)
+                categories.Add(new Category<T> (centroid));
         }
 
-        private Category<T> FindNearestCategory(List<Category<T>> categories, T observation) {
+
+        private Category<T> NearestCategory(List<Category<T>> categories, T observation) {
             var minDistance = double.MaxValue;
             Category<T> nearestCategory = null;
             foreach (var category in categories) {
