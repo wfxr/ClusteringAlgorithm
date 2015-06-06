@@ -7,7 +7,7 @@ using Xunit;
 namespace ClusteringAlgorithm.Statistics {
     public class TestSampling {
         [Fact]
-        public void TestSamplingWithNoRepeatition() {
+        public void TestSampleWithOutReplacement() {
             // 如果观察值集合本身有重复，则抽样结果也可能出现重复
             // 所以应先使集合去重复，然后才能确保得到正确的测试结果
             var set = new Set<int> {1, 4, 8, 5, 9, 7}.Distinct();
@@ -22,7 +22,7 @@ namespace ClusteringAlgorithm.Statistics {
         }
 
         [Fact]
-        public void TestSample() {
+        public void TestSampleOneItem() {
             var set = new Set<int> {1, 4, 8, 5, 9, 7};
             var samples = Sampling.Sample(set, 3);
 
@@ -33,7 +33,7 @@ namespace ClusteringAlgorithm.Statistics {
         }
 
         [Fact]
-        public void TestRandomSampling() {
+        public void TestSampleNumberOfItems() {
             var set = new Set<int> {1, 4, 8, 5, 9, 7};
             var sample = Sampling.Sample(set);
 
