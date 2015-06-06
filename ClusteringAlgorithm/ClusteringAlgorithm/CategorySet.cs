@@ -97,7 +97,7 @@ namespace ClusteringAlgorithm {
         ///     更新集合中所有聚类的中心
         /// </summary>
         /// <param name="centroidErrors"></param>
-        public void UpdateCentroids(out ICollection<double> centroidErrors) {
+        public void UpdateCentroids(out List<double> centroidErrors) {
             centroidErrors = new List<double>();
             foreach (var category in this) {
                 var oldCentroid = category.Centroid;

@@ -27,7 +27,7 @@ namespace ClusteringAlgorithm {
             var categorySet = new CategorySet<T>(_distanceFunc, _centroidFunc);
             SetRandomCentroids(categorySet, categoriesCount);
 
-            ICollection<double> centroidErrors;
+            List<double> centroidErrors;
             do {
                 categorySet.ClearAllObservations();
                 categorySet.Classify(_observationSet);
@@ -44,10 +44,10 @@ namespace ClusteringAlgorithm {
                 throw new ArgumentOutOfRangeException($"Invalid {nameof(precision)}: {precision}");
         }
         private void SetRandomCentroids(CategorySet<T> categorySet, int categoriesCount) {
-            var centroidSet = _observationSet.Distinct().SamplingWithNoRepeatition(categoriesCount);
+            // 先去重复再抽样，否则可能取到重复的中心
+            var centroidSet = Sampling<T>.WithNoRepeatition(_observationSet.Distinct(), categoriesCount);
 
-            foreach (var centroid in centroidSet)
-                categorySet.Add(new Category<T>(centroid));
+            centroidSet.ForEach(centroid => categorySet.Add(new Category<T>(centroid)));
         }
     }
 }

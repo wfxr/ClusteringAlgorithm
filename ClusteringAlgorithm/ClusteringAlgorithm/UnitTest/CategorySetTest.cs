@@ -1,6 +1,6 @@
 ﻿namespace ClusteringAlgorithm.UnitTest
 {
-    public class TestCategorySet
+    public class CategorySetTest
     {
         // TODO:添加CategorySet单元测试
     }

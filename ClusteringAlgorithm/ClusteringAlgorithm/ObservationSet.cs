@@ -62,29 +62,6 @@ namespace ClusteringAlgorithm {
         public ObservationSet<T> Distinct() => new ObservationSet<T>(_observations.Distinct());
 
         /// <summary>
-        ///     无重复地随机抽取若干个样本
-        /// </summary>
-        /// <param name="count">抽样数目</param>
-        /// <returns></returns>
-        public ObservationSet<T> SamplingWithNoRepeatition(int count)
-            => Sampling<T>.WithNoRepeatition(this, count);
-
-        /// <summary>
-        ///     有重复地随机抽取若干个样本
-        /// </summary>
-        /// <param name="count">抽样数目</param>
-        /// <returns></returns>
-        public ObservationSet<T> SamplingWithRepeatition(int count)
-            => Sampling<T>.WithRepeatition(this, count);
-         
-        /// <summary>
-        ///     随机抽取1个样本
-        /// </summary>
-        /// <param name="random">随机数产生器</param>
-        /// <returns></returns>
-        public T RandomSampling(Random random) => Sampling<T>.RandomSampling(this, random);
-
-        /// <summary>
         /// 返回自身的一个副本
         /// </summary>
         /// <returns></returns>
