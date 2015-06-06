@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using ClusteringAlgorithm.Containers;
 
 namespace ClusteringAlgorithm.Algorithms {
@@ -23,5 +24,7 @@ namespace ClusteringAlgorithm.Algorithms {
         /// <param name="centroidFunc"></param>
         public void UpdateCentroid(Func<Set<T>, T> centroidFunc)
             => Centroid = centroidFunc(Elements);
+        //public void UpdateCentroid(Func<T, T,T> sumFunc, Func<T, double, T> divFunc)
+        //    => Centroid = this.Average(sumFunc, divFunc);
     }
 }

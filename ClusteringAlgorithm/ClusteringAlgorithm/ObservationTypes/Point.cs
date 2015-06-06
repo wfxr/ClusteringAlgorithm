@@ -1,12 +1,14 @@
 using System;
 
 namespace ClusteringAlgorithm.ObservationTypes {
-    public struct Point : IComparable<Point> {
-        public double X;
-        public double Y;
-        public double Z;
+    public struct Point : IComparable<Point>
+    {
+        public double X { get; set; }
+        public double Y { get; set; }
+        public double Z { get; set; }
 
-        public Point(double x, double y, double z) {
+        public Point(double x, double y, double z)
+        {
             X = x;
             Y = y;
             Z = z;

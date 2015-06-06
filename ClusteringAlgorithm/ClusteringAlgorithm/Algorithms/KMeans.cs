@@ -6,9 +6,9 @@ using ClusteringAlgorithm.Statistics;
 
 namespace ClusteringAlgorithm.Algorithms {
     public class KMeans<T> {
-        private readonly Func<Set<T>, T> _centroidFunc;         // 计算分类中心的委托
-        private readonly Func<T, T, double> _distanceFunc;      // 计算观测值距离的委托
-        private readonly Set<T> _observations;                  // 观测值集合
+        private readonly Func<Set<T>, T> _centroidFunc; // 计算分类中心的委托
+        private readonly Func<T, T, double> _distanceFunc; // 计算观测值距离的委托
+        private readonly Set<T> _observations; // 观测值集合
 
         public KMeans(Set<T> observations, Func<T, T, double> distanceFunc,
             Func<Set<T>, T> centroidFunc) {
@@ -17,8 +17,16 @@ namespace ClusteringAlgorithm.Algorithms {
             _centroidFunc = centroidFunc;
         }
 
+        //public KMeans(Set<T> observations, Func<T, T, double> distanceFunc, Func<T, T, T> sumFunc,
+        //    Func<T, double, T> divFunc)
+        //    : this(observations, distanceFunc, CreateCentroidFunc(sumFunc, divFunc)) {}
+
+        //private static Func<Set<T>, T> CreateCentroidFunc(Func<T, T, T> sumFunc,
+        //    Func<T, double, T> divFunc)
+        //    => set => divFunc(set.Aggregate(new T(), sumFunc), set.Count);
+
         /// <summary>
-        /// 进行聚类划分
+        ///     进行聚类划分
         /// </summary>
         /// <param name="categoriesCount">聚类数目</param>
         /// <param name="precision">迭代精度</param>
@@ -38,6 +46,7 @@ namespace ClusteringAlgorithm.Algorithms {
 
             return categorySet;
         }
+
         private void ValidateArgument(int categoriesCount, double precision) {
             if (categoriesCount > _observations.Count() || categoriesCount < 1)
                 throw new ArgumentOutOfRangeException(
@@ -47,13 +56,14 @@ namespace ClusteringAlgorithm.Algorithms {
         }
 
         /// <summary>
-        /// 通过随机抽样的方式设置聚类的中心
+        ///     通过随机抽样的方式设置聚类的中心
         /// </summary>
         /// <param name="categorySet"></param>
         /// <param name="categoriesCount"></param>
         private void SetRandomCentroids(CategorySet<T> categorySet, int categoriesCount) {
             // 先去重复再抽样，否则可能取到重复的中心
-            var centroids = Sampling.SampleWithOutReplacement(_observations.Distinct(), categoriesCount);
+            var centroids = Sampling.SampleWithOutReplacement(_observations.Distinct(),
+                categoriesCount);
 
             centroids.ForEach(centroid => categorySet.Add(new Category<T>(centroid)));
         }

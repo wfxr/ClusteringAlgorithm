@@ -58,8 +58,7 @@ namespace ClusteringAlgorithm.Algorithms {
                 Tuple.Create(4.0, 5.0),
                 Tuple.Create(4.0, 4.0)
             };
-            var km = new KMeans<Tuple<double, double>>(observationSet, Distance2D,
-                Centroid2D);
+            var km = new KMeans<Tuple<double, double>>(observationSet, Distance2D, Centroid2D);
 
             var categories = km.Classify(2).OrderByCentroids();
 
@@ -78,7 +77,8 @@ namespace ClusteringAlgorithm.Algorithms {
                 new Point(4.0, 5.0, 4.0),
                 new Point(4.0, 4.0, 4.0)
             };
-            var km = new KMeans<Point>(observationSet, Point.Distance, Centroid3D);
+            var km = new KMeans<Point>(observationSet, Point.Distance,
+                set => set.Aggregate(new Point(), (p1, p2) => p1 + p2) / set.Count);
 
             var categories = km.Classify(2).OrderByCentroids();
             Assert.Equal(categories[0].Centroid, new Point(2.0/3, 3.0/3, 2.0/3));
@@ -104,13 +104,14 @@ namespace ClusteringAlgorithm.Algorithms {
             var point = new Point(0, 0, 0);
             foreach (var obs in set)
                 point += obs;
-            var count = set.Count;
-            return point/count;
+            return point/set.Count;
         }
 
         private static double Distance1D(double obs1, double obs2) => Math.Abs(obs1 - obs2);
 
         private static double Distance2D(Tuple<double, double> obs1, Tuple<double, double> obs2)
-            => Math.Sqrt(Math.Pow((obs1.Item1 - obs2.Item1), 2) + Math.Pow((obs1.Item2 - obs2.Item2), 2));
+            =>
+                Math.Sqrt(Math.Pow((obs1.Item1 - obs2.Item1), 2) +
+                          Math.Pow((obs1.Item2 - obs2.Item2), 2));
     }
 }
