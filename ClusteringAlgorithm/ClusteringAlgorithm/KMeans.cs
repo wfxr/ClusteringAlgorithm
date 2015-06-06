@@ -44,7 +44,7 @@ namespace ClusteringAlgorithm {
                 throw new ArgumentOutOfRangeException($"Invalid {nameof(precision)}: {precision}");
         }
         private void SetRandomCentroids(CategorySet<T> categorySet, int categoriesCount) {
-            var centroidSet = _observationSet.Distinct().SamplingWithoutRepeating(categoriesCount);
+            var centroidSet = _observationSet.Distinct().SamplingWithNoRepeatition(categoriesCount);
 
             foreach (var centroid in centroidSet)
                 categorySet.Add(new Category<T>(centroid));

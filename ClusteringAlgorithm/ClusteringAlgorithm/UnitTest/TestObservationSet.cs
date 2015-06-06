@@ -93,18 +93,18 @@ namespace ClusteringAlgorithm.UnitTest {
         }
 
         [Fact]
-        public void TestSamplingWithoutRepeating() {
+        public void TestSamplingWithoutRepeatition() {
             // 如果观察值集合本身有重复，则抽样结果也可能出现重复
             // 所以应先使集合去重复，然后才能确保得到正确的测试结果
             var set = new ObservationSet<int> {1, 4, 8, 5, 9, 7}.Distinct();
-            var samples = set.SamplingWithoutRepeating(3);
+            var samples = set.SamplingWithNoRepeatition(3);
             Assert.Equal(samples.Count, 3);
             foreach (var sample in samples)
                 Assert.Contains(sample, set);
             Assert.Equal(samples.Distinct(), samples);
 
             Assert.Throws<ArgumentOutOfRangeException>(
-                () => set.SamplingWithoutRepeating(set.Count + 1));
+                () => set.SamplingWithNoRepeatition(set.Count + 1));
         }
     }
 }
