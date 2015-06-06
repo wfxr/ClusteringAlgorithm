@@ -4,11 +4,14 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace ClusteringAlgorithm.Containers {
-    public class Set<T> : IList<T>, IReadOnlyList<T> {
+    public class Set<T> :IList<T>, IReadOnlyList<T> {
         protected readonly List<T> Elements;
         public Set() { Elements = new List<T>(); }
-
         public Set(IEnumerable<T> items) { Elements = items.ToList(); }
+        public static implicit operator Set<T>(List<T> items)
+        {
+            return new Set<T>(items);
+        }
 
         /// <summary>
         ///     从集合中删除指定的值

@@ -14,7 +14,6 @@ namespace ClusteringAlgorithm.Statistics {
             var samples = Sampling.SampleWithOutReplacement(set, 3);
 
             Assert.Equal(samples.Count, 3);
-            Assert.True(IsRelationOfInclusion(samples, set));
             Assert.Equal(samples.Distinct(), samples);
 
             Assert.Throws<ArgumentOutOfRangeException>(
@@ -27,7 +26,6 @@ namespace ClusteringAlgorithm.Statistics {
             var samples = Sampling.Sample(set, 3);
 
             Assert.Equal(samples.Count, 3);
-            Assert.True(IsRelationOfInclusion(samples, set));
 
             Assert.Throws<ArgumentOutOfRangeException>(() => Sampling.Sample(set, 100));
         }
@@ -39,8 +37,5 @@ namespace ClusteringAlgorithm.Statistics {
 
             Assert.Contains(sample, set);
         }
-
-        private static bool IsRelationOfInclusion<T>(IEnumerable<T> subset, ICollection<T> set)
-            => subset.All(set.Contains);
     }
 }
