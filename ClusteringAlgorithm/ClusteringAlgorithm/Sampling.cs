@@ -4,7 +4,6 @@ using System.Linq;
 
 namespace ClusteringAlgorithm {
     public class Sampling {
-        // ReSharper disable once StaticMemberInGenericType
         private static Random Rand { get; } = new Random();
 
         /// <summary>
@@ -13,7 +12,7 @@ namespace ClusteringAlgorithm {
         /// <param name="set">样本总体</param>
         /// <param name="count">抽样数目</param>
         /// <returns></returns>
-        public static List<T> WithNoRepeatition<T>(IReadOnlyList<T> set, int count) {
+        public static List<T> SampleWithOutReplacement<T>(IReadOnlyList<T> set, int count) {
             Validate(set, count);
 
             var result = new List<T>();
@@ -33,27 +32,26 @@ namespace ClusteringAlgorithm {
         /// <param name="set">样本总体</param>
         /// <param name="count">抽样数目</param>
         /// <returns></returns>
-        public static List<T> WithRepeatition<T>(IReadOnlyList<T> set, int count) {
+        public static List<T> Sample<T>(IReadOnlyList<T> set, int count) {
             Validate(set, count);
 
             var result = new List<T>();
             for (var i = 0; i < count; ++i)
-                result.Add(RandomSampling(set));
+                result.Add(Sample(set));
             return result;
         }
 
         /// <summary>
         ///     随机抽取1个样本
         /// </summary>
-        /// <param name="observationSet">观察值集合</param>
+        /// <param name="set">观察值集合</param>
         /// <returns></returns>
-        public static T RandomSampling<T>(IReadOnlyList<T> observationSet)
-            => observationSet[Rand.Next(0, observationSet.Count)];
+        public static T Sample<T>(IReadOnlyList<T> set) => set[Rand.Next(0, set.Count)];
 
-        private static void Validate<T>(IReadOnlyCollection<T> set, int sampleSize) {
-            if (sampleSize > set.Count)
+        private static void Validate<T>(IReadOnlyCollection<T> set, int count) {
+            if (count > set.Count)
                 throw new ArgumentOutOfRangeException(
-                    $"number of sampling:{sampleSize}, number of all observations:{set.Count}");
+                    $"samples to draw:{count}, samples in set:{set.Count}");
         }
     }
 }
