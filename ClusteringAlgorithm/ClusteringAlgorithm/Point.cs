@@ -1,7 +1,7 @@
 using System;
 
 namespace ClusteringAlgorithm {
-    public class Point : IComparable<Point> {
+    public struct Point : IComparable<Point> {
         public double X;
         public double Y;
         public double Z;
