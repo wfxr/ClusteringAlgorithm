@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using ClusteringAlgorithm.Set;
+using ClusteringAlgorithm.Containers;
+using ClusteringAlgorithm.Statistics;
 
-namespace ClusteringAlgorithm.KMeans {
+namespace ClusteringAlgorithm.Algorithms {
     public class KMeans<T> {
-        private readonly Func<Set<T>, T> _centroidFunc;
-        private readonly Set<T> _observations;
-        private readonly Func<T, T, double> _distanceFunc;
+        private readonly Func<Set<T>, T> _centroidFunc;         // 计算分类中心的委托
+        private readonly Func<T, T, double> _distanceFunc;      // 计算观测值距离的委托
+        private readonly Set<T> _observations;                  // 观测值集合
 
         public KMeans(Set<T> observations, Func<T, T, double> distanceFunc,
             Func<Set<T>, T> centroidFunc) {
@@ -44,9 +45,15 @@ namespace ClusteringAlgorithm.KMeans {
             if (precision <= 0)
                 throw new ArgumentOutOfRangeException($"Invalid {nameof(precision)}: {precision}");
         }
+
+        /// <summary>
+        /// 通过随机抽样的方式设置聚类的中心
+        /// </summary>
+        /// <param name="categorySet"></param>
+        /// <param name="categoriesCount"></param>
         private void SetRandomCentroids(CategorySet<T> categorySet, int categoriesCount) {
             // 先去重复再抽样，否则可能取到重复的中心
-            var centroids = Sampling.Sampling.SampleWithOutReplacement(_observations.Distinct(), categoriesCount);
+            var centroids = Sampling.SampleWithOutReplacement(_observations.Distinct(), categoriesCount);
 
             centroids.ForEach(centroid => categorySet.Add(new Category<T>(centroid)));
         }

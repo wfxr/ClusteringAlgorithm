@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace ClusteringAlgorithm.Set {
+namespace ClusteringAlgorithm.Containers {
     public class Set<T> : IList<T>, IReadOnlyList<T> {
         protected readonly List<T> Elements;
         public Set() { Elements = new List<T>(); }

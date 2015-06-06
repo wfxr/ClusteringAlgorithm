@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using ClusteringAlgorithm.Set;
+using ClusteringAlgorithm.Containers;
 using Xunit;
 
-namespace ClusteringAlgorithm.Sampling {
-    public class SamplingTest {
+namespace ClusteringAlgorithm.Statistics {
+    public class TestSampling {
         [Fact]
         public void TestSamplingWithNoRepeatition() {
             // 如果观察值集合本身有重复，则抽样结果也可能出现重复
