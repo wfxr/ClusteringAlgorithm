@@ -45,9 +45,9 @@ namespace ClusteringAlgorithm {
         }
         private void SetRandomCentroids(CategorySet<T> categorySet, int categoriesCount) {
             // 先去重复再抽样，否则可能取到重复的中心
-            var centroidSet = Sampling<T>.WithNoRepeatition(_observationSet.Distinct(), categoriesCount);
+            var centroids = Sampling<T>.WithNoRepeatition(_observationSet.Distinct(), categoriesCount);
 
-            centroidSet.ForEach(centroid => categorySet.Add(new Category<T>(centroid)));
+            centroids.ForEach(centroid => categorySet.Add(new Category<T>(centroid)));
         }
     }
 }

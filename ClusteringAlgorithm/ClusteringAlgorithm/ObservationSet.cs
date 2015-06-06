@@ -6,7 +6,7 @@ using System.Reflection;
 using System.Xml;
 
 namespace ClusteringAlgorithm {
-    public class ObservationSet<T> : IList<T> {
+    public class ObservationSet<T> : IList<T>, IReadOnlyList<T> {
         private readonly List<T> _observations;
         public ObservationSet() { _observations = new List<T>(); }
 
@@ -14,7 +14,12 @@ namespace ClusteringAlgorithm {
             _observations = observations.ToList();
         }
 
-        public bool Remove(T item) { throw new NotImplementedException(); }
+        /// <summary>
+        ///     从集合中删除指定的值
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
+        public bool Remove(T item) => _observations.Remove(item);
 
         /// <summary>
         ///     集合中观察值的数目
@@ -66,17 +71,6 @@ namespace ClusteringAlgorithm {
         /// </summary>
         /// <returns></returns>
         public ObservationSet<T> Copy() => new ObservationSet<T>(this); 
-
-        /// <summary>
-        /// 从集合中取走索引指定的观察值
-        /// </summary>
-        /// <param name="index"></param>
-        /// <returns></returns>
-        public T TackOutAt(int index) {
-            var ret = this[index];
-            RemoveAt(index);
-            return ret;
-        }
 
         /// <summary>
         ///     在集合的每一个元素上执行指定的action
