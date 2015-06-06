@@ -1,17 +1,72 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System;
+using System.Collections.Generic;
 using Xunit;
 
 namespace ClusteringAlgorithm.UnitTest {
     public class TestObservationSet {
         [Fact]
         public void TestCount() {
-            var intSets = new ObservationSet<int>();
-            Assert.Equal(intSets.Count, 0);
+            var sets = new ObservationSet<int>();
+            Assert.Equal(sets.Count, 0);
 
-            var doubleSets = new ObservationSet<double> {1.0, 3.2, 9.6};
-            Assert.Equal(doubleSets.Count, 3);
+            sets = new ObservationSet<int> {1, 3, 8};
+            Assert.Equal(sets.Count, 3);
         }
+
+        [Fact]
+        public void TestIntObservations() {
+            var sets = new ObservationSet<int> {1, 3, 8};
+            Assert.Equal(sets.Count, 3);
+            Assert.Equal(sets[0], 1);
+            Assert.Equal(sets[1], 3);
+            Assert.Equal(sets[2], 8);
+        }
+
+        [Fact]
+        public void TestDoubleObservations() {
+            var sets = new ObservationSet<double> {2.4, -3.1, 8.8};
+            Assert.Equal(sets.Count, 3);
+            Assert.Equal(sets[0], 2.4);
+            Assert.Equal(sets[1], -3.1);
+            Assert.Equal(sets[2], 8.8);
+        }
+
+        [Fact]
+        public void TestTupleObservations() {
+            var sets = new ObservationSet<Tuple<int, double>> {
+                Tuple.Create(2000, 3.2),
+                Tuple.Create(2001, 4.5),
+                Tuple.Create(2002, 9.6)
+            };
+            Assert.Equal(sets.Count, 3);
+            Assert.Equal(sets[0], Tuple.Create(2000, 3.2));
+            Assert.Equal(sets[1], Tuple.Create(2001, 4.5));
+            Assert.Equal(sets[2], Tuple.Create(2002, 9.6));
+        }
+
+        [Fact]
+        public void TestPointObservations() {
+            var sets = new ObservationSet<Point> {
+                new Point(1, 2, 3),
+                new Point(4, 5, 6),
+                new Point(7, 8, 9)
+            };
+            Assert.Equal(sets.Count, 3);
+            Assert.Equal(sets[0], new Point(1, 2, 3));
+            Assert.Equal(sets[1], new Point(4, 5, 6));
+            Assert.Equal(sets[2], new Point(7, 8, 9));
+        }
+
+        [Fact]
+        public void TestCreateSetFromList() {
+            var sets = new ObservationSet<int>(new List<int> {1, 3, 8});
+
+            Assert.Equal(sets.Count, 3);
+            Assert.Equal(sets[0], 1);
+            Assert.Equal(sets[1], 3);
+            Assert.Equal(sets[2], 8);
+        }
+
         [Fact]
         public void TestAdd() {
             var intSet = new ObservationSet<int>();
@@ -19,27 +74,15 @@ namespace ClusteringAlgorithm.UnitTest {
             intSet.Add(3);
             Assert.Equal(intSet.Count, 1);
             Assert.Equal(intSet[0], 3);
-
-            var doubleSet = new ObservationSet<double>();
-            Assert.Equal(doubleSet.Count, 0);
-            doubleSet.Add(3.5);
-            Assert.Equal(doubleSet.Count, 1);
-            Assert.Equal(doubleSet[0], 3.5);
         }
 
         [Fact]
         public void TestEnumerator() {
-            var intSet1 = new ObservationSet<int> { 1, 4, 8 };
+            var intSet1 = new ObservationSet<int> {1, 4, 8};
             var intSet2 = new ObservationSet<int>();
-            foreach (var obs in intSet1) 
+            foreach (var obs in intSet1)
                 intSet2.Add(obs);
             Assert.Equal(intSet1, intSet2);
-
-            var doubleSet1 = new ObservationSet<int> { 1, 4, 8 };
-            var doubleSet2 = new ObservationSet<int>();
-            foreach (var obs in doubleSet1) 
-                doubleSet2.Add(obs);
-            Assert.Equal(doubleSet1, doubleSet2);
         }
     }
 }
