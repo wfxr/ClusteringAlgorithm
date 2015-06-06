@@ -55,16 +55,16 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Category.cs" />
-    <Compile Include="CategorySet.cs" />
-    <Compile Include="KMeans.cs" />
-    <Compile Include="Point.cs" />
-    <Compile Include="Sampling.cs" />
-    <Compile Include="Set.cs" />
-    <Compile Include="UnitTest\KMeansTest.cs" />
+    <Compile Include="KMeans\Category.cs" />
+    <Compile Include="KMeans\CategorySet.cs" />
+    <Compile Include="KMeans\KMeans.cs" />
+    <Compile Include="Point\Point.cs" />
+    <Compile Include="Sampling\Sampling.cs" />
+    <Compile Include="Set\Set.cs" />
+    <Compile Include="KMeans\KMeansTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UnitTest\SetTest.cs" />
-    <Compile Include="UnitTest\SamplingTest.cs" />
+    <Compile Include="Set\SetTest.cs" />
+    <Compile Include="Sampling\SamplingTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

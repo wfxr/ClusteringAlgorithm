@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using ClusteringAlgorithm.Set;
 
-namespace ClusteringAlgorithm {
+namespace ClusteringAlgorithm.KMeans {
     public class KMeans<T> {
         private readonly Func<Set<T>, T> _centroidFunc;
         private readonly Set<T> _observations;
@@ -45,7 +46,7 @@ namespace ClusteringAlgorithm {
         }
         private void SetRandomCentroids(CategorySet<T> categorySet, int categoriesCount) {
             // 先去重复再抽样，否则可能取到重复的中心
-            var centroids = Sampling.SampleWithOutReplacement(_observations.Distinct(), categoriesCount);
+            var centroids = Sampling.Sampling.SampleWithOutReplacement(_observations.Distinct(), categoriesCount);
 
             centroids.ForEach(centroid => categorySet.Add(new Category<T>(centroid)));
         }

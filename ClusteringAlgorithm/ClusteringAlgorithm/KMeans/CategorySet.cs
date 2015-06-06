@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using ClusteringAlgorithm.Set;
 
-namespace ClusteringAlgorithm {
+namespace ClusteringAlgorithm.KMeans {
     public class CategorySet<T> : Set<Category<T>> {
         private readonly Func<Set<T>, T> _centroidFunc;
         private readonly Func<T, T, double> _distanceFunc;

@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Xunit;
 
-namespace ClusteringAlgorithm.UnitTest {
+namespace ClusteringAlgorithm.Set {
     public class SetTest {
         [Fact]
         public void TestCount() {
@@ -47,15 +46,15 @@ namespace ClusteringAlgorithm.UnitTest {
 
         [Fact]
         public void TestPointSet() {
-            var sets = new Set<Point> {
-                new Point(1, 2, 3),
-                new Point(4, 5, 6),
-                new Point(7, 8, 9)
+            var sets = new Set<Point.Point> {
+                new Point.Point(1, 2, 3),
+                new Point.Point(4, 5, 6),
+                new Point.Point(7, 8, 9)
             };
             Assert.Equal(sets.Count, 3);
-            Assert.Equal(sets[0], new Point(1, 2, 3));
-            Assert.Equal(sets[1], new Point(4, 5, 6));
-            Assert.Equal(sets[2], new Point(7, 8, 9));
+            Assert.Equal(sets[0], new Point.Point(1, 2, 3));
+            Assert.Equal(sets[1], new Point.Point(4, 5, 6));
+            Assert.Equal(sets[2], new Point.Point(7, 8, 9));
         }
 
         [Fact]

@@ -1,6 +1,7 @@
 using System;
+using ClusteringAlgorithm.Set;
 
-namespace ClusteringAlgorithm {
+namespace ClusteringAlgorithm.KMeans {
     public class Category<T> {
         public Category() { Observations = new Set<T>(); }
         public Category(T centroid) : this() { Centroid = centroid; }

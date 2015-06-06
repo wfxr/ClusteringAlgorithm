@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using ClusteringAlgorithm.Set;
 using Xunit;
 
-namespace ClusteringAlgorithm.UnitTest {
+namespace ClusteringAlgorithm.Sampling {
     public class SamplingTest {
         [Fact]
         public void TestSamplingWithNoRepeatition() {

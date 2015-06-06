@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace ClusteringAlgorithm {
+namespace ClusteringAlgorithm.Sampling {
     public class Sampling {
         private static Random Rand { get; } = new Random();
 

@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Linq;
+using ClusteringAlgorithm.Set;
 using Xunit;
 
-namespace ClusteringAlgorithm.UnitTest {
+namespace ClusteringAlgorithm.KMeans {
     public class KMeansTest {
         [Fact]
         public void TestCategoriesCount() {
@@ -67,20 +68,20 @@ namespace ClusteringAlgorithm.UnitTest {
 
         [Fact]
         public void Test3DPoint() {
-            var observationSet = new Set<Point> {
-                new Point(1.0, 1.0, 1.0),
-                new Point(0.0, 1.0, 1.0),
-                new Point(1.0, 1.0, 0.0),
-                new Point(4.0, 5.0, 5.0),
-                new Point(5.0, 4.0, 4.0),
-                new Point(4.0, 5.0, 4.0),
-                new Point(4.0, 4.0, 4.0)
+            var observationSet = new Set<Point.Point> {
+                new Point.Point(1.0, 1.0, 1.0),
+                new Point.Point(0.0, 1.0, 1.0),
+                new Point.Point(1.0, 1.0, 0.0),
+                new Point.Point(4.0, 5.0, 5.0),
+                new Point.Point(5.0, 4.0, 4.0),
+                new Point.Point(4.0, 5.0, 4.0),
+                new Point.Point(4.0, 4.0, 4.0)
             };
-            var km = new KMeans<Point>(observationSet, Point.Distance, Centroid3D);
+            var km = new KMeans<Point.Point>(observationSet, Point.Point.Distance, Centroid3D);
 
             var categories = km.Classify(2).OrderByCentroids();
-            Assert.Equal(categories[0].Centroid, new Point(2.0/3, 3.0/3, 2.0/3));
-            Assert.Equal(categories[1].Centroid, new Point(17.0/4, 18.0/4, 17.0/4));
+            Assert.Equal(categories[0].Centroid, new Point.Point(2.0/3, 3.0/3, 2.0/3));
+            Assert.Equal(categories[1].Centroid, new Point.Point(17.0/4, 18.0/4, 17.0/4));
         }
 
         private static double Centroid1D(Set<double> set)
@@ -98,8 +99,8 @@ namespace ClusteringAlgorithm.UnitTest {
             return Tuple.Create(sum1/count, sum2/count);
         }
 
-        private static Point Centroid3D(Set<Point> set) {
-            var point = new Point(0, 0, 0);
+        private static Point.Point Centroid3D(Set<Point.Point> set) {
+            var point = new Point.Point(0, 0, 0);
             foreach (var obs in set)
                 point += obs;
             var count = set.Count;
