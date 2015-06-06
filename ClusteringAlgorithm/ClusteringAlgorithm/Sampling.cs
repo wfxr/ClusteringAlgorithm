@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace ClusteringAlgorithm {
-    public class Sampling<T> {
+    public class Sampling {
         // ReSharper disable once StaticMemberInGenericType
         private static Random Rand { get; } = new Random();
 
@@ -13,7 +13,7 @@ namespace ClusteringAlgorithm {
         /// <param name="set">样本总体</param>
         /// <param name="count">抽样数目</param>
         /// <returns></returns>
-        public static List<T> WithNoRepeatition(IReadOnlyList<T> set, int count) {
+        public static List<T> WithNoRepeatition<T>(IReadOnlyList<T> set, int count) {
             Validate(set, count);
 
             var result = new List<T>();
@@ -33,7 +33,7 @@ namespace ClusteringAlgorithm {
         /// <param name="set">样本总体</param>
         /// <param name="count">抽样数目</param>
         /// <returns></returns>
-        public static List<T> WithRepeatition(IReadOnlyList<T> set, int count) {
+        public static List<T> WithRepeatition<T>(IReadOnlyList<T> set, int count) {
             Validate(set, count);
 
             var result = new List<T>();
@@ -47,10 +47,10 @@ namespace ClusteringAlgorithm {
         /// </summary>
         /// <param name="observationSet">观察值集合</param>
         /// <returns></returns>
-        public static T RandomSampling(IReadOnlyList<T> observationSet)
+        public static T RandomSampling<T>(IReadOnlyList<T> observationSet)
             => observationSet[Rand.Next(0, observationSet.Count)];
 
-        private static void Validate(IReadOnlyCollection<T> set, int sampleSize) {
+        private static void Validate<T>(IReadOnlyCollection<T> set, int sampleSize) {
             if (sampleSize > set.Count)
                 throw new ArgumentOutOfRangeException(
                     $"number of sampling:{sampleSize}, number of all observations:{set.Count}");
