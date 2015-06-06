@@ -17,13 +17,10 @@ namespace ClusteringAlgorithm.Algorithms {
             _centroidFunc = centroidFunc;
         }
 
-        //public KMeans(Set<T> observations, Func<T, T, double> distanceFunc, Func<T, T, T> sumFunc,
-        //    Func<T, double, T> divFunc)
-        //    : this(observations, distanceFunc, CreateCentroidFunc(sumFunc, divFunc)) {}
-
-        //private static Func<Set<T>, T> CreateCentroidFunc(Func<T, T, T> sumFunc,
-        //    Func<T, double, T> divFunc)
-        //    => set => divFunc(set.Aggregate(new T(), sumFunc), set.Count);
+        public KMeans(Set<T> observations, Func<T, T, double> distanceFunc, Func<T, T, T> sumFunc,
+            Func<T, double, T> divFunc)
+            : this(observations, distanceFunc, set => divFunc(set.Aggregate(sumFunc), set.Count))
+        { }
 
         /// <summary>
         ///     进行聚类划分

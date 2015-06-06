@@ -61,7 +61,7 @@
     <Compile Include="Algorithms\KMeans.cs" />
     <Compile Include="Algorithms\TestCategorySet.cs" />
     <Compile Include="Containers\IEnumerableExtension.cs" />
-    <Compile Include="Containers\TestSetExtension.cs" />
+    <Compile Include="Containers\TestIEnumerableExtension.cs" />
     <Compile Include="ObservationTypes\Point.cs" />
     <Compile Include="Statistics\Sampling.cs" />
     <Compile Include="Containers\Set.cs" />

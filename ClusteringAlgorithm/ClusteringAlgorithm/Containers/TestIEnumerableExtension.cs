@@ -1,11 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using ClusteringAlgorithm.ObservationTypes;
 using Xunit;
 
 namespace ClusteringAlgorithm.Containers
 {
-    public class TestSetExtension
+    public class TestIEnumerableExtension
     {
         [Fact]
         public void TestAverageDouble() {
