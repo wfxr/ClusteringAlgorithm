@@ -7,17 +7,18 @@ namespace ClusteringAlgorithm {
     public class ObservationSet<T> : IEnumerable<T> {
         private readonly List<T> _observations;
         public ObservationSet() { _observations = new List<T>(); }
+
         public ObservationSet(IEnumerable<T> observations) {
             _observations = observations.ToList();
         }
 
         /// <summary>
-        /// 集合中观察值的数目
+        ///     集合中观察值的数目
         /// </summary>
         public int Count => _observations.Count;
 
         /// <summary>
-        /// 返回索引处观察值的引用
+        ///     返回索引处观察值的引用
         /// </summary>
         /// <param name="i"></param>
         /// <returns></returns>
@@ -27,14 +28,15 @@ namespace ClusteringAlgorithm {
         }
 
         /// <summary>
-        /// 返回一个观察值集合的迭代器
+        ///     返回一个观察值集合的迭代器
         /// </summary>
         /// <returns></returns>
         public IEnumerator<T> GetEnumerator() => _observations.GetEnumerator();
+
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
         /// <summary>
-        /// 向集合添加一个观察值
+        ///     向集合添加一个观察值
         /// </summary>
         /// <param name="observation"></param>
         public void Add(T observation) => _observations.Add(observation);
@@ -50,22 +52,28 @@ namespace ClusteringAlgorithm {
         /// </summary>
         /// <param name="count">抽样数目</param>
         /// <returns></returns>
-        public IEnumerable<T> RandomSample(int count) => RandomSample(this, count);
+        public ObservationSet<T> SamplingWithoutRepeating(int count)
+            => SamplingWithoutRepeating(this, count);
 
         /// <summary>
         ///     随机抽取若干个样本
         /// </summary>
         /// <param name="observationSet">观察值集合</param>
-        /// <param name="count">抽样数目</param>
+        /// <param name="samplingAmount">抽样数目</param>
         /// <returns></returns>
-        public static IEnumerable<T> RandomSample(ObservationSet<T> observationSet, int count) {
+        // TODO:改进不重复抽样的效率
+        public static ObservationSet<T> SamplingWithoutRepeating(ObservationSet<T> observationSet,
+            int samplingAmount) {
+            if (samplingAmount > observationSet.Count)
+                throw new ArgumentOutOfRangeException(
+                    $"number of sampling:{samplingAmount}, number of all observations:{observationSet.Count}");
             var r = new Random();
             var ret = new ObservationSet<T>();
-            while (count > 0) {
+            while (samplingAmount > 0) {
                 var obs = observationSet[r.Next(0, observationSet.Count)];
                 if (!ret.Contains(obs)) {
                     ret.Add(obs);
-                    count--;
+                    samplingAmount--;
                 }
             }
             return ret;
@@ -77,7 +85,7 @@ namespace ClusteringAlgorithm {
         /// <param name="observationSet">观察值集合</param>
         /// <param name="random">随机数产生器</param>
         /// <returns></returns>
-        public static T RandomSample(ObservationSet<T> observationSet, Random random)
+        public static T SamplingWithoutRepeating(ObservationSet<T> observationSet, Random random)
             => observationSet[random.Next(0, observationSet.Count)];
 
         /// <summary>
@@ -85,10 +93,10 @@ namespace ClusteringAlgorithm {
         /// </summary>
         /// <param name="random">随机数产生器</param>
         /// <returns></returns>
-        public T RandomSample(Random random) => RandomSample(this, random);
+        public T SamplingWithoutRepeating(Random random) => SamplingWithoutRepeating(this, random);
 
         /// <summary>
-        /// 在集合的每一个元素上执行指定的action
+        ///     在集合的每一个元素上执行指定的action
         /// </summary>
         /// <param name="action"></param>
         public void ForEach(Action<T> action) {

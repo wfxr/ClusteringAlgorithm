@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Xunit;
 
 namespace ClusteringAlgorithm.UnitTest {
@@ -78,11 +79,32 @@ namespace ClusteringAlgorithm.UnitTest {
 
         [Fact]
         public void TestEnumerator() {
-            var intSet1 = new ObservationSet<int> {1, 4, 8};
-            var intSet2 = new ObservationSet<int>();
-            foreach (var obs in intSet1)
-                intSet2.Add(obs);
-            Assert.Equal(intSet1, intSet2);
+            var set1 = new ObservationSet<int> {1, 4, 8};
+            var set2 = new ObservationSet<int>();
+            foreach (var obs in set1)
+                set2.Add(obs);
+            Assert.Equal(set1, set2);
+        }
+
+        [Fact]
+        public void TestDistinct() {
+            var set = new ObservationSet<int> {1, 4, 8, 4, 9, 1};
+            Assert.Equal(set.Distinct(), new ObservationSet<int> { 1, 4, 8, 9 });
+        }
+
+        [Fact]
+        public void TestSamplingWithoutRepeating() {
+            // 如果观察值集合本身有重复，则抽样结果也可能出现重复
+            // 所以应先使集合去重复，然后才能确保得到正确的测试结果
+            var set = new ObservationSet<int> {1, 4, 8, 5, 9, 7}.Distinct();
+            var samples = set.SamplingWithoutRepeating(3);
+            Assert.Equal(samples.Count, 3);
+            foreach (var sample in samples)
+                Assert.Contains(sample, set);
+            Assert.Equal(samples.Distinct(), samples);
+
+            Assert.Throws<ArgumentOutOfRangeException>(
+                () => set.SamplingWithoutRepeating(set.Count + 1));
         }
     }
 }
