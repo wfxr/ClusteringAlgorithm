@@ -41,16 +41,16 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
-    <Reference Include="Wfxr.Container, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\wfxr.1.0.2\lib\Wfxr.Container.dll</HintPath>
+    <Reference Include="wfxr.statistics, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\wfxr.1.0.3\lib\wfxr.statistics.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Wfxr.Data, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\wfxr.1.0.2\lib\Wfxr.Data.dll</HintPath>
+    <Reference Include="wfxr.utility.container, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\wfxr.1.0.3\lib\wfxr.utility.container.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Wfxr.Statistics, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\wfxr.1.0.2\lib\Wfxr.Statistics.dll</HintPath>
+    <Reference Include="wfxr.utility.data, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\wfxr.1.0.3\lib\wfxr.utility.data.dll</HintPath>
       <Private>True</Private>
     </Reference>
   </ItemGroup>

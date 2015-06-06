@@ -4,7 +4,7 @@ using System.Linq;
 using Wfxr.Container;
 using Wfxr.Statistics;
 
-namespace ClusteringAlgorithm.Algorithms {
+namespace ClusteringAlgorithm {
     public class KMeans<T> {
         private readonly Func<Set<T>, T> _centroidFunc; // 计算分类中心的委托
         private readonly Func<T, T, double> _distanceFunc; // 计算观测值距离的委托

@@ -4,7 +4,7 @@ using Wfxr.Container;
 using Wfxr.Data;
 using Xunit;
 
-namespace ClusteringAlgorithm.Algorithms {
+namespace ClusteringAlgorithm {
     public class TestKMeans {
         [Fact]
         public void TestCategoriesCount() {

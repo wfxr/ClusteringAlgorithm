@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Wfxr.Container;
 
-namespace ClusteringAlgorithm.Algorithms {
+namespace ClusteringAlgorithm {
     public class CategorySet<T> : Set<Category<T>> {
         private readonly Func<Set<T>, T> _centroidFunc;
         private readonly Func<T, T, double> _distanceFunc;

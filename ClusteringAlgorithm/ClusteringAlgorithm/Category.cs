@@ -1,7 +1,7 @@
 using System;
 using Wfxr.Container;
 
-namespace ClusteringAlgorithm.Algorithms {
+namespace ClusteringAlgorithm {
     public class Category<T> : Set<T> {
         public Category() { }
         public Category(T centroid) : this() { Centroid = centroid; }

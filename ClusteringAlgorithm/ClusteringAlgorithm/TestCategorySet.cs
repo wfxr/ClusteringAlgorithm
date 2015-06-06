@@ -1,0 +1,6 @@
+﻿namespace ClusteringAlgorithm
+{
+    class TestCategorySet
+    {
+    }
+}

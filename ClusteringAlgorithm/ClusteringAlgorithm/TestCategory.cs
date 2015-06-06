@@ -3,7 +3,7 @@ using Wfxr.Container;
 using Wfxr.Data;
 using Xunit;
 
-namespace ClusteringAlgorithm.Algorithms {
+namespace ClusteringAlgorithm {
     public class TestCategory {
         [Fact]
         public void TestSetCentroidOfDoubleCategory() {
