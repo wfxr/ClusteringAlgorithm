@@ -60,6 +60,7 @@
     <Compile Include="ObservationSet.cs" />
     <Compile Include="KMeans.cs" />
     <Compile Include="Point.cs" />
+    <Compile Include="Sampling.cs" />
     <Compile Include="UnitTest\TestCategorySet.cs" />
     <Compile Include="UnitTest\TestKMeans.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
