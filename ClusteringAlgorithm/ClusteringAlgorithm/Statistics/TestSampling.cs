@@ -22,7 +22,7 @@ namespace ClusteringAlgorithm.Statistics {
         }
 
         [Fact]
-        public void TestSampling() {
+        public void TestSample() {
             var set = new Set<int> {1, 4, 8, 5, 9, 7};
             var samples = Sampling.Sample(set, 3);
 
