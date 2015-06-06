@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace ClusteringAlgorithm {
     public class Sampling<T> {
+        // ReSharper disable once StaticMemberInGenericType
         private static Random Rand { get; } = new Random();
 
         /// <summary>
