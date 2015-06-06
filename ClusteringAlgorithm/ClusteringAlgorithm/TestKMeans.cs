@@ -9,8 +9,7 @@ namespace ClusteringAlgorithm {
         [Fact]
         public void TestCategoriesCount() {
             var observationSet = new Set<double> {1, 2, 3, 4, 5, 6, 7, 8, 9};
-            var km = new KMeans<double>(observationSet, Distance1D,
-                Centroid1D);
+            var km = new KMeans<double>(observationSet, Distance1D, Centroid1D);
 
             Assert.Equal(km.Classify(1).Count, 1);
             Assert.Equal(km.Classify(3).Count, 3);
@@ -20,8 +19,7 @@ namespace ClusteringAlgorithm {
         [Fact]
         public void TestInvalidCategroiesCount() {
             var observationSet = new Set<double> {1, 2, 3, 7, 8, 9};
-            var km = new KMeans<double>(observationSet, Distance1D,
-                Centroid1D);
+            var km = new KMeans<double>(observationSet, Distance1D, Centroid1D);
 
             Assert.Throws<ArgumentOutOfRangeException>(() => km.Classify(0));
             Assert.Throws<ArgumentOutOfRangeException>(() => km.Classify(7));
@@ -30,8 +28,7 @@ namespace ClusteringAlgorithm {
         [Fact]
         public void TestCentroiesOfResults() {
             var observationSet = new Set<double> {1, 2, 3, 7, 8, 9};
-            var km = new KMeans<double>(observationSet, Distance1D,
-                Centroid1D);
+            var km = new KMeans<double>(observationSet, Distance1D, Centroid1D);
 
             var categories = km.Classify(2).OrderByCentroids();
 
@@ -42,8 +39,7 @@ namespace ClusteringAlgorithm {
         [Fact]
         public void TestSetsOfResults() {
             var observationSet = new Set<double> {1, 2, 3, 7, 8, 9};
-            var km = new KMeans<double>(observationSet, Distance1D,
-                Centroid1D);
+            var km = new KMeans<double>(observationSet, Distance1D, Centroid1D);
 
             var categories = km.Classify(2).OrderByCentroids();
 
