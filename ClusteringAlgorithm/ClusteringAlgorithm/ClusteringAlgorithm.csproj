@@ -57,14 +57,13 @@
   <ItemGroup>
     <Compile Include="Category.cs" />
     <Compile Include="CategorySet.cs" />
-    <Compile Include="ObservationSet.cs" />
     <Compile Include="KMeans.cs" />
     <Compile Include="Point.cs" />
     <Compile Include="Sampling.cs" />
-    <Compile Include="UnitTest\CategorySetTest.cs" />
+    <Compile Include="Set.cs" />
     <Compile Include="UnitTest\KMeansTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UnitTest\ObservationSetTest.cs" />
+    <Compile Include="UnitTest\SetTest.cs" />
     <Compile Include="UnitTest\SamplingTest.cs" />
   </ItemGroup>
   <ItemGroup>

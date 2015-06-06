@@ -6,7 +6,7 @@ namespace ClusteringAlgorithm.UnitTest {
     public class KMeansTest {
         [Fact]
         public void TestCategoriesCount() {
-            var observationSet = new ObservationSet<double> {1, 2, 3, 4, 5, 6, 7, 8, 9};
+            var observationSet = new Set<double> {1, 2, 3, 4, 5, 6, 7, 8, 9};
             var km = new KMeans<double>(observationSet, Distance1D, Centroid1D);
 
             Assert.Equal(km.Classify(1).Count, 1);
@@ -16,7 +16,7 @@ namespace ClusteringAlgorithm.UnitTest {
 
         [Fact]
         public void TestInvalidCategroiesCount() {
-            var observationSet = new ObservationSet<double> {1, 2, 3, 7, 8, 9};
+            var observationSet = new Set<double> {1, 2, 3, 7, 8, 9};
             var km = new KMeans<double>(observationSet, Distance1D, Centroid1D);
 
             Assert.Throws<ArgumentOutOfRangeException>(() => km.Classify(0));
@@ -25,7 +25,7 @@ namespace ClusteringAlgorithm.UnitTest {
 
         [Fact]
         public void TestCentroiesOfResults() {
-            var observationSet = new ObservationSet<double> {1, 2, 3, 7, 8, 9};
+            var observationSet = new Set<double> {1, 2, 3, 7, 8, 9};
             var km = new KMeans<double>(observationSet, Distance1D, Centroid1D);
 
             var categories = km.Classify(2).OrderByCentroids();
@@ -36,18 +36,18 @@ namespace ClusteringAlgorithm.UnitTest {
 
         [Fact]
         public void TestSetsOfResults() {
-            var observationSet = new ObservationSet<double> {1, 2, 3, 7, 8, 9};
+            var observationSet = new Set<double> {1, 2, 3, 7, 8, 9};
             var km = new KMeans<double>(observationSet, Distance1D, Centroid1D);
 
             var categories = km.Classify(2).OrderByCentroids();
 
-            Assert.Equal(categories[0].ObservationSet, new ObservationSet<double> {1, 2, 3});
-            Assert.Equal(categories[1].ObservationSet, new ObservationSet<double> {7, 8, 9});
+            Assert.Equal(categories[0].Observations, new Set<double> {1, 2, 3});
+            Assert.Equal(categories[1].Observations, new Set<double> {7, 8, 9});
         }
 
         [Fact]
         public void Test2DTuple() {
-            var observationSet = new ObservationSet<Tuple<double, double>> {
+            var observationSet = new Set<Tuple<double, double>> {
                 Tuple.Create(1.0, 1.0),
                 Tuple.Create(0.0, 1.0),
                 Tuple.Create(1.0, 1.0),
@@ -67,7 +67,7 @@ namespace ClusteringAlgorithm.UnitTest {
 
         [Fact]
         public void Test3DPoint() {
-            var observationSet = new ObservationSet<Point> {
+            var observationSet = new Set<Point> {
                 new Point(1.0, 1.0, 1.0),
                 new Point(0.0, 1.0, 1.0),
                 new Point(1.0, 1.0, 0.0),
@@ -83,26 +83,26 @@ namespace ClusteringAlgorithm.UnitTest {
             Assert.Equal(categories[1].Centroid, new Point(17.0/4, 18.0/4, 17.0/4));
         }
 
-        private static double Centroid1D(ObservationSet<double> observationSet)
-            => observationSet.Average();
+        private static double Centroid1D(Set<double> set)
+            => set.Average();
 
         private static Tuple<double, double> Centroid2D(
-            ObservationSet<Tuple<double, double>> observationSet) {
+            Set<Tuple<double, double>> set) {
             var sum1 = 0.0;
             var sum2 = 0.0;
-            foreach (var obs in observationSet) {
+            foreach (var obs in set) {
                 sum1 += obs.Item1;
                 sum2 += obs.Item2;
             }
-            var count = observationSet.Count;
+            var count = set.Count;
             return Tuple.Create(sum1/count, sum2/count);
         }
 
-        private static Point Centroid3D(ObservationSet<Point> observationSet) {
+        private static Point Centroid3D(Set<Point> set) {
             var point = new Point(0, 0, 0);
-            foreach (var obs in observationSet)
+            foreach (var obs in set)
                 point += obs;
-            var count = observationSet.Count;
+            var count = set.Count;
             return point/count;
         }
 

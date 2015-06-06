@@ -5,7 +5,7 @@ using ClusteringAlgorithm;
 namespace RunoffsClassify {
     internal class Program {
         private static void Main(string[] args) {
-            var runoffSet = new ObservationSet<double> {
+            var runoffSet = new Set<double> {
                 21105, 28013, 23900, 17330, 23882, 18710, 16024, 21172, 16931, 22831,
                 20178, 21604, 29523, 23251, 15040, 22498, 16900, 19399, 17016, 16044,
                 14991, 25099, 16632, 16875, 17200, 19227, 18212, 21789, 19427, 18522,
@@ -22,7 +22,7 @@ namespace RunoffsClassify {
                 Console.Write("聚类中心值：");
                 Console.WriteLine((int)category.Centroid);
                 Console.WriteLine("径流值：");
-                foreach (var obs in category.ObservationSet) {
+                foreach (var obs in category.Observations) {
                     Console.Write(obs + "\t");
                 }
                 Console.WriteLine();

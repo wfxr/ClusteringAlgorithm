@@ -4,13 +4,13 @@ using System.Linq;
 
 namespace ClusteringAlgorithm {
     public class KMeans<T> {
-        private readonly Func<ObservationSet<T>, T> _centroidFunc;
-        private readonly ObservationSet<T> _observationSet;
+        private readonly Func<Set<T>, T> _centroidFunc;
+        private readonly Set<T> _observations;
         private readonly Func<T, T, double> _distanceFunc;
 
-        public KMeans(ObservationSet<T> observationSet, Func<T, T, double> distanceFunc,
-            Func<ObservationSet<T>, T> centroidFunc) {
-            _observationSet = observationSet;
+        public KMeans(Set<T> observations, Func<T, T, double> distanceFunc,
+            Func<Set<T>, T> centroidFunc) {
+            _observations = observations;
             _distanceFunc = distanceFunc;
             _centroidFunc = centroidFunc;
         }
@@ -30,14 +30,14 @@ namespace ClusteringAlgorithm {
             List<double> centroidErrors;
             do {
                 categorySet.ClearAllObservations();
-                categorySet.Classify(_observationSet);
-                categorySet.UpdateCentroids(out centroidErrors);
+                categorySet.Classify(_observations);
+                categorySet.UpdateAllCentroids(out centroidErrors);
             } while (centroidErrors.Max() > precision);
 
             return categorySet;
         }
         private void ValidateArgument(int categoriesCount, double precision) {
-            if (categoriesCount > _observationSet.Count() || categoriesCount < 1)
+            if (categoriesCount > _observations.Count() || categoriesCount < 1)
                 throw new ArgumentOutOfRangeException(
                     $"categories number overflow: {categoriesCount}");
             if (precision <= 0)
@@ -45,7 +45,7 @@ namespace ClusteringAlgorithm {
         }
         private void SetRandomCentroids(CategorySet<T> categorySet, int categoriesCount) {
             // 先去重复再抽样，否则可能取到重复的中心
-            var centroids = Sampling.SampleWithOutReplacement(_observationSet.Distinct(), categoriesCount);
+            var centroids = Sampling.SampleWithOutReplacement(_observations.Distinct(), categoriesCount);
 
             centroids.ForEach(centroid => categorySet.Add(new Category<T>(centroid)));
         }

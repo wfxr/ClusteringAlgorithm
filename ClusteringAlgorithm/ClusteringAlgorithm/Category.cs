@@ -2,7 +2,7 @@ using System;
 
 namespace ClusteringAlgorithm {
     public class Category<T> {
-        public Category() { ObservationSet = new ObservationSet<T>(); }
+        public Category() { Observations = new Set<T>(); }
         public Category(T centroid) : this() { Centroid = centroid; }
 
         /// <summary>
@@ -13,12 +13,12 @@ namespace ClusteringAlgorithm {
         /// <summary>
         ///     聚类的观察值集合
         /// </summary>
-        public ObservationSet<T> ObservationSet { get; set; }
+        public Set<T> Observations { get; set; }
 
         /// <summary>
         ///     返回聚类的观察值数目
         /// </summary>
-        public int Count => ObservationSet.Count;
+        public int Count => Observations.Count;
 
         /// <summary>
         ///     设置聚类中心
@@ -30,18 +30,18 @@ namespace ClusteringAlgorithm {
         ///     根据centroidFunc委托更新聚类中心
         /// </summary>
         /// <param name="centroidFunc"></param>
-        public void UpdateCentroid(Func<ObservationSet<T>, T> centroidFunc)
-            => Centroid = centroidFunc(ObservationSet);
+        public void UpdateCentroid(Func<Set<T>, T> centroidFunc)
+            => Centroid = centroidFunc(Observations);
 
         /// <summary>
         ///     向聚类添加一个观察值
         /// </summary>
         /// <param name="observation"></param>
-        public void Add(T observation) => ObservationSet.Add(observation);
+        public void Add(T observation) => Observations.Add(observation);
 
         /// <summary>
         ///     清除聚类中所有的观察值
         /// </summary>
-        public void ClearObservations() => ObservationSet = new ObservationSet<T>();
+        public void ClearObservations() => Observations = new Set<T>();
     }
 }
