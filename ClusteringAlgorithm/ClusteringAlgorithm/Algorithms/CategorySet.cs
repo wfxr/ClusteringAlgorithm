@@ -43,11 +43,12 @@ namespace ClusteringAlgorithm.Algorithms {
         public Category<T> FindNearestCategory(T observation) {
             var minDistance = double.MaxValue;
             Category<T> nearestCategory = null;
-            foreach (var category in this) {
-                var distanceToThisCategory = Distance(observation, category.Centroid);
+
+            foreach (var thisCategory in this) {
+                var distanceToThisCategory = Distance(observation, thisCategory.Centroid);
                 if (distanceToThisCategory < minDistance) {
                     minDistance = distanceToThisCategory;
-                    nearestCategory = category;
+                    nearestCategory = thisCategory;
                 }
             }
             return nearestCategory;
