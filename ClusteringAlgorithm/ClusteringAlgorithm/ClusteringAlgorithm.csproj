@@ -57,7 +57,9 @@
   <ItemGroup>
     <Compile Include="Algorithms\Category.cs" />
     <Compile Include="Algorithms\CategorySet.cs" />
+    <Compile Include="Algorithms\TestCategory.cs" />
     <Compile Include="Algorithms\KMeans.cs" />
+    <Compile Include="Algorithms\TestCategorySet.cs" />
     <Compile Include="ObservationTypes\Point.cs" />
     <Compile Include="Statistics\Sampling.cs" />
     <Compile Include="Containers\Set.cs" />

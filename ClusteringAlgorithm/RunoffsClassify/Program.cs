@@ -24,7 +24,7 @@ namespace RunoffsClassify {
                 Console.Write("聚类中心值：");
                 Console.WriteLine((int)category.Centroid);
                 Console.WriteLine("径流值：");
-                foreach (var obs in category.Observations) {
+                foreach (var obs in category) {
                     Console.Write(obs + "\t");
                 }
                 Console.WriteLine();

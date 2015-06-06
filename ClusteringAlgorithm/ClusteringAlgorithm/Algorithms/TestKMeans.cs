@@ -43,8 +43,8 @@ namespace ClusteringAlgorithm.Algorithms {
 
             var categories = km.Classify(2).OrderByCentroids();
 
-            Assert.Equal(categories[0].Observations, new Set<double> {1, 2, 3});
-            Assert.Equal(categories[1].Observations, new Set<double> {7, 8, 9});
+            Assert.Equal(categories[0], new Category<double> {1, 2, 3});
+            Assert.Equal(categories[1], new Category<double> {7, 8, 9});
         }
 
         [Fact]

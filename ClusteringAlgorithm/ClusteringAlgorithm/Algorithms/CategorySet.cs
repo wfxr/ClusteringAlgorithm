@@ -20,7 +20,7 @@ namespace ClusteringAlgorithm.Algorithms {
         /// <summary>
         ///     清除所有聚类的观察值
         /// </summary>
-        public void ClearAllObservations() => ForEach(category => category.ClearObservations());
+        public void ClearAllCategories() => ForEach(category => category.Clear());
 
         /// <summary>
         ///     将观察值集合中所有的观察值划分到聚类中
@@ -33,7 +33,7 @@ namespace ClusteringAlgorithm.Algorithms {
         /// </summary>
         /// <param name="observation"></param>
         public void Classify(T observation)
-            => FindNearestCategory(observation).Observations.Add(observation);
+            => FindNearestCategory(observation).Add(observation);
 
         /// <summary>
         ///     返回距离观察值最近的聚类

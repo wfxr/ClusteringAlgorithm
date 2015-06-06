@@ -31,7 +31,7 @@ namespace ClusteringAlgorithm.Algorithms {
 
             List<double> centroidErrors;
             do {
-                categorySet.ClearAllObservations();
+                categorySet.ClearAllCategories();
                 categorySet.Classify(_observations);
                 categorySet.UpdateAllCentroids(out centroidErrors);
             } while (centroidErrors.Max() > precision);
