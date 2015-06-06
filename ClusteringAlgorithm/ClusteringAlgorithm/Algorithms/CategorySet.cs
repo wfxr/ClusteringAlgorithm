@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Container;
+using Wfxr.Container;
 
 namespace ClusteringAlgorithm.Algorithms {
     public class CategorySet<T> : Set<Category<T>> {

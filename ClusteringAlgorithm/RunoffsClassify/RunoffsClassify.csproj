@@ -34,11 +34,15 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Container, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\wfxr.1.0.0\lib\Container.dll</HintPath>
+      <HintPath>..\packages\wfxr.1.0.1\lib\Container.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Data, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\wfxr.1.0.0\lib\Data.dll</HintPath>
+      <HintPath>..\packages\wfxr.1.0.1\lib\Data.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Statistics, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\wfxr.1.0.1\lib\Statistics.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using ClusteringAlgorithm.Statistics;
-using Container;
+using Wfxr.Container;
+using Wfxr.Statistics;
 
 namespace ClusteringAlgorithm.Algorithms {
     public class KMeans<T> {
