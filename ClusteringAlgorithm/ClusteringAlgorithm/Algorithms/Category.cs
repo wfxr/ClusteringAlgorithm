@@ -1,6 +1,5 @@
 using System;
-using System.Linq;
-using ClusteringAlgorithm.Containers;
+using Container;
 
 namespace ClusteringAlgorithm.Algorithms {
     public class Category<T> : Set<T> {

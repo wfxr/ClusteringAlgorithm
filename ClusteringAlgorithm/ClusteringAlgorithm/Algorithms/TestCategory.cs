@@ -1,6 +1,6 @@
 ﻿using System.Linq;
-using ClusteringAlgorithm.Containers;
-using ClusteringAlgorithm.ObservationTypes;
+using Container;
+using Data;
 using Xunit;
 
 namespace ClusteringAlgorithm.Algorithms {
