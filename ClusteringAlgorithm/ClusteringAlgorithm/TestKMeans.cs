@@ -5,11 +5,11 @@ using Wfxr.Utility.Data;
 using Xunit;
 
 namespace ClusteringAlgorithm {
-    public class TestKMeans {
+    public class TestKmeans {
         [Fact]
         public void TestCategoriesCount() {
             var observationSet = new List<double> {1, 2, 3, 4, 5, 6, 7, 8, 9};
-            var km = new KMeans<double>(observationSet, Distance1D, Centroid1D);
+            var km = new Kmeans<double>(observationSet, Distance1D, Centroid1D);
 
             Assert.Equal(km.Classify(1).Count, 1);
             Assert.Equal(km.Classify(3).Count, 3);
@@ -19,7 +19,7 @@ namespace ClusteringAlgorithm {
         [Fact]
         public void TestInvalidCategroiesCount() {
             var observationSet = new List<double> {1, 2, 3, 7, 8, 9};
-            var km = new KMeans<double>(observationSet, Distance1D, Centroid1D);
+            var km = new Kmeans<double>(observationSet, Distance1D, Centroid1D);
 
             Assert.Throws<ArgumentOutOfRangeException>(() => km.Classify(0));
             Assert.Throws<ArgumentOutOfRangeException>(() => km.Classify(7));
@@ -28,7 +28,7 @@ namespace ClusteringAlgorithm {
         [Fact]
         public void TestCentroiesOfResults() {
             var observationSet = new List<double> {1, 2, 3, 7, 8, 9};
-            var km = new KMeans<double>(observationSet, Distance1D, Centroid1D);
+            var km = new Kmeans<double>(observationSet, Distance1D, Centroid1D);
 
             var categories = km.Classify(2).OrderByCentroids();
 
@@ -39,7 +39,7 @@ namespace ClusteringAlgorithm {
         [Fact]
         public void TestSetsOfResults() {
             var observationSet = new List<double> {1, 2, 3, 7, 8, 9};
-            var km = new KMeans<double>(observationSet, Distance1D, Centroid1D);
+            var km = new Kmeans<double>(observationSet, Distance1D, Centroid1D);
 
             var categories = km.Classify(2).OrderByCentroids();
 
@@ -58,7 +58,7 @@ namespace ClusteringAlgorithm {
                 Tuple.Create(4.0, 5.0),
                 Tuple.Create(4.0, 4.0)
             };
-            var km = new KMeans<Tuple<double, double>>(observationSet,
+            var km = new Kmeans<Tuple<double, double>>(observationSet,
                 (x, y) => Math.Sqrt((x.Item1 - y.Item1)*(x.Item1 - y.Item1) +
                                     (x.Item2 - y.Item2)*(x.Item2 - y.Item2)),
                 (x, y) => Tuple.Create(x.Item1 + y.Item1, x.Item2 + y.Item2),
@@ -81,7 +81,7 @@ namespace ClusteringAlgorithm {
                 new Point(4.0, 5.0, 4.0),
                 new Point(4.0, 4.0, 4.0)
             };
-            var km = new KMeans<Point>(observationSet, Point.Distance, (x, y) => x + y,
+            var km = new Kmeans<Point>(observationSet, Point.Distance, (x, y) => x + y,
                 (x, d) => x/d);
 
             var categories = km.Classify(2).OrderByCentroids();

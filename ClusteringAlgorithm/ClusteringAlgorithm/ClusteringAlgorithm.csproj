@@ -66,9 +66,9 @@
     <Compile Include="Category.cs" />
     <Compile Include="CategorySet.cs" />
     <Compile Include="TestCategory.cs" />
-    <Compile Include="KMeans.cs" />
+    <Compile Include="Kmeans.cs" />
     <Compile Include="TestCategorySet.cs" />
-    <Compile Include="TestKMeans.cs" />
+    <Compile Include="TestKmeans.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

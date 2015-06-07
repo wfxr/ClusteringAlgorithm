@@ -14,7 +14,7 @@ namespace RunoffsClassify {
                 23216, 14688, 18790, 18780, 17259, 25747, 23452, 22394, 22198, 16990,
                 22009, 20732, 22219, 14331, 15607, 19686, 18260, 17281, 13947, 21433
             };
-            var clustering = new KMeans<double>(runoffSet, (obs1, obs2) => Math.Abs(obs1 - obs2),
+            var clustering = new Kmeans<double>(runoffSet, (obs1, obs2) => Math.Abs(obs1 - obs2),
                 set => set.Average());
             var categories = clustering.Classify(5);
             foreach (var category in categories) {
