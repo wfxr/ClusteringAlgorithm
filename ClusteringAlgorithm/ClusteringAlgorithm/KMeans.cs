@@ -4,19 +4,19 @@ using System.Linq;
 using Wfxr.Statistics;
 
 namespace ClusteringAlgorithm {
-    public class KMeans<T> {
+    public class Kmeans<T> {
         private readonly Func<List<T>, T> _centroidFunc; // 计算分类中心的委托
         private readonly Func<T, T, double> _distanceFunc; // 计算观测值距离的委托
         private readonly List<T> _observations; // 观测值集合
 
-        public KMeans(List<T> observations, Func<T, T, double> distanceFunc,
+        public Kmeans(List<T> observations, Func<T, T, double> distanceFunc,
             Func<List<T>, T> centroidFunc) {
             _observations = observations;
             _distanceFunc = distanceFunc;
             _centroidFunc = centroidFunc;
         }
 
-        public KMeans(List<T> observations, Func<T, T, double> distanceFunc, Func<T, T, T> sumFunc,
+        public Kmeans(List<T> observations, Func<T, T, double> distanceFunc, Func<T, T, T> sumFunc,
             Func<T, double, T> divFunc)
             : this(observations, distanceFunc, set => divFunc(set.Aggregate(sumFunc), set.Count))
         { }
