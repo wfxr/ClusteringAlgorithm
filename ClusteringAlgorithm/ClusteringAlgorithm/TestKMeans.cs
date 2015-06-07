@@ -1,6 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-using Wfxr.Utility.Container;
 using Wfxr.Utility.Data;
 using Xunit;
 
@@ -8,7 +8,7 @@ namespace ClusteringAlgorithm {
     public class TestKMeans {
         [Fact]
         public void TestCategoriesCount() {
-            var observationSet = new Set<double> {1, 2, 3, 4, 5, 6, 7, 8, 9};
+            var observationSet = new List<double> {1, 2, 3, 4, 5, 6, 7, 8, 9};
             var km = new KMeans<double>(observationSet, Distance1D, Centroid1D);
 
             Assert.Equal(km.Classify(1).Count, 1);
@@ -18,7 +18,7 @@ namespace ClusteringAlgorithm {
 
         [Fact]
         public void TestInvalidCategroiesCount() {
-            var observationSet = new Set<double> {1, 2, 3, 7, 8, 9};
+            var observationSet = new List<double> {1, 2, 3, 7, 8, 9};
             var km = new KMeans<double>(observationSet, Distance1D, Centroid1D);
 
             Assert.Throws<ArgumentOutOfRangeException>(() => km.Classify(0));
@@ -27,7 +27,7 @@ namespace ClusteringAlgorithm {
 
         [Fact]
         public void TestCentroiesOfResults() {
-            var observationSet = new Set<double> {1, 2, 3, 7, 8, 9};
+            var observationSet = new List<double> {1, 2, 3, 7, 8, 9};
             var km = new KMeans<double>(observationSet, Distance1D, Centroid1D);
 
             var categories = km.Classify(2).OrderByCentroids();
@@ -38,7 +38,7 @@ namespace ClusteringAlgorithm {
 
         [Fact]
         public void TestSetsOfResults() {
-            var observationSet = new Set<double> {1, 2, 3, 7, 8, 9};
+            var observationSet = new List<double> {1, 2, 3, 7, 8, 9};
             var km = new KMeans<double>(observationSet, Distance1D, Centroid1D);
 
             var categories = km.Classify(2).OrderByCentroids();
@@ -49,7 +49,7 @@ namespace ClusteringAlgorithm {
 
         [Fact]
         public void Test2DTuple() {
-            var observationSet = new Set<Tuple<double, double>> {
+            var observationSet = new List<Tuple<double, double>> {
                 Tuple.Create(1.0, 1.0),
                 Tuple.Create(0.0, 1.0),
                 Tuple.Create(1.0, 1.0),
@@ -72,7 +72,7 @@ namespace ClusteringAlgorithm {
 
         [Fact]
         public void Test3DPoint() {
-            var observationSet = new Set<Point> {
+            var observationSet = new List<Point> {
                 new Point(1.0, 1.0, 1.0),
                 new Point(0.0, 1.0, 1.0),
                 new Point(1.0, 1.0, 0.0),
@@ -89,7 +89,7 @@ namespace ClusteringAlgorithm {
             Assert.Equal(categories[1].Centroid, new Point(17.0/4, 18.0/4, 17.0/4));
         }
 
-        private static double Centroid1D(Set<double> set) => set.Average();
+        private static double Centroid1D(List<double> set) => set.Average();
         private static double Distance1D(double x, double y) => Math.Abs(x - y);
     }
 }

@@ -2,22 +2,21 @@
 using System.Collections.Generic;
 using System.Linq;
 using Wfxr.Statistics;
-using Wfxr.Utility.Container;
 
 namespace ClusteringAlgorithm {
     public class KMeans<T> {
-        private readonly Func<Set<T>, T> _centroidFunc; // 计算分类中心的委托
+        private readonly Func<List<T>, T> _centroidFunc; // 计算分类中心的委托
         private readonly Func<T, T, double> _distanceFunc; // 计算观测值距离的委托
-        private readonly Set<T> _observations; // 观测值集合
+        private readonly List<T> _observations; // 观测值集合
 
-        public KMeans(Set<T> observations, Func<T, T, double> distanceFunc,
-            Func<Set<T>, T> centroidFunc) {
+        public KMeans(List<T> observations, Func<T, T, double> distanceFunc,
+            Func<List<T>, T> centroidFunc) {
             _observations = observations;
             _distanceFunc = distanceFunc;
             _centroidFunc = centroidFunc;
         }
 
-        public KMeans(Set<T> observations, Func<T, T, double> distanceFunc, Func<T, T, T> sumFunc,
+        public KMeans(List<T> observations, Func<T, T, double> distanceFunc, Func<T, T, T> sumFunc,
             Func<T, double, T> divFunc)
             : this(observations, distanceFunc, set => divFunc(set.Aggregate(sumFunc), set.Count))
         { }
@@ -31,17 +30,17 @@ namespace ClusteringAlgorithm {
         public CategorySet<T> Classify(int categoriesCount, double precision = 0.01) {
             ValidateArgument(categoriesCount, precision);
 
-            var categorySet = new CategorySet<T>(_distanceFunc, _centroidFunc);
-            SetRandomCentroids(categorySet, categoriesCount);
+            var categoryList = new CategorySet<T>(_distanceFunc, _centroidFunc);
+            ListRandomCentroids(categoryList, categoriesCount);
 
             List<double> distanceOffsets;
             do {
-                categorySet.ClearAllObservations();
-                categorySet.Classify(_observations);
-                categorySet.UpdateAllCentroids(out distanceOffsets);
+                categoryList.ClearAllObservations();
+                categoryList.Classify(_observations);
+                categoryList.UpdateAllCentroids(out distanceOffsets);
             } while (distanceOffsets.Max() > precision);
 
-            return categorySet;
+            return categoryList;
         }
 
         private void ValidateArgument(int categoriesCount, double precision) {
@@ -55,14 +54,14 @@ namespace ClusteringAlgorithm {
         /// <summary>
         ///     通过随机抽样的方式设置聚类的中心
         /// </summary>
-        /// <param name="categorySet"></param>
+        /// <param name="categoryList"></param>
         /// <param name="categoriesCount"></param>
-        private void SetRandomCentroids(CategorySet<T> categorySet, int categoriesCount) {
+        private void ListRandomCentroids(CategorySet<T> categoryList, int categoriesCount) {
             // 先去重复再抽样，否则可能取到重复的中心
             var centroids = Sampling.SampleWithOutReplacement(_observations.Distinct(),
                 categoriesCount);
 
-            centroids.ForEach(centroid => categorySet.Add(new Category<T>(centroid)));
+            centroids.ForEach(centroid => categoryList.Add(new Category<T>(centroid)));
         }
     }
 }

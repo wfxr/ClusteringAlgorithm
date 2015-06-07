@@ -1,12 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using ClusteringAlgorithm;
-using Wfxr.Utility.Container;
 
 namespace RunoffsClassify {
     internal class Program {
         private static void Main(string[] args) {
-            var runoffSet = new Set<double> {
+            var runoffSet = new List<double> {
                 21105, 28013, 23900, 17330, 23882, 18710, 16024, 21172, 16931, 22831,
                 20178, 21604, 29523, 23251, 15040, 22498, 16900, 19399, 17016, 16044,
                 14991, 25099, 16632, 16875, 17200, 19227, 18212, 21789, 19427, 18522,

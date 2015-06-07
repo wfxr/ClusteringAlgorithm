@@ -1,8 +1,8 @@
 using System;
-using Wfxr.Utility.Container;
+using System.Collections.Generic;
 
 namespace ClusteringAlgorithm {
-    public class Category<T> : Set<T> {
+    public class Category<T> : List<T> {
         public Category() { }
         public Category(T centroid) : this() { Centroid = centroid; }
 
@@ -21,7 +21,7 @@ namespace ClusteringAlgorithm {
         ///     根据centroidFunc委托更新聚类中心
         /// </summary>
         /// <param name="centroidFunc"></param>
-        public void UpdateCentroid(Func<Set<T>, T> centroidFunc)
-            => Centroid = centroidFunc(Elements);
+        public void UpdateCentroid(Func<List<T>, T> centroidFunc)
+            => Centroid = centroidFunc(this);
     }
 }

@@ -45,7 +45,7 @@ namespace ClusteringAlgorithm {
                 new Category<double>(2.0),
                 new Category<double>(8.0)
             };
-            var observationSet = new Set<double> {-1, 2, 3, 6, 8, 9};
+            var observationSet = new List<double> {-1, 2, 3, 6, 8, 9};
 
             categorySet.Classify(observationSet);
             foreach (var num in new[] {-1, 2, 3}) {
@@ -126,9 +126,10 @@ namespace ClusteringAlgorithm {
                 new Category<double>(8.0)
             };
 
-            Assert.NotEqual(result, categorySet);
-            Assert.Equal(result, actual);
+            for (var i = 0; i < actual.Count; ++i)
+                Assert.Equal(result[i], actual[i]);
         }
+
         private static double Distance(double x, double y) => Math.Abs(x - y);
         private static double Average(IEnumerable<double> enumerable) => enumerable.Average();
     }
