@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Wfxr.Container;
 using Wfxr.Statistics;
+using Wfxr.Utility.Container;
 
 namespace ClusteringAlgorithm {
     public class KMeans<T> {
@@ -34,12 +34,12 @@ namespace ClusteringAlgorithm {
             var categorySet = new CategorySet<T>(_distanceFunc, _centroidFunc);
             SetRandomCentroids(categorySet, categoriesCount);
 
-            List<double> centroidErrors;
+            List<double> distanceOffsets;
             do {
-                categorySet.ClearAllCategories();
+                categorySet.ClearAllObservations();
                 categorySet.Classify(_observations);
-                categorySet.UpdateAllCentroids(out centroidErrors);
-            } while (centroidErrors.Max() > precision);
+                categorySet.UpdateAllCentroids(out distanceOffsets);
+            } while (distanceOffsets.Max() > precision);
 
             return categorySet;
         }

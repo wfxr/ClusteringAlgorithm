@@ -1,5 +1,5 @@
 using System;
-using Wfxr.Container;
+using Wfxr.Utility.Container;
 
 namespace ClusteringAlgorithm {
     public class Category<T> : Set<T> {

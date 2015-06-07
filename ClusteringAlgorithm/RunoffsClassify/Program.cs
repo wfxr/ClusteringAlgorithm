@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using ClusteringAlgorithm;
-using Wfxr.Container;
+using Wfxr.Utility.Container;
 
 namespace RunoffsClassify {
     internal class Program {

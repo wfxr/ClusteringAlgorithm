@@ -1,6 +1,6 @@
 ﻿using System.Linq;
-using Wfxr.Container;
-using Wfxr.Data;
+using Wfxr.Utility.Container;
+using Wfxr.Utility.Data;
 using Xunit;
 
 namespace ClusteringAlgorithm {
@@ -39,6 +39,23 @@ namespace ClusteringAlgorithm {
             category.UpdateCentroid(set => set.Average((p1, p2) => p1 + p2, (point, d) => point/d));
 
             Assert.Equal(category.Centroid, new Point(1, 1, 1));
+        }
+
+        [Fact]
+        public void TestEquality() {
+            var category1 = new Category<double> {1, 2};
+            var categoryEqual = new Category<double> {1, 2};
+            var category3 = new Category<double> {0, 2};
+            var category4 = new Category<double> {1};
+            var categoryEmpty = new Category<double>();
+            Category<double> categoryNull = null;
+
+            Assert.Equal(category1, category1);
+            Assert.Equal(category1, categoryEqual);
+            Assert.NotEqual(category1, category3);
+            Assert.NotEqual(category1, category4);
+            Assert.NotEqual(category1, categoryEmpty);
+            Assert.NotEqual(category1, categoryNull);
         }
     }
 }

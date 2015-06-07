@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
-using Wfxr.Container;
-using Wfxr.Data;
+using Wfxr.Utility.Container;
+using Wfxr.Utility.Data;
 using Xunit;
 
 namespace ClusteringAlgorithm {

@@ -1,15 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Wfxr.Container;
+using Wfxr.Utility.Container;
 
 namespace ClusteringAlgorithm {
     public class CategorySet<T> : Set<Category<T>> {
+        protected bool Equals(CategorySet<T> other) {
+            return Equals(_centroidFunc, other._centroidFunc) && Equals(_distanceFunc, other._distanceFunc) &&
+                Elements.Equals(other.Elements);
+        }
+
+        public override int GetHashCode() {
+            unchecked {
+                return ((_centroidFunc?.GetHashCode() ?? 0)*397) ^ (_distanceFunc?.GetHashCode() ?? 0);
+            }
+        }
+
         private readonly Func<Set<T>, T> _centroidFunc;
         private readonly Func<T, T, double> _distanceFunc;
 
         public CategorySet(Func<T, T, double> distanceFunc, Func<Set<T>, T> centroidFunc)
-            : this(new List<Category<T>>(), distanceFunc, centroidFunc) { }
+            : this(new List<Category<T>>(), distanceFunc, centroidFunc) {}
 
         public CategorySet(IEnumerable<Category<T>> observations, Func<T, T, double> distanceFunc,
             Func<Set<T>, T> centroidFunc) : base(observations) {
@@ -20,7 +31,7 @@ namespace ClusteringAlgorithm {
         /// <summary>
         ///     清除所有聚类的观察值
         /// </summary>
-        public void ClearAllCategories() => ForEach(category => category.Clear());
+        public void ClearAllObservations() => ForEach(category => category.Clear());
 
         /// <summary>
         ///     将观察值集合中所有的观察值划分到聚类中
@@ -55,26 +66,32 @@ namespace ClusteringAlgorithm {
         }
 
         /// <summary>
-        ///     更新所有聚类的中心
+        ///     更新所有聚类的中心b并输出更新后中心的偏移距离
         /// </summary>
-        /// <param name="centroidErrors"></param>
-        public void UpdateAllCentroids(out List<double> centroidErrors) {
-            centroidErrors = new List<double>();
+        /// <param name="distanceOffsets"></param>
+        public void UpdateAllCentroids(out List<double> distanceOffsets) {
+            distanceOffsets = new List<double>();
             foreach (var category in this) {
                 var oldCentroid = category.Centroid;
                 category.UpdateCentroid(_centroidFunc);
                 var error = Distance(oldCentroid, category.Centroid);
-                centroidErrors.Add(error);
+                distanceOffsets.Add(error);
             }
         }
 
         /// <summary>
+        ///     更新所有聚类的中心
+        /// </summary>
+        public void UpdateAllCentroids()
+            => ForEach(category => category.UpdateCentroid(_centroidFunc));
+
+        /// <summary>
         ///     返回观察值之间的距离
         /// </summary>
-        /// <param name="obs1"></param>
-        /// <param name="obs2"></param>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
         /// <returns></returns>
-        public double Distance(T obs1, T obs2) => _distanceFunc(obs1, obs2);
+        public double Distance(T x, T y) => _distanceFunc(x, y);
 
         /// <summary>
         ///     返回所有的聚类中心
@@ -104,5 +121,12 @@ namespace ClusteringAlgorithm {
         /// </summary>
         /// <param name="comparison"></param>
         public void Sort(Comparison<Category<T>> comparison) => Elements.Sort(comparison);
+
+        public override bool Equals(object obj) {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((CategorySet<T>) obj);
+        }
     }
 }
