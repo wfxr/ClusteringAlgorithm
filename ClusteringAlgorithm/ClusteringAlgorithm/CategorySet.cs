@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace ClusteringAlgorithm {
-    public class CategorySet<T> : List<Category<T>> {
+    public class CategorySet<T> : HashSet<Category<T>>{
         private readonly Func<List<T>, T> _centroidFunc;
         private readonly Func<T, T, double> _distanceFunc;
 
         public CategorySet(Func<T, T, double> distanceFunc, Func<List<T>, T> centroidFunc)
-            : this(new List<Category<T>>(), distanceFunc, centroidFunc) {}
+            : this(new List<Category<T>>(), distanceFunc, centroidFunc) { }
 
         public CategorySet(IEnumerable<Category<T>> observations, Func<T, T, double> distanceFunc,
             Func<List<T>, T> centroidFunc) : base(observations) {
@@ -16,16 +16,23 @@ namespace ClusteringAlgorithm {
             _centroidFunc = centroidFunc;
         }
 
+
         /// <summary>
         ///     清除所有聚类的观察值
         /// </summary>
-        public void ClearAllObservations() => ForEach(category => category.Clear());
+        public void ClearAllObservations() {
+            foreach (var category in this)
+                category.Clear();
+        }
 
         /// <summary>
         ///     将观察值集合中所有的观察值划分到聚类中
         /// </summary>
         /// <param name="observations"></param>
-        public void Classify(List<T> observations) => observations.ForEach(Classify);
+        public void Classify(IEnumerable<T> observations) {
+            foreach (var observation in observations)
+                Classify(observation);
+        }
 
         /// <summary>
         ///     将一个观察值划分到聚类中
@@ -39,12 +46,21 @@ namespace ClusteringAlgorithm {
         /// </summary>
         /// <param name="observation"></param>
         /// <returns></returns>
-        public Category<T> FindNearestCategory(T observation) {
+        public Category<T> FindNearestCategory(T observation)
+            => FindNearestCategory(this, observation);
+
+        /// <summary>
+        ///     返回距离观察值最近的聚类
+        /// </summary>
+        /// <param name="categorySet"></param>
+        /// <param name="observation"></param>
+        /// <returns></returns>
+        public static Category<T> FindNearestCategory(CategorySet<T> categorySet, T observation) {
             var minDistance = double.MaxValue;
             Category<T> nearestCategory = null;
 
-            foreach (var thisCategory in this) {
-                var distanceToThisCategory = Distance(observation, thisCategory.Centroid);
+            foreach (var thisCategory in categorySet) {
+                var distanceToThisCategory = categorySet.Distance(observation, thisCategory.Centroid);
                 if (distanceToThisCategory < minDistance) {
                     minDistance = distanceToThisCategory;
                     nearestCategory = thisCategory;
@@ -70,8 +86,10 @@ namespace ClusteringAlgorithm {
         /// <summary>
         ///     更新所有聚类的中心
         /// </summary>
-        public void UpdateAllCentroids()
-            => ForEach(category => category.UpdateCentroid(_centroidFunc));
+        public void UpdateAllCentroids() {
+            foreach (var category in this)
+                category.UpdateCentroid(_centroidFunc);
+        }
 
         /// <summary>
         ///     返回观察值之间的距离
@@ -86,14 +104,5 @@ namespace ClusteringAlgorithm {
         /// </summary>
         /// <returns></returns>
         public IEnumerable<T> Centroids() => this.Select(category => category.Centroid);
-
-        /// <summary>
-        ///     返回按Centroid进行升序排序的结果（要求实现IComparable接口）
-        /// </summary>
-        /// <returns></returns>
-        public CategorySet<T> OrderByCentroids()
-            =>
-                new CategorySet<T>(this.OrderBy(category => category.Centroid), _distanceFunc,
-                    _centroidFunc);
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using Wfxr.Utility.Container;
 using Wfxr.Utility.Data;
 using Xunit;
@@ -10,124 +11,130 @@ namespace ClusteringAlgorithm {
         [Fact]
         public void TestClearAllObservations() {
             var categorySet = new CategorySet<double>(Distance, Average) {
-                new Category<double> {1, 3, 2, 4},
-                new Category<double> {2, 5, 3, 1}
+                new Category<double>(),
+                new Category<double> {2},
+                new Category<double> {1, 3, 2, 4}
             };
-            Assert.NotEmpty(categorySet);
-            Assert.NotEmpty(categorySet[0]);
-            Assert.NotEmpty(categorySet[1]);
-
             categorySet.ClearAllObservations();
+
             Assert.NotEmpty(categorySet);
-            Assert.Empty(categorySet[0]);
-            Assert.Empty(categorySet[1]);
+            foreach (var category in categorySet)
+                Assert.Empty(category);
         }
 
         [Fact]
-        public void TestClassifyObservation() {
+        public void Test() {
             var categorySet = new CategorySet<double>(Distance, Average) {
-                new Category<double>(2.0),
-                new Category<double>(8.0)
+                new Category<double> {1},
+                new Category<double> {2},
+                new Category<double> {2},
             };
+            Assert.Equal(categorySet.Count, 2);
+            Assert.False(categorySet.Add(new Category<double> {1}));
+        }
 
-            categorySet.Classify(3);
-            Assert.Contains(3, categorySet[0]);
-            Assert.DoesNotContain(3, categorySet[1]);
+        public class ListEquility : IEqualityComparer<List<double>> {
+            public bool Equals(List<double> x, List<double> y) {
+                return x == y;
+            }
+            public int GetHashCode(List<double> obj) {
+                var hash = 0;
+                foreach (var element in obj)
+                {
+                    hash ^= element.GetHashCode();
+                }
+                return hash;
+            }
+        }
 
-            categorySet.Classify(20);
-            Assert.Contains(20, categorySet[1]);
-            Assert.DoesNotContain(20, categorySet[0]);
+        [Theory]
+        [InlineData(2, 8)]
+        [InlineData(-1, 7)]
+        [InlineData(3, 9)]
+        public void TestClassifyObservation(double value1, double value2) {
+            var categoryA = new Category<double> {Centroid = 2.0};
+            var categoryB = new Category<double> {Centroid = 8.0};
+            var categorySet = new CategorySet<double>(Distance, Average) {categoryA, categoryB};
+
+            categorySet.Classify(value1);
+            categorySet.Classify(value2);
+
+            // value1 should belong to categoryA, value2 should belong to categoryB
+            Assert.Contains(value1, categoryA);
+            Assert.Contains(value2, categoryB);
+            Assert.DoesNotContain(value1, categoryB);
+            Assert.DoesNotContain(value2, categoryA);
         }
 
         [Fact]
         public void TestClassifyObservationSet() {
-            var categorySet = new CategorySet<double>(Distance, Average) {
-                new Category<double>(2.0),
-                new Category<double>(8.0)
-            };
+            var categoryA = new Category<double> {Centroid = 2.0};
+            var categoryB = new Category<double> {Centroid = 8.0};
+            var categorySet = new CategorySet<double>(Distance, Average) {categoryA, categoryB};
             var observationSet = new List<double> {-1, 2, 3, 6, 8, 9};
 
             categorySet.Classify(observationSet);
-            foreach (var num in new[] {-1, 2, 3}) {
-                Assert.Contains(num, categorySet[0]);
-                Assert.DoesNotContain(num, categorySet[1]);
+            foreach (var value in new[] {-1, 2, 3}) {
+                Assert.Contains(value, categoryA);
+                Assert.DoesNotContain(value, categoryB);
             }
-            foreach (var num in new[] {6, 8, 9}) {
-                Assert.Contains(num, categorySet[1]);
-                Assert.DoesNotContain(num, categorySet[0]);
+            foreach (var value in new[] {6, 8, 9}) {
+                Assert.Contains(value, categoryB);
+                Assert.DoesNotContain(value, categoryA);
             }
         }
 
-        [Fact]
-        public void TestFindNearestCategory() {
-            var categorySet = new CategorySet<double>(Distance, Average) {
-                new Category<double>(2.0),
-                new Category<double>(8.0)
-            };
-            var nearest = categorySet.FindNearestCategory(3);
-            Assert.Equal(nearest, categorySet[0]);
+        [Theory]
+        [InlineData(2, 8)]
+        [InlineData(-1, 7)]
+        [InlineData(3, 9)]
+        public void TestFindNearestCategory(double value1, double value2) {
+            var categoryA = new Category<double> {Centroid = 2.0};
+            var categoryB = new Category<double> {Centroid = 8.0};
+            var categorySet = new CategorySet<double>(Distance, Average) {categoryA, categoryB};
 
-            nearest = categorySet.FindNearestCategory(19);
-            Assert.Equal(nearest, categorySet[1]);
+            Assert.Equal(categorySet.FindNearestCategory(value1), categoryA);
+            Assert.Equal(categorySet.FindNearestCategory(value2), categoryB);
         }
 
         [Fact]
         public void UpdateAllCentroids() {
-            var categorySet = new CategorySet<double>(Distance, Average) {
-                new Category<double>(2.0) {1, 3, 4, -2},
-                new Category<double>(8.0) {4, 6, 2}
-            };
+            var categoryA = new Category<double>(2.0, new double[] {1, 3, 4, -2});
+            var categoryB = new Category<double>(8.0, new double[] {4, 6, 2});
+            var categorySet = new CategorySet<double>(Distance, Average) {categoryA, categoryB};
+
             categorySet.UpdateAllCentroids();
 
-            Assert.Equal(categorySet[0].Centroid, 1.5);
-            Assert.Equal(categorySet[1].Centroid, 4);
+            Assert.Equal(categoryA.Centroid, 1.5);
+            Assert.Equal(categoryB.Centroid, 4);
         }
 
         [Fact]
         public void UpdateAllCentroidsWithOffsetReturn() {
-            var categorySet = new CategorySet<double>(Distance, Average) {
-                new Category<double>(2.0) {1, 3, 4, -2},
-                new Category<double>(8.0) {4, 6, 2}
-            };
+            var categoryA = new Category<double>(2.0, new double[] {1, 3, 4, -2});
+            var categoryB = new Category<double>(8.0, new double[] {4, 6, 2});
+            var categorySet = new CategorySet<double>(Distance, Average) {categoryA, categoryB};
 
             List<double> distanceOffsets;
             categorySet.UpdateAllCentroids(out distanceOffsets);
 
-            Assert.Equal(categorySet[0].Centroid, 1.5);
-            Assert.Equal(categorySet[1].Centroid, 4);
+            Assert.Equal(categoryA.Centroid, 1.5);
+            Assert.Equal(categoryB.Centroid, 4);
             Assert.Equal(distanceOffsets[0], 0.5);
             Assert.Equal(distanceOffsets[1], 4.0);
         }
 
-        [Fact]
-        public void TestDistance() {
+        [Theory]
+        [InlineData(0, 0, 0, 0, 0, 0)]
+        [InlineData(0, 0, 0, 1, 1, 1)]
+        [InlineData(1, 2, 3, -2, 3, 5)]
+        public void TestDistance(double x1, double y1, double z1, double x2, double y2, double z2) {
             var categorySet = new CategorySet<Point>(Point.Distance,
                 set => set.Average((x, y) => x + y, (x, d) => x/d));
-            var point1 = new Point(1, 2, 3);
-            var point2 = new Point(-2, 3, 5);
+            var point1 = new Point(x1, y1, z1);
+            var point2 = new Point(x2, y2, z2);
             var distance = categorySet.Distance(point1, point2);
-
             Assert.Equal(distance, point1.DistanceTo(point2));
-        }
-
-        [Fact]
-        public void TestOrderByCentroids() {
-            var categorySet = new CategorySet<double>(Distance, Average) {
-                new Category<double>(2.0),
-                new Category<double>(8.0),
-                new Category<double>(6.0),
-                new Category<double>(-1.0)
-            };
-            var result = categorySet.OrderByCentroids();
-            var actual = new CategorySet<double>(Distance, Average) {
-                new Category<double>(-1.0),
-                new Category<double>(2.0),
-                new Category<double>(6.0),
-                new Category<double>(8.0)
-            };
-
-            for (var i = 0; i < actual.Count; ++i)
-                Assert.Equal(result[i], actual[i]);
         }
 
         private static double Distance(double x, double y) => Math.Abs(x - y);

@@ -1,32 +1,24 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Wfxr.Utility.Container;
 using Wfxr.Utility.Data;
 using Xunit;
 
 namespace ClusteringAlgorithm {
     public class TestCategory {
-        [Fact]
-        public void TestSetCentroidOfDoubleCategory() {
-            var category = new Category<double>();
-            category.SetCentroid(8.8);
+        public static IEnumerable<object[]> DoublesGroups => new[] {
+            new object[] {new[] {0.0, 0.0}, 0.0},
+            new object[] {new[] {-1.0, 0.0, 3.0}, 2.0/3},
+            new object[] {new[] {3.6, 8.1, -9.0, 0.9}, 0.9}
+        };
 
-            Assert.Equal(category.Centroid, 8.8);
-        }
-
-        [Fact]
-        public void TestSetCentroidOfPointCategory() {
-            var category = new Category<Point>();
-            category.SetCentroid(new Point(-1, 0, 1));
-
-            Assert.Equal(category.Centroid, new Point(-1, 0, 1));
-        }
-
-        [Fact]
-        public void TestUpdateCentroidOfDoubleCategory() {
-            var category = new Category<double> {1, 2, 3, 4};
+        [Theory]
+        [MemberData(nameof(DoublesGroups))]
+        public void TestUpdateCentroidOfDoubleCategory(double[] numbers, double centroid) {
+            var category = new Category<double>(numbers);
             category.UpdateCentroid(set => set.Average());
 
-            Assert.Equal(category.Centroid, 2.5);
+            Assert.Equal(category.Centroid, centroid, 12);
         }
 
         [Fact]
@@ -42,20 +34,29 @@ namespace ClusteringAlgorithm {
         }
 
         [Fact]
-        public void TestEquality() {
-            var category1 = new Category<double> {1, 2};
+        public void TestEqual() {
+            var category = new Category<double> {1, 2};
             var categoryEqual = new Category<double> {1, 2};
-            var category3 = new Category<double> {0, 2};
-            var category4 = new Category<double> {1};
+
+            Assert.Equal(category, category);
+            Assert.Equal(category, categoryEqual);
+        }
+
+        [Fact]
+        public void TestNotEqual() {
+            var category = new Category<double> {1, 2};
+
+            var category1 = new Category<double> {0, 2};
+            var category2 = new Category<double> {1};
+
+            Assert.NotEqual(category, category1);
+            Assert.NotEqual(category, category2);
+
             var categoryEmpty = new Category<double>();
             Category<double> categoryNull = null;
 
-            Assert.Equal(category1, category1);
-            Assert.Equal(category1, categoryEqual);
-            Assert.NotEqual(category1, category3);
-            Assert.NotEqual(category1, category4);
-            Assert.NotEqual(category1, categoryEmpty);
-            Assert.NotEqual(category1, categoryNull);
+            Assert.NotEqual(category, categoryEmpty);
+            Assert.NotEqual(category, categoryNull);
         }
     }
 }
