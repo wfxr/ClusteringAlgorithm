@@ -16,7 +16,6 @@ namespace ClusteringAlgorithm {
             _centroidFunc = centroidFunc;
         }
 
-
         /// <summary>
         ///     清除所有聚类的观察值
         /// </summary>

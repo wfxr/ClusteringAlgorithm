@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using Wfxr.Utility.Container;
 using Wfxr.Utility.Data;
 using Xunit;
@@ -20,17 +19,6 @@ namespace ClusteringAlgorithm {
             Assert.NotEmpty(categorySet);
             foreach (var category in categorySet)
                 Assert.Empty(category);
-        }
-
-        [Fact]
-        public void Test() {
-            var categorySet = new CategorySet<double>(Distance, Average) {
-                new Category<double> {1},
-                new Category<double> {2},
-                new Category<double> {2},
-            };
-            Assert.Equal(categorySet.Count, 2);
-            Assert.False(categorySet.Add(new Category<double> {1}));
         }
 
         public class ListEquility : IEqualityComparer<List<double>> {

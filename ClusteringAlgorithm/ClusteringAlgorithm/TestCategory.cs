@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Wfxr.Utility.Container;
 using Wfxr.Utility.Data;
@@ -33,30 +34,37 @@ namespace ClusteringAlgorithm {
             Assert.Equal(category.Centroid, new Point(1, 1, 1));
         }
 
-        [Fact]
-        public void TestEqual() {
-            var category = new Category<double> {1, 2};
-            var categoryEqual = new Category<double> {1, 2};
+        [Theory]
+        [InlineData(new double[] {}, new double[] {})]
+        [InlineData(new double[] {1}, new double[] {1})]
+        [InlineData(new double[] {1, 3, 5}, new double[] {1, 3, 5})]
+        [SuppressMessage("ReSharper", "EqualExpressionComparison")]
+        public void TestEquals(double[] x, double[] y) {
+            var catX = new Category<double>(x);
+            var catY = new Category<double>(y);
+            object objX = catX;
+            object objY = catY;
 
-            Assert.Equal(category, category);
-            Assert.Equal(category, categoryEqual);
+            Assert.True(catX.Equals(catX));
+            Assert.True(catX.Equals(catY));
+
+            Assert.True(objX.Equals(objX));
+            Assert.True(objX.Equals(objY));
         }
 
-        [Fact]
-        public void TestNotEqual() {
-            var category = new Category<double> {1, 2};
+        [Theory]
+        [InlineData(new double[] {}, null)]
+        [InlineData(new double[] {}, new double[] {1})]
+        [InlineData(new double[] {1}, new double[] {})]
+        [InlineData(new double[] {1, 3, 5}, new double[] {1, 3})]
+        public void TestNotEqual(double[] x, double[] y) {
+            var catX = new Category<double>(x);
+            var catY = y == null ? null : new Category<double>(y);
+            object objX = catX;
+            object objY = catY;
 
-            var category1 = new Category<double> {0, 2};
-            var category2 = new Category<double> {1};
-
-            Assert.NotEqual(category, category1);
-            Assert.NotEqual(category, category2);
-
-            var categoryEmpty = new Category<double>();
-            Category<double> categoryNull = null;
-
-            Assert.NotEqual(category, categoryEmpty);
-            Assert.NotEqual(category, categoryNull);
+            Assert.False(catX.Equals(catY));
+            Assert.False(objX.Equals(objY));
         }
     }
 }
