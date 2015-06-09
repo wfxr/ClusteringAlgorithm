@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace ClusteringAlgorithm {
-    public class CategorySet<T> : List<Category<T>>{
+    public class CategoryList<T> : List<Category<T>>{
         private readonly Func<List<T>, T> _centroidFunc;
         private readonly Func<T, T, double> _distanceFunc;
 
-        public CategorySet(Func<T, T, double> distanceFunc, Func<List<T>, T> centroidFunc)
+        public CategoryList(Func<T, T, double> distanceFunc, Func<List<T>, T> centroidFunc)
             : this(new List<Category<T>>(), distanceFunc, centroidFunc) { }
 
-        public CategorySet(IEnumerable<Category<T>> observations, Func<T, T, double> distanceFunc,
+        public CategoryList(IEnumerable<Category<T>> observations, Func<T, T, double> distanceFunc,
             Func<List<T>, T> centroidFunc) : base(observations) {
             _distanceFunc = distanceFunc;
             _centroidFunc = centroidFunc;
@@ -51,15 +51,15 @@ namespace ClusteringAlgorithm {
         /// <summary>
         ///     返回距离观察值最近的聚类
         /// </summary>
-        /// <param name="categorySet"></param>
+        /// <param name="categoryList"></param>
         /// <param name="observation"></param>
         /// <returns></returns>
-        public static Category<T> FindNearestCategory(CategorySet<T> categorySet, T observation) {
+        public static Category<T> FindNearestCategory(CategoryList<T> categoryList, T observation) {
             var minDistance = double.MaxValue;
             Category<T> nearestCategory = null;
 
-            foreach (var thisCategory in categorySet) {
-                var distanceToThisCategory = categorySet.Distance(observation, thisCategory.Centroid);
+            foreach (var thisCategory in categoryList) {
+                var distanceToThisCategory = categoryList.Distance(observation, thisCategory.Centroid);
                 if (distanceToThisCategory < minDistance) {
                     minDistance = distanceToThisCategory;
                     nearestCategory = thisCategory;

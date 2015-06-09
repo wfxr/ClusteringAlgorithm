@@ -28,10 +28,10 @@ namespace ClusteringAlgorithm {
         /// <param name="categoriesCount">聚类数目</param>
         /// <param name="precision">迭代精度</param>
         /// <returns>观察值的聚类集合</returns>
-        public CategorySet<T> Classify(int categoriesCount, double precision = 0.01) {
+        public CategoryList<T> Classify(int categoriesCount, double precision = 0.01) {
             ValidateArgument(categoriesCount, precision);
 
-            var categorySet = new CategorySet<T>(_distanceFunc, _centroidFunc);
+            var categorySet = new CategoryList<T>(_distanceFunc, _centroidFunc);
             SetRandomCentroids(categorySet, categoriesCount);
 
             List<double> distanceOffsets;
@@ -59,7 +59,7 @@ namespace ClusteringAlgorithm {
         /// </summary>
         /// <param name="categoryList"></param>
         /// <param name="categoriesCount"></param>
-        private void SetRandomCentroids(CategorySet<T> categoryList, int categoriesCount) {
+        private void SetRandomCentroids(CategoryList<T> categoryList, int categoriesCount) {
             var centroids = Sampling.SampleWithOutReplacement(_observationDistinct, categoriesCount);
 
             centroids.ForEach(centroid => categoryList.Add(new Category<T> {Centroid = centroid}));

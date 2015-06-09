@@ -6,10 +6,10 @@ using Wfxr.Utility.Data;
 using Xunit;
 
 namespace ClusteringAlgorithm {
-    public class TestCategorySet {
+    public class TestCategoryList {
         [Fact]
         public void TestClearAllObservations() {
-            var categorySet = new CategorySet<double>(Distance, Average) {
+            var categorySet = new CategoryList<double>(Distance, Average) {
                 new Category<double>(),
                 new Category<double> {2},
                 new Category<double> {1, 3, 2, 4}
@@ -21,20 +21,6 @@ namespace ClusteringAlgorithm {
                 Assert.Empty(category);
         }
 
-        public class ListEquility : IEqualityComparer<List<double>> {
-            public bool Equals(List<double> x, List<double> y) {
-                return x == y;
-            }
-            public int GetHashCode(List<double> obj) {
-                var hash = 0;
-                foreach (var element in obj)
-                {
-                    hash ^= element.GetHashCode();
-                }
-                return hash;
-            }
-        }
-
         [Theory]
         [InlineData(2, 8)]
         [InlineData(-1, 7)]
@@ -42,7 +28,7 @@ namespace ClusteringAlgorithm {
         public void TestClassifyObservation(double value1, double value2) {
             var categoryA = new Category<double> {Centroid = 2.0};
             var categoryB = new Category<double> {Centroid = 8.0};
-            var categorySet = new CategorySet<double>(Distance, Average) {categoryA, categoryB};
+            var categorySet = new CategoryList<double>(Distance, Average) {categoryA, categoryB};
 
             categorySet.Classify(value1);
             categorySet.Classify(value2);
@@ -58,7 +44,7 @@ namespace ClusteringAlgorithm {
         public void TestClassifyObservationSet() {
             var categoryA = new Category<double> {Centroid = 2.0};
             var categoryB = new Category<double> {Centroid = 8.0};
-            var categorySet = new CategorySet<double>(Distance, Average) {categoryA, categoryB};
+            var categorySet = new CategoryList<double>(Distance, Average) {categoryA, categoryB};
             var observationSet = new List<double> {-1, 2, 3, 6, 8, 9};
 
             categorySet.Classify(observationSet);
@@ -79,7 +65,7 @@ namespace ClusteringAlgorithm {
         public void TestFindNearestCategory(double value1, double value2) {
             var categoryA = new Category<double> {Centroid = 2.0};
             var categoryB = new Category<double> {Centroid = 8.0};
-            var categorySet = new CategorySet<double>(Distance, Average) {categoryA, categoryB};
+            var categorySet = new CategoryList<double>(Distance, Average) {categoryA, categoryB};
 
             Assert.Equal(categorySet.FindNearestCategory(value1), categoryA);
             Assert.Equal(categorySet.FindNearestCategory(value2), categoryB);
@@ -89,7 +75,7 @@ namespace ClusteringAlgorithm {
         public void UpdateAllCentroids() {
             var categoryA = new Category<double>(2.0, new double[] {1, 3, 4, -2});
             var categoryB = new Category<double>(8.0, new double[] {4, 6, 2});
-            var categorySet = new CategorySet<double>(Distance, Average) {categoryA, categoryB};
+            var categorySet = new CategoryList<double>(Distance, Average) {categoryA, categoryB};
 
             categorySet.UpdateAllCentroids();
 
@@ -101,7 +87,7 @@ namespace ClusteringAlgorithm {
         public void UpdateAllCentroidsWithOffsetReturn() {
             var categoryA = new Category<double>(2.0, new double[] {1, 3, 4, -2});
             var categoryB = new Category<double>(8.0, new double[] {4, 6, 2});
-            var categorySet = new CategorySet<double>(Distance, Average) {categoryA, categoryB};
+            var categorySet = new CategoryList<double>(Distance, Average) {categoryA, categoryB};
 
             List<double> distanceOffsets;
             categorySet.UpdateAllCentroids(out distanceOffsets);
@@ -117,7 +103,7 @@ namespace ClusteringAlgorithm {
         [InlineData(0, 0, 0, 1, 1, 1)]
         [InlineData(1, 2, 3, -2, 3, 5)]
         public void TestDistance(double x1, double y1, double z1, double x2, double y2, double z2) {
-            var categorySet = new CategorySet<Point>(Point.Distance,
+            var categorySet = new CategoryList<Point>(Point.Distance,
                 set => set.Average((x, y) => x + y, (x, d) => x/d));
             var point1 = new Point(x1, y1, z1);
             var point2 = new Point(x2, y2, z2);

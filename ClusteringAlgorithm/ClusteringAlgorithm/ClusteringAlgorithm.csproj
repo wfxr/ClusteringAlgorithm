@@ -64,10 +64,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Category.cs" />
-    <Compile Include="CategorySet.cs" />
+    <Compile Include="CategoryList.cs" />
     <Compile Include="TestCategory.cs" />
     <Compile Include="Kmeans.cs" />
-    <Compile Include="TestCategorySet.cs" />
+    <Compile Include="TestCategoryList.cs" />
     <Compile Include="TestKmeans.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
