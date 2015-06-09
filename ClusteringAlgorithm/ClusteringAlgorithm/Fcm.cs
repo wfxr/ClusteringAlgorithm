@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using MathNet.Numerics;
 using MathNet.Numerics.LinearAlgebra;
-using MathNet.Numerics.LinearAlgebra.Double;
-using Wfxr.Statistics;
 
 // ReSharper disable InconsistentNaming
 
@@ -12,92 +8,111 @@ namespace ClusteringAlgorithm {
     public class Fcm {
         private static readonly MatrixBuilder<double> MatrixBuilder = Matrix<double>.Build;
         private static readonly VectorBuilder<double> VectorBuilder = Vector<double>.Build;
-        private double _m = 2;
 
-        public double m {
-            get { return _m; }
-            set {
-                if (m < 1)
-                    throw new ArgumentOutOfRangeException($"m:{value}");
-                _m = value;
-            }
-        }
+        private Matrix<double> data { get; }
 
-        private Matrix<double> X { get; }
-
-        public Fcm(Matrix<double> X) { this.X = X; }
+        public Fcm(Matrix<double> data) { this.data = data; }
 
         /// <summary>
         ///     观测值的数目
         /// </summary>
-        public int n => X.ColumnCount;
+        public int n => data.RowCount;
 
         /// <summary>
         ///     观测值的维数
         /// </summary>
-        public int D => X.RowCount;
+        public int d => data.ColumnCount;
 
         /// <summary>
-        ///     对观测值集合进行聚类划分
+        ///     Data set clustering using fuzzy c-means clustering.
         /// </summary>
-        /// <param name="c">聚类数目</param>
-        /// <param name="precision">迭代精度</param>
-        /// <returns>观察值的聚类集合</returns>
-        public void Cluster(int c, double precision = 0.01) {
-            ValidateArgument(c, precision);
+        /// <param name="c">number of clusters</param>
+        /// <param name="expo">exponent for the matrix U</param>
+        /// <param name="max_iter">maximum number of iterations</param>
+        /// <param name="min_impro">minimum amount of improvement</param>
+        /// <returns></returns>
+        public FcmResult Cluster(int c, double expo = 2.0, int max_iter = 100,
+            double min_impro = 1e-5) {
+            ValidateArgument(c, expo, max_iter, min_impro);
+
             // 创建隶属度矩阵并完成行标准化,行数为分类数目,列数为观察值数目
             var U = MatrixBuilder.Random(c, n).NormalizeRows(1.0);
 
+            // 创建中心矩阵,行数为分类数目,列数为观察值维数
+            var C = MatrixBuilder.Dense(c, d);
 
-            // 创建中心点矩阵,行数为观察值维数,列数为分类数目
-            var C = MatrixBuilder.Dense(D, c);
+            // 目标函数向量
+            var obj_fcn = VectorBuilder.Dense(max_iter);
 
-            // 距离矩阵,行数为分类数目,列数为观察值数目
-            var Dis = MatrixBuilder.Dense(c, n);
+            // 主循环
+            for (var i = 0; i < max_iter; ++i) {
+                obj_fcn[i] = SetpFcm(ref U, out C, c, expo);
 
-            // TODO:添加迭代结束条件
-            var times = 10;
-            while (times-- > 0) {
-                // 更新中心点矩阵
-                var Um = U.PointwisePower(m);
-                for (var i = 0; i < c; ++i) {
-                    var row = Um.Row(i);
-                    var X1 = X.Clone();
-                    var denominator = row.Sum();
-                    for (var j = 0; j < n; ++j)
-                        X1.SetColumn(j, X1.Column(j).Multiply(Um[i, j]));
-                    var numerator = X1.RowSums();
-                    C.SetColumn(i, numerator.Divide(denominator));
-                }
-
-
-                // 更新距离矩阵
-                for (var i = 0; i < c; ++i)
-                    for (var j = 0; j < n; ++j)
-                        Dis[i, j] = Distance.Euclidean(X.Column(j), C.Column(i));
-
-                // 更新隶属度矩阵
-                for (var i = 0; i < c; ++i)
-                    for (var j = 0; j < n; ++j) {
-                        var sum = 0.0;
-                        for (var k = 0; k < c; ++k)
-                            sum += Math.Pow((Dis[i, j]/Dis[k, j]), 2/(m - 1));
-                        U[i, j] = 1/sum;
-                    }
+                // 改进程度小于指定值则结束循环
+                if (i > 1 && Math.Abs(obj_fcn[i] - obj_fcn[i - 1]) < min_impro) break;
             }
+            return new FcmResult(C, U, obj_fcn);
+        }
+
+        private double SetpFcm(ref Matrix<double> U, out Matrix<double> C, int c, double expo) {
+            var mf = U.Clone().PointwisePower(expo);
+
+            C = (mf*data).PointwiseDivide(mf.RowSums().ToColumnMatrix()*MatrixBuilder.Dense(1, d, 1));
+
+            var Dis = MatrixBuilder.Dense(c, n);
+            for (var i = 0; i < c; ++i)
+                for (var j = 0; j < n; ++j)
+                    Dis[i, j] = Distance.Euclidean(data.Row(j), C.Row(i));
+
+            // 计算目标函数值
+            var obj_fcn = Dis.PointwisePower(2).PointwiseMultiply(mf).RowSums().Sum();
+
+            // 更新隶属度矩阵
+            var tmp = Dis.PointwisePower(-2/(expo - 1));
+            U = tmp.PointwiseDivide(MatrixBuilder.Dense(c, 1, 1)*tmp.ColumnSums().ToRowMatrix());
+
+            return obj_fcn;
+        }
+
+
+        private void ValidateArgument(int c, double expo, int max_iter, double min_impro) {
+            if (c > n)
+                throw new ArgumentException(
+                    "The clusters number should not be greater than observations number!");
+            if (c < 2)
+                throw new ArgumentException("The clusters number should be at least 2!");
+            if (expo <= 1.0)
+                throw new ArgumentException("The exponent should be greater than 1!");
+            if (max_iter < 1)
+                throw new ArgumentException("The maximum iterations should be at least 1!");
+            if (min_impro < 0.0)
+                throw new ArgumentException("minimum amount of improvement should not be negative!");
         }
 
         /// <summary>
-        ///     验证参数的合理性
+        ///     用以存储FCM聚类结果的数据结构
         /// </summary>
-        /// <param name="K">聚类数目</param>
-        /// <param name="precision">迭代精度</param>
-        private void ValidateArgument(int K, double precision) {
-            if (K > n || K < 1)
-                throw new ArgumentOutOfRangeException(
-                    $"categories number({K}) \">\" distinct observations number({n})");
-            if (precision <= 0)
-                throw new ArgumentOutOfRangeException($"Invalid {nameof(precision)}: {precision}");
+        public class FcmResult {
+            public FcmResult(Matrix<double> center, Matrix<double> u, Vector<double> obj_fcn) {
+                Center = center;
+                U = u;
+                ObjectFunction = obj_fcn;
+            }
+
+            /// <summary>
+            ///     聚类中心
+            /// </summary>
+            public Matrix<double> Center;
+
+            /// <summary>
+            ///     隶属度矩阵
+            /// </summary>
+            public Matrix<double> U;
+
+            /// <summary>
+            ///     目标函数向量
+            /// </summary>
+            public Vector<double> ObjectFunction;
         }
     }
 }
