@@ -14,6 +14,11 @@ namespace ClusteringAlgorithm {
         /// </summary>
         public T Centroid { get; set; }
 
+        /// <summary>
+        ///     比较两个聚类是否相等
+        /// </summary>
+        /// <param name="other"></param>
+        /// <returns></returns>
         protected bool Equals(Category<T> other) {
             if (Count != other.Count)
                 return false;
@@ -26,16 +31,16 @@ namespace ClusteringAlgorithm {
         }
 
         /// <summary>
-        ///     获取集合的哈希值
+        ///     获取聚类的哈希值
         /// </summary>
         /// <returns></returns>
         public override int GetHashCode()
             =>
                 this.Aggregate((5381 << 16) + 5381,
-                    (current, observation) => current ^ observation.GetHashCode());
+                    (hash, observation) => hash ^ observation.GetHashCode());
 
         /// <summary>
-        ///     返回集合与obj对象是否相等
+        ///     返回聚类与obj对象是否相等
         /// </summary>
         /// <param name="obj"></param>
         /// <returns></returns>

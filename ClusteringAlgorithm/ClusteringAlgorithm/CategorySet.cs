@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace ClusteringAlgorithm {
-    public class CategorySet<T> : HashSet<Category<T>>{
+    public class CategorySet<T> : List<Category<T>>{
         private readonly Func<List<T>, T> _centroidFunc;
         private readonly Func<T, T, double> _distanceFunc;
 
