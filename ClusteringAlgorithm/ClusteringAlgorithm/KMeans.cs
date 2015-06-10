@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using MathNet.Numerics;
 using MathNet.Numerics.LinearAlgebra;
 using Wfxr.Statistics;
@@ -184,9 +185,7 @@ namespace ClusteringAlgorithm {
 
             public KmeansResult(Matrix<double> center, IReadOnlyList<int> u, Vector<double> obj_fcn) {
                 Center = center;
-                U = VectorBuilder.Dense(u.Count);
-                for (var i = 0; i < u.Count; ++i)
-                    U[i] = u[i];
+                U = VectorBuilder.DenseOfArray((from i in u select (double) i).ToArray());
                 ObjectFunction = obj_fcn;
             }
         }
