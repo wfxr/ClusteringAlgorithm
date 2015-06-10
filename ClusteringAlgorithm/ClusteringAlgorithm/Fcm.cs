@@ -46,7 +46,7 @@ namespace ClusteringAlgorithm {
 
             // 主循环
             for (var i = 0; i < max_iter; ++i) {
-                // 隶属度指数修正矩阵
+                // 隶属度加权矩阵
                 var Um = ComputeUm(U, expo);
 
                 // 更新中心矩阵
@@ -68,17 +68,17 @@ namespace ClusteringAlgorithm {
         }
 
         /// <summary>
-        ///     计算对隶属度矩阵进行指数修正后的矩阵
+        ///     计算对隶属度矩阵进行指数加权后的矩阵
         /// </summary>
         /// <param name="U">隶属度矩阵</param>
-        /// <param name="expo">指数</param>
+        /// <param name="expo">加权指数</param>
         /// <returns>修正后的矩阵</returns>
         private Matrix<double> ComputeUm(Matrix<double> U, double expo) => U.PointwisePower(expo);
 
         /// <summary>
         ///     计算分类中心
         /// </summary>
-        /// <param name="mf">隶属度修正矩阵</param>
+        /// <param name="mf">隶属度加权矩阵</param>
         /// <returns>中心矩阵</returns>
         private Matrix<double> ComputeCenter(Matrix<double> mf)
             => (mf*data).PointwiseDivide(mf.RowSums().ToColumnMatrix()*MatrixBuilder.Dense(1, d, 1));
@@ -100,7 +100,7 @@ namespace ClusteringAlgorithm {
         ///     计算目标函数值
         /// </summary>
         /// <param name="dist">距离矩阵</param>
-        /// <param name="mf">隶属度修正矩阵</param>
+        /// <param name="mf">隶属度加权矩阵</param>
         /// <returns>目标函数值</returns>
         private double ComputeObjectFunctionn(Matrix<double> dist, Matrix<double> mf)
             => dist.PointwisePower(2).PointwiseMultiply(mf).RowSums().Sum();

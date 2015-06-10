@@ -1,74 +1,168 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using MathNet.Numerics;
+using MathNet.Numerics.LinearAlgebra;
 using Wfxr.Statistics;
+using Wfxr.Utility.Container;
+
 // ReSharper disable InconsistentNaming
 
 namespace ClusteringAlgorithm {
-    public class Kmeans<T> {
-        private readonly Func<ICollection<T>, T> _centroidFunc; // 计算分类中心的委托
-        private readonly Func<T, T, double> _distanceFunc; // 计算观测值距离的委托
-        private readonly List<T> _X; // 无重复的观察值集合 
-        private readonly IEnumerable<T> _XAll; // 观测值集合
+    using Group = List<Vector<double>>;
+    using GroupList = List<List<Vector<double>>>;
 
-        public Kmeans(IEnumerable<T> X, Func<T, T, double> distanceFunc,
-            Func<ICollection<T>, T> centroidFunc) {
-            _XAll = X;
-            _distanceFunc = distanceFunc;
-            _centroidFunc = centroidFunc;
-            _X = _XAll.Distinct().ToList();
-        }
-
-        public Kmeans(IEnumerable<T> X, Func<T, T, double> distanceFunc,
-            Func<T, T, T> sumFunc, Func<T, double, T> divFunc)
-            : this(X, distanceFunc, set => divFunc(set.Aggregate(sumFunc), set.Count)) {}
+    public class Kmeans {
+        private static readonly MatrixBuilder<double> MatrixBuilder = Matrix<double>.Build;
+        private static readonly VectorBuilder<double> VectorBuilder = Vector<double>.Build;
+        public Kmeans(Matrix<double> data) { this.data = data; }
+        private Matrix<double> data { get; }
 
         /// <summary>
-        ///     对观测值集合进行聚类划分
+        ///     观测值的数目
         /// </summary>
-        /// <param name="K">聚类数目</param>
-        /// <param name="precision">迭代精度</param>
-        /// <returns>观察值的聚类集合</returns>
-        public CategoryList<T> Cluster(int K, double precision = 0.01) {
-            ValidateArgument(K, precision);
+        public int n => data.RowCount;
 
-            var categoryList = CreateCategoryListWithyRandomCentroids(K);
+        /// <summary>
+        ///     观测值的维数
+        /// </summary>
+        public int d => data.ColumnCount;
 
-            List<double> distanceOffsets;
-            do {
-                categoryList.Classify(_X);
-                categoryList.UpdateAllCentroids(out distanceOffsets);
-                categoryList.ClearAllObservations();
-            } while (distanceOffsets.Max() > precision);
+        /// <summary>
+        ///     Data set clustering using fuzzy c-means clustering.
+        /// </summary>
+        /// <param name="c">number of clusters</param>
+        /// <param name="max_iter">maximum number of iterations</param>
+        /// <param name="min_impro">minimum amount of improvement</param>
+        /// <returns></returns>
+        public void Cluster(int c, int max_iter = 100, double min_impro = 1e-5) {
+            ValidateArgument(c, max_iter, min_impro);
 
-            // 注意:此处重新对**所有**观测值分类
-            categoryList.Classify(_XAll);
-            return categoryList;
+            // 创建中心矩阵并初始化
+            var C = RandomCenter(c);
+
+            // 创建目标函数向量
+            var obj_fcn = VectorBuilder.Dense(max_iter);
+
+            // 主循环
+            for (var i = 0; i < max_iter; ++i) {
+                // 计算距离矩阵
+                var dist = ComputeDistance(C);
+
+                // 计算隶属向量
+                var U = ComputeU(dist);
+
+                // 计算观测值分组
+                var groups = ComputeGroup(U, c);
+                
+                // 保存原来的中心
+                var oldC = C;
+
+                // 更新中心矩阵和价值函数
+                C = ComputeCenter(groups);
+
+                // 计算目标函数
+                obj_fcn[i] = ComputeObjectFunction(oldC,C);
+
+                // 改进程度小于指定值则结束循环
+                if (i > 1 && Math.Abs(obj_fcn[i] - obj_fcn[i - 1]) < min_impro) break;
+            }
+        }
+
+        private double ComputeObjectFunction(Matrix<double> oldC, Matrix<double> newC) {
+            var c = newC.RowCount;
+            var dis = VectorBuilder.Dense(c);
+            for (var i = 0; i < c; ++i) {
+                dis[i] = Distance.Euclidean(oldC.Row(i), newC.Row(i));
+            }
+            return dis.Sum();
+        }
+
+
+        private GroupList ComputeGroup(int[] U, int c) {
+            var groups = new GroupList();
+            for (var i = 0; i < c; ++i) {
+                groups.Add(new Group());
+                for (var j = 0; j < n; ++j)
+                    if (U[j] == i)
+                        groups[i].Add(data.Row(j));
+            }
+            return groups;
+        }
+
+        public Matrix<double> RandomCenter(int c) {
+            var C = MatrixBuilder.Dense(c, d);
+            var rands = Sampling.SampleFromRange(0, n, c); // 从0到n中随机无重复地抽取出c个索引值
+            for (var i = 0; i < c; ++i) {
+                var irand = rands[i];
+                C.SetRow(i, data.Row(irand));
+            }
+            return C;
         }
 
         /// <summary>
-        ///     验证参数的合理性
+        ///     计算对隶属度矩阵进行指数修正后的矩阵
         /// </summary>
-        /// <param name="K">聚类数目</param>
-        /// <param name="precision">迭代精度</param>
-        private void ValidateArgument(int K, double precision) {
-            if (K > _X.Count() || K < 1)
-                throw new ArgumentOutOfRangeException(
-                    $"categories number({K}) \">\" distinct observations number({_X.Count})");
-            if (precision <= 0)
-                throw new ArgumentOutOfRangeException($"Invalid {nameof(precision)}: {precision}");
+        /// <param name="U">隶属度矩阵</param>
+        /// <param name="expo">指数</param>
+        /// <returns>修正后的矩阵</returns>
+        private Matrix<double> ComputeUm(Matrix<double> U, double expo) => U.PointwisePower(expo);
+
+        /// <summary>
+        ///     计算聚类中心
+        /// </summary>
+        /// <param name="groups">聚类列表</param>
+        /// <returns>聚类中心矩阵和目标函数值元组</returns>
+        private Matrix<double> ComputeCenter(GroupList groups) {
+            var c = groups.Count;
+            var centers = MatrixBuilder.Dense(c, d);
+            var offsets = VectorBuilder.Dense(c); // 记录中心的偏移距离
+            for (var i = 0; i < c; ++i) {
+                centers.SetRow(i, groups[i].Average((x, y) => x + y, (x, y) => (x/y)));
+            }
+            return centers;
         }
 
         /// <summary>
-        ///     通过随机抽样的方式设置聚类的中心
+        ///     计算每个观测值到各聚类中心的距离
         /// </summary>
-        /// <param name="K">聚类数目</param>
-        private CategoryList<T> CreateCategoryListWithyRandomCentroids(int K) {
-            var categoryList = new CategoryList<T>(_distanceFunc, _centroidFunc);
-            var centroids = Sampling.SampleWithOutReplacement(_X, K);
+        /// <param name="C">聚类中心矩阵</param>
+        /// <returns>距离矩阵</returns>
+        private Matrix<double> ComputeDistance(Matrix<double> C) {
+            var dist = MatrixBuilder.Dense(C.RowCount, n);
+            for (var i = 0; i < C.RowCount; ++i)
+                for (var j = 0; j < n; ++j)
+                    dist[i, j] = Distance.Euclidean(data.Row(j), C.Row(i));
+            return dist;
+        }
 
-            centroids.ForEach(centroid => categoryList.Add(new Category<T> {Centroid = centroid}));
-            return categoryList;
+        /// <summary>
+        ///     计算隶属向量
+        /// </summary>
+        /// <param name="dist">距离矩阵</param>
+        /// <returns>隶属度向量</returns>
+        private int[] ComputeU(Matrix<double> dist) {
+            var U = new int[n];
+            for (var i = 0; i < n; ++i)
+                U[i] = dist.Column(i).MinimumIndex();
+            return U;
+        }
+
+        /// <summary>
+        ///     验证参数是否正确
+        /// </summary>
+        /// <param name="c">分类数目</param>
+        /// <param name="max_iter">结束条件:最大迭代次数</param>
+        /// <param name="min_impro">结束条件:目标函数最小改进值</param>
+        private void ValidateArgument(int c, int max_iter, double min_impro) {
+            if (c > n)
+                throw new ArgumentException(
+                    "The clusters number should not be greater than observations number!");
+            if (c < 2)
+                throw new ArgumentException("The clusters number should be at least 2!");
+            if (max_iter < 1)
+                throw new ArgumentException("The maximum iterations should be at least 1!");
+            if (min_impro < 0.0)
+                throw new ArgumentException("minimum amount of improvement should not be negative!");
         }
     }
 }
