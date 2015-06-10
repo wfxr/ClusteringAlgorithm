@@ -68,12 +68,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Category.cs" />
-    <Compile Include="CategoryList.cs" />
+    <Compile Include="Clustering.cs" />
     <Compile Include="Fcm.cs" />
-    <Compile Include="TestCategory.cs" />
     <Compile Include="Kmeans.cs" />
-    <Compile Include="TestCategoryList.cs" />
     <Compile Include="TestFcm.cs" />
     <Compile Include="TestKmeans.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -81,9 +78,7 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Kmeans\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

@@ -5,26 +5,10 @@ using MathNet.Numerics.LinearAlgebra;
 // ReSharper disable InconsistentNaming
 
 namespace ClusteringAlgorithm {
-    public class Fcm {
-        private static readonly MatrixBuilder<double> MatrixBuilder = Matrix<double>.Build;
-        private static readonly VectorBuilder<double> VectorBuilder = Vector<double>.Build;
-
-        private Matrix<double> data { get; }
-
-        public Fcm(Matrix<double> data) { this.data = data; }
-
+    public class Fcm : Clustering {
+        public Fcm(Matrix<double> data) : base(data) { }
         /// <summary>
-        ///     观测值的数目
-        /// </summary>
-        public int n => data.RowCount;
-
-        /// <summary>
-        ///     观测值的维数
-        /// </summary>
-        public int d => data.ColumnCount;
-
-        /// <summary>
-        ///     Data set clustering using fuzzy c-means clustering.
+        ///     使用模糊c均值算法对数据集进行聚类
         /// </summary>
         /// <param name="c">number of clusters</param>
         /// <param name="expo">exponent for the matrix U</param>
@@ -143,26 +127,26 @@ namespace ClusteringAlgorithm {
         ///     用以存储FCM聚类结果的数据结构
         /// </summary>
         public class FcmResult {
-            public FcmResult(Matrix<double> center, Matrix<double> u, Vector<double> obj_fcn) {
-                Center = center;
-                U = u;
-                ObjectFunction = obj_fcn;
-            }
-
             /// <summary>
             ///     聚类中心
             /// </summary>
             public Matrix<double> Center;
 
             /// <summary>
+            ///     目标函数向量
+            /// </summary>
+            public Vector<double> ObjectFunction;
+
+            /// <summary>
             ///     隶属度矩阵
             /// </summary>
             public Matrix<double> U;
 
-            /// <summary>
-            ///     目标函数向量
-            /// </summary>
-            public Vector<double> ObjectFunction;
+            public FcmResult(Matrix<double> center, Matrix<double> u, Vector<double> obj_fcn) {
+                Center = center;
+                U = u;
+                ObjectFunction = obj_fcn;
+            }
         }
     }
 }
