@@ -20,7 +20,7 @@ namespace RunoffsClassify {
             Console.WriteLine("聚类中心值:");
             Console.WriteLine(cluster.Center.ToMatrixString());
             Console.WriteLine("隶属向量");
-            Console.WriteLine(cluster.U.ToVectorString());
+            Console.WriteLine(cluster.U.ToVectorString(4, 80));
         }
     }
 }
