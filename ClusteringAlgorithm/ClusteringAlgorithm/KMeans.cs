@@ -137,8 +137,9 @@ namespace ClusteringAlgorithm {
         /// </summary>
         /// <param name="clusters">聚类数组</param>
         /// <returns>隶属向量</returns>
-        private int[] ComputeU(Cluster[] clusters) {
-            var U = new int[n];
+        private Vector<double> ComputeU(Cluster[] clusters) {
+            var U = VectorBuilder.Dense(n);
+            //var u = new int[n];
             var c = clusters.Length;
             for (var i = 0; i < n; ++i) {
                 for (var j = 0; j < c; ++j)
@@ -185,9 +186,9 @@ namespace ClusteringAlgorithm {
             /// <summary>
             ///     隶属向量
             /// </summary>
-            public int[] U;
+            public Vector<double> U;
 
-            public KmeansResult(Matrix<double> center, Cluster[] clusterses, int[] u,
+            public KmeansResult(Matrix<double> center, Cluster[] clusterses, Vector<double> u,
                 Vector<double> obj_fcn) {
                 Center = center;
                 ObjectFunction = obj_fcn;
