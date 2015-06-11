@@ -16,11 +16,25 @@ namespace RunoffsClassify {
                 }
             });
             var kmeans = new Kmeans(data.Transpose());
-            var cluster = kmeans.Cluster(5);
+            var c = 3; // 聚类数目
+            var result = kmeans.Clustering(c);
             Console.WriteLine("聚类中心值:");
-            Console.WriteLine(cluster.Center.ToMatrixString());
+            Console.WriteLine(result.Center.Transpose().ToMatrixString());
             Console.WriteLine("隶属向量");
-            Console.WriteLine(cluster.U.ToVectorString(4, 80));
+            Console.WriteLine(result.U.ToVectorString(4, 80));
+            Console.WriteLine("聚类结果");
+
+            for (var i = 0; i < c; ++i) {
+                Console.Write("聚类中心:{0}",result.Center.Row(i).ToVectorString());
+                var cluster = result.Clusters[i];
+                for (var j = 0; j < cluster.Count; ++j) {
+                    Console.Write($"{cluster[j][0]}    ");
+                    if (j%10 == 9)
+                        Console.WriteLine();
+                }
+                Console.WriteLine();
+                Console.WriteLine();
+            }
         }
     }
 }
