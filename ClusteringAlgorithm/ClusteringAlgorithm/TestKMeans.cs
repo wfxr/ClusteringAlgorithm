@@ -14,7 +14,7 @@ namespace ClusteringAlgorithm {
                 {1, 2, 3, 7, 8, 9, 13, 14, 15, 100, 120, 130}
             }).Transpose();
             var km = new Kmeans(data);
-            var result = km.Cluster(k);
+            var result = km.Clustering(k);
             Assert.Equal(result.Center.RowCount, k);
             Assert.Equal(result.U.Count(), data.RowCount);
          }
