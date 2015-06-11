@@ -10,7 +10,7 @@ using Wfxr.Utility.Container;
 
 namespace ClusteringAlgorithm {
     using Group = List<Vector<double>>;
-    using GroupList = List<List<Vector<double>>>;
+    using ClusterSet = List<List<Vector<double>>>;
 
     public class Kmeans : Clustering {
         public Kmeans(Matrix<double> data) : base(data) { }
@@ -34,6 +34,9 @@ namespace ClusteringAlgorithm {
             // 创建目标函数向量
             var obj_fcn = VectorBuilder.Dense(max_iter);
 
+            // 创建聚类集合
+            var clusters = new ClusterSet();
+
             // 主循环
             for (var i = 0; i < max_iter; ++i) {
                 // 计算距离矩阵
@@ -42,14 +45,14 @@ namespace ClusteringAlgorithm {
                 // 计算隶属向量
                 U = ComputeU(dist);
 
-                // 计算观测值分组
-                var groups = ComputeGroup(U, c);
+                // 计算聚类集合
+                clusters = ComputeGroup(U, c);
 
                 // 保存原来的中心
                 var oldC = C;
 
                 // 更新中心矩阵和价值函数
-                C = ComputeCenter(groups);
+                C = ComputeCenter(clusters);
 
                 // 计算目标函数
                 obj_fcn[i] = ComputeObjectFunction(oldC, C);
@@ -58,7 +61,7 @@ namespace ClusteringAlgorithm {
                 if (i > 1 && Math.Abs(obj_fcn[i] - obj_fcn[i - 1]) < min_impro) break;
             }
 
-            return new KmeansResult(C, U, obj_fcn);
+            return new KmeansResult(C, U, obj_fcn, clusters);
         }
 
         /// <summary>
@@ -77,20 +80,20 @@ namespace ClusteringAlgorithm {
         }
 
         /// <summary>
-        ///     根据隶属向量计算聚类分组
+        ///     根据隶属向量计算聚类集合
         /// </summary>
         /// <param name="U"></param>
         /// <param name="c"></param>
         /// <returns></returns>
-        private GroupList ComputeGroup(IReadOnlyList<int> U, int c) {
-            var groups = new GroupList();
+        private ClusterSet ComputeGroup(IReadOnlyList<int> U, int c) {
+            var clusters = new ClusterSet();
             for (var i = 0; i < c; ++i) {
-                groups.Add(new Group());
+                clusters.Add(new Group());
                 for (var j = 0; j < n; ++j)
                     if (U[j] == i)
-                        groups[i].Add(data.Row(j));
+                        clusters[i].Add(data.Row(j));
             }
-            return groups;
+            return clusters;
         }
 
         /// <summary>
@@ -113,7 +116,7 @@ namespace ClusteringAlgorithm {
         /// </summary>
         /// <param name="groups">聚类列表</param>
         /// <returns>聚类中心矩阵和目标函数值元组</returns>
-        private Matrix<double> ComputeCenter(GroupList groups) {
+        private Matrix<double> ComputeCenter(ClusterSet groups) {
             var c = groups.Count;
             var centers = MatrixBuilder.Dense(c, d);
             for (var i = 0; i < c; ++i)
@@ -155,9 +158,9 @@ namespace ClusteringAlgorithm {
         private void ValidateArgument(int c, int max_iter, double min_impro) {
             if (c > n)
                 throw new ArgumentException(
-                    "The clusters number should not be greater than observations number!");
+                    "The clusterses number should not be greater than observations number!");
             if (c < 2)
-                throw new ArgumentException("The clusters number should be at least 2!");
+                throw new ArgumentException("The clusterses number should be at least 2!");
             if (max_iter < 1)
                 throw new ArgumentException("The maximum iterations should be at least 1!");
             if (min_impro < 0.0)
@@ -181,12 +184,14 @@ namespace ClusteringAlgorithm {
             /// <summary>
             ///     隶属向量
             /// </summary>
-            public Vector<double> U;
+            public int[] U;
 
-            public KmeansResult(Matrix<double> center, IReadOnlyList<int> u, Vector<double> obj_fcn) {
+            public ClusterSet Clusters;
+            public KmeansResult(Matrix<double> center, int[] u, Vector<double> obj_fcn, ClusterSet clusterses) {
                 Center = center;
-                U = VectorBuilder.DenseOfArray((from i in u select (double) i).ToArray());
+                U = u;
                 ObjectFunction = obj_fcn;
+                Clusters = clusterses;
             }
         }
     }

@@ -1,4 +1,5 @@
-﻿using MathNet.Numerics.LinearAlgebra.Double;
+﻿using System.Linq;
+using MathNet.Numerics.LinearAlgebra.Double;
 using Xunit;
 
 namespace ClusteringAlgorithm {
@@ -13,7 +14,7 @@ namespace ClusteringAlgorithm {
             var km = new Kmeans(data);
             var result = km.Cluster(k);
             Assert.Equal(result.Center.RowCount, k);
-            Assert.Equal(result.U.Count, data.RowCount);
+            Assert.Equal(result.U.Count(), data.RowCount);
          }
     }
 }
