@@ -53,6 +53,7 @@ namespace ClusteringAlgorithm {
                 if (i > 1 && Math.Abs(obj_fcn[i] - obj_fcn[i - 1]) < min_impro) break;
             }
 
+            // 计算隶属向量
             var U = ComputeU(clusters);
 
             return new KmeansResult(C, clusters, U, obj_fcn);
@@ -80,9 +81,6 @@ namespace ClusteringAlgorithm {
         /// <returns></returns>
         private Cluster[] ComputeCluster(Matrix<double> dist) {
             var c = dist.RowCount;
-            //var U = new int[n];
-            //for (var i = 0; i < n; ++i)
-            //    U[i] = dist.Column(i).MinimumIndex();
 
             // PopulateDefault调用默认构造函数将将数组的每个元素赋值
             var clusters = new Cluster[c].PopulateDefault();
