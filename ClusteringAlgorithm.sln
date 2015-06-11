@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PointsClustering-WPF", "exa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RunoffsClassify", "examples\demo-console\RunoffsClassify.csproj", "{F8E43672-B1DE-41B1-929B-B7F1BD9A6AD9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PointsClustering-UAP", "examples\demo-uap\PointsClustering-UAP\PointsClustering-UAP.csproj", "{CCA8D1CA-614E-4CA4-837F-0222AF7EC790}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -87,6 +89,26 @@ Global
 		{F8E43672-B1DE-41B1-929B-B7F1BD9A6AD9}.Release|x64.Build.0 = Release|Any CPU
 		{F8E43672-B1DE-41B1-929B-B7F1BD9A6AD9}.Release|x86.ActiveCfg = Release|Any CPU
 		{F8E43672-B1DE-41B1-929B-B7F1BD9A6AD9}.Release|x86.Build.0 = Release|Any CPU
+		{CCA8D1CA-614E-4CA4-837F-0222AF7EC790}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{CCA8D1CA-614E-4CA4-837F-0222AF7EC790}.Debug|ARM.ActiveCfg = Debug|ARM
+		{CCA8D1CA-614E-4CA4-837F-0222AF7EC790}.Debug|ARM.Build.0 = Debug|ARM
+		{CCA8D1CA-614E-4CA4-837F-0222AF7EC790}.Debug|ARM.Deploy.0 = Debug|ARM
+		{CCA8D1CA-614E-4CA4-837F-0222AF7EC790}.Debug|x64.ActiveCfg = Debug|x64
+		{CCA8D1CA-614E-4CA4-837F-0222AF7EC790}.Debug|x64.Build.0 = Debug|x64
+		{CCA8D1CA-614E-4CA4-837F-0222AF7EC790}.Debug|x64.Deploy.0 = Debug|x64
+		{CCA8D1CA-614E-4CA4-837F-0222AF7EC790}.Debug|x86.ActiveCfg = Debug|x86
+		{CCA8D1CA-614E-4CA4-837F-0222AF7EC790}.Debug|x86.Build.0 = Debug|x86
+		{CCA8D1CA-614E-4CA4-837F-0222AF7EC790}.Debug|x86.Deploy.0 = Debug|x86
+		{CCA8D1CA-614E-4CA4-837F-0222AF7EC790}.Release|Any CPU.ActiveCfg = Release|x86
+		{CCA8D1CA-614E-4CA4-837F-0222AF7EC790}.Release|ARM.ActiveCfg = Release|ARM
+		{CCA8D1CA-614E-4CA4-837F-0222AF7EC790}.Release|ARM.Build.0 = Release|ARM
+		{CCA8D1CA-614E-4CA4-837F-0222AF7EC790}.Release|ARM.Deploy.0 = Release|ARM
+		{CCA8D1CA-614E-4CA4-837F-0222AF7EC790}.Release|x64.ActiveCfg = Release|x64
+		{CCA8D1CA-614E-4CA4-837F-0222AF7EC790}.Release|x64.Build.0 = Release|x64
+		{CCA8D1CA-614E-4CA4-837F-0222AF7EC790}.Release|x64.Deploy.0 = Release|x64
+		{CCA8D1CA-614E-4CA4-837F-0222AF7EC790}.Release|x86.ActiveCfg = Release|x86
+		{CCA8D1CA-614E-4CA4-837F-0222AF7EC790}.Release|x86.Build.0 = Release|x86
+		{CCA8D1CA-614E-4CA4-837F-0222AF7EC790}.Release|x86.Deploy.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

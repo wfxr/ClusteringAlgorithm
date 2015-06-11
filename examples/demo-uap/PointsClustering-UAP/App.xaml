@@ -1,8 +1,8 @@
 ﻿<Application
-    x:Class="ClusteringDemo.App"
+    x:Class="PointsClustering_UAP.App"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:ClusteringDemo"
+    xmlns:local="using:PointsClustering_UAP"
     RequestedTheme="Dark">
 
     <Application.Resources>

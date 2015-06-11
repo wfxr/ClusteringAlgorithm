@@ -7,14 +7,14 @@
   IgnorableNamespaces="uap mp">
 
   <Identity
-    Name="fed8c1ab-ad93-4444-b73e-c2abfc4c0c31"
+    Name="740d4963-51ca-44fa-903a-f4a59f027dd9"
     Publisher="CN=Wenxuan"
     Version="1.0.0.0" />
 
-  <mp:PhoneIdentity PhoneProductId="fed8c1ab-ad93-4444-b73e-c2abfc4c0c31" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
+  <mp:PhoneIdentity PhoneProductId="740d4963-51ca-44fa-903a-f4a59f027dd9" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
   <Properties>
-    <DisplayName>ClusteringDemo</DisplayName>
+    <DisplayName>PointsClustering-UAP</DisplayName>
     <PublisherDisplayName>Wenxuan</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
@@ -30,12 +30,12 @@
   <Applications>
     <Application Id="App"
       Executable="$targetnametoken$.exe"
-      EntryPoint="ClusteringDemo.App">
+      EntryPoint="PointsClustering_UAP.App">
       <uap:VisualElements
-        DisplayName="ClusteringDemo"
+        DisplayName="PointsClustering-UAP"
         Square150x150Logo="Assets\Logo.png"
         Square44x44Logo="Assets\SmallLogo.png"
-        Description="ClusteringDemo"
+        Description="PointsClustering-UAP"
         BackgroundColor="#00b2f0">
         <uap:SplashScreen Image="Assets\SplashScreen.png" />
         <uap:DefaultTile>

@@ -7,7 +7,7 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
 
-namespace ClusteringDemo {
+namespace PointsClustering_UAP {
     public sealed partial class MainPage : Page {
         public static MainPage Current;
 

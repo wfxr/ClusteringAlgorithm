@@ -4,7 +4,7 @@ using System.IO;
 using Windows.Storage;
 using Windows.UI.Xaml.Controls;
 
-namespace ClusteringDemo
+namespace PointsClustering_UAP
 {
     public partial class MainPage : Page
     {

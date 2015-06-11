@@ -7,8 +7,8 @@
     <ProjectGuid>{CCA8D1CA-614E-4CA4-837F-0222AF7EC790}</ProjectGuid>
     <OutputType>AppContainerExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ClusteringDemo</RootNamespace>
-    <AssemblyName>ClusteringDemo</AssemblyName>
+    <RootNamespace>PointsClustering_UAP</RootNamespace>
+    <AssemblyName>PointsClustering-UAP</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
     <TargetPlatformVersion>10.0.10069.0</TargetPlatformVersion>
@@ -111,9 +111,6 @@
     <Content Include="Assets\SplashScreen.scale-100.png" />
     <Content Include="Assets\StoreLogo.scale-100.png" />
     <Content Include="Assets\WideLogo.scale-100.png" />
-    <Content Include="PointData.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -135,6 +132,23 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="MathNet.Numerics, Version=3.7.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\MathNet.Numerics.3.7.0\lib\portable-net45+netcore45+MonoAndroid1+MonoTouch1\MathNet.Numerics.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="wfxr.statistics, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Wfxr.Toolkit.1.4.1\lib\portable45-net45+win8\wfxr.statistics.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="wfxr.utility, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Wfxr.Toolkit.1.4.1\lib\portable45-net45+win8\wfxr.utility.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
     <SDKReference Include="DevExpress.Controls, Version=14.2">
       <Name>DevExpress.Controls</Name>
     </SDKReference>
@@ -149,13 +163,10 @@
     </SDKReference>
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="MathNet.Numerics, Version=3.7.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\MathNet.Numerics.3.7.0\lib\portable-net45+netcore45+MonoAndroid1+MonoTouch1\MathNet.Numerics.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
+    <ProjectReference Include="..\..\..\src\ClusteringAlgorithm-Portable.csproj">
+      <Project>{6e922e67-b6a4-48ae-9075-2ad2c83ed6f0}</Project>
+      <Name>ClusteringAlgorithm-Portable</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>

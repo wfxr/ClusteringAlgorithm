@@ -1,0 +1,46 @@
+﻿<Page
+    x:Class="PointsClustering_UAP.Scenario1"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:PointsClustering_UAP"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:Charts="using:DevExpress.UI.Xaml.Charts"
+    mc:Ignorable="d">
+
+    <Grid Margin="12" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <StackPanel>
+            <TextBlock Text="Description: " Style="{StaticResource SampleHeaderTextStyle}" />
+            <TextBlock Style="{StaticResource ScenarioDescriptionTextStyle}" TextWrapping="Wrap">
+                Add a description for the scenario here...
+            </TextBlock>
+            <!-- Add more contents here -->
+            <Grid Name="Grid">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Charts:CartesianChart Margin="50">
+                    <Charts:CartesianChart.Legend>
+                        <Charts:Legend HorizontalPosition="Left" VerticalPosition="Top"/>
+                    </Charts:CartesianChart.Legend>
+                    <Charts:CartesianChart.Series>
+                        <Charts:Series DisplayName="Illinois">
+                            <Charts:Series.View>
+                                <Charts:PointSeriesView />
+                            </Charts:Series.View>
+                            <Charts:Series.Data>
+                                <Charts:DataPointCollection ArgumentScaleType="Numerical" ValueScaleType="Numerical">
+                                    <Charts:DataPoint Argument="1998" Value="423.721"/>
+                                    <Charts:DataPoint Argument="2001" Value="476.851"/>
+                                    <Charts:DataPoint Argument="2004" Value="528.904"/>
+                                </Charts:DataPointCollection>
+                            </Charts:Series.Data>
+                        </Charts:Series>
+                    </Charts:CartesianChart.Series>
+                </Charts:CartesianChart>
+                <Button Name="ButtonClustering" Grid.Row="1" Content="Clustering" Click="ButtonClustering_Click" />
+            </Grid>
+        </StackPanel>
+    </Grid>
+</Page>
