@@ -112,15 +112,13 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ClusteringAlgorithm\ClusteringAlgorithm.csproj">
+    <ProjectReference Include="..\..\src\ClusteringAlgorithm.csproj">
       <Project>{0cf7c99a-0b05-4df3-ba97-264e705bf25c}</Project>
       <Name>ClusteringAlgorithm</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="PointData.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    <Resource Include="PointData.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
