@@ -1,12 +1,17 @@
 ﻿using System;
+using System.Collections.Generic;
 using MathNet.Numerics;
 using MathNet.Numerics.LinearAlgebra;
+using Wfxr.Utility.Container;
 
 // ReSharper disable InconsistentNaming
 
 namespace ClusteringAlgorithm {
+    using Cluster = List<Vector<double>>;
+
     public class Fcm : Clustering {
         public Fcm(Matrix<double> data) : base(data) { }
+
         /// <summary>
         ///     使用模糊c均值算法对数据集进行聚类
         /// </summary>
@@ -19,14 +24,17 @@ namespace ClusteringAlgorithm {
             double min_impro = 1e-5) {
             ValidateArgument(c, expo, max_iter, min_impro);
 
-            // 创建隶属度矩阵并执行行标准化
-            var U = MatrixBuilder.Random(c, n).NormalizeRows(1.0);
+            // 创建隶属度矩阵并执行行标准化(注意:因为表示概率,所以需要通过对+1求余使所有元素为正)
+            var U = MatrixBuilder.Random(c, n).Modulus(1).NormalizeRows(1.0);
 
             // 创建中心矩阵
             var C = MatrixBuilder.Dense(c, d);
 
             // 创建目标函数向量
             var obj_fcn = VectorBuilder.Dense(max_iter);
+
+            // 创建距离矩阵
+            var dist = ComputeDistance(C);
 
             // 主循环
             for (var i = 0; i < max_iter; ++i) {
@@ -37,7 +45,7 @@ namespace ClusteringAlgorithm {
                 C = ComputeCenter(Um);
 
                 // 距离矩阵
-                var dist = ComputeDistance(C);
+                dist = ComputeDistance(C);
 
                 // 计算目标函数值
                 obj_fcn[i] = ComputeObjectFunctionn(dist, Um);
@@ -45,10 +53,31 @@ namespace ClusteringAlgorithm {
                 // 更新隶属度矩阵
                 U = ComputeU(dist, expo);
 
+
                 // 改进程度小于指定值则结束循环
                 if (i > 1 && Math.Abs(obj_fcn[i] - obj_fcn[i - 1]) < min_impro) break;
             }
-            return new FcmResult(C, U, obj_fcn);
+
+            // 创建聚类数组
+            var clusters = ComputeCluster(dist);
+            return new FcmResult(C, U, clusters, obj_fcn);
+        }
+
+        /// <summary>
+        ///     根据距离矩阵计算聚类数组
+        /// </summary>
+        /// <param name="dist"></param>
+        /// <returns></returns>
+        private Cluster[] ComputeCluster(Matrix<double> dist) {
+            var c = dist.RowCount;
+
+            // PopulateDefault调用默认构造函数将将数组的每个元素赋值
+            var clusters = new Cluster[c].PopulateDefault();
+            // dist.Column(i).MinimumIndex()即距离矩阵中第i列距离最小的索引,
+            // 也就是距离第i个观测值最近的聚类中心的索引
+            for (var i = 0; i < n; ++i)
+                clusters[dist.Column(i).MinimumIndex()].Add(data.Row(i));
+            return clusters;
         }
 
         /// <summary>
@@ -142,9 +171,15 @@ namespace ClusteringAlgorithm {
             /// </summary>
             public Matrix<double> U;
 
-            public FcmResult(Matrix<double> center, Matrix<double> u, Vector<double> obj_fcn) {
+            /// <summary>
+            ///     聚类数组
+            /// </summary>
+            public Cluster[] Clusters;
+
+            public FcmResult(Matrix<double> center, Matrix<double> u, Cluster[] clusters, Vector<double> obj_fcn) {
                 Center = center;
                 U = u;
+                Clusters = clusters;
                 ObjectFunction = obj_fcn;
             }
         }

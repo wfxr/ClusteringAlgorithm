@@ -176,6 +176,9 @@ namespace ClusteringAlgorithm {
             /// </summary>
             public Matrix<double> Center;
 
+            /// <summary>
+            ///     聚类数组
+            /// </summary>
             public Cluster[] Clusters;
 
             /// <summary>
@@ -191,9 +194,9 @@ namespace ClusteringAlgorithm {
             public KmeansResult(Matrix<double> center, Cluster[] clusterses, Vector<double> u,
                 Vector<double> obj_fcn) {
                 Center = center;
-                ObjectFunction = obj_fcn;
                 U = u;
                 Clusters = clusterses;
+                ObjectFunction = obj_fcn;
             }
         }
     }
