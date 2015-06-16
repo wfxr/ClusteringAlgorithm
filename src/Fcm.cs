@@ -25,7 +25,7 @@ namespace ClusteringAlgorithm {
             ValidateArgument(c, expo, max_iter, min_impro);
 
             // 创建隶属度矩阵并执行行标准化(注意:因为表示概率,所以需要通过对+1求余使所有元素为正)
-            var U = MatrixBuilder.Random(c, n).Modulus(1).NormalizeRows(1.0);
+            var U = MatrixBuilder.Random(c, n).Modulus(1).NormalizeColumns(1.0);
 
             // 创建中心矩阵
             var C = MatrixBuilder.Dense(c, d);

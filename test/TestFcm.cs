@@ -1,8 +1,9 @@
 ﻿using System.Linq;
+using ClusteringAlgorithm;
 using MathNet.Numerics.LinearAlgebra.Double;
 using Xunit;
 
-namespace ClusteringAlgorithm {
+namespace UnitTest {
     public class TestFcm {
         [Theory]
         [InlineData(2)]

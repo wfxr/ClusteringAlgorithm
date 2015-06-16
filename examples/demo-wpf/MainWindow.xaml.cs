@@ -1,7 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Windows;
+using System.Windows.Data;
 using ClusteringAlgorithm;
 using DevExpress.Xpf.Charts;
 using MathNet.Numerics.LinearAlgebra;
@@ -13,9 +17,22 @@ namespace ChartTest {
     /// </summary>
     public partial class MainWindow : Window {
         private List<double[]> _pointData;
+        private int ClusterNumber => int.Parse(ClusterNumberBox.SelectedItem.ToString());
+        private double WeightedIndex => double.Parse(WeightedIndexBox.SelectedItem.ToString());
+        private int MaxIterations => int.Parse(MaxIterationsBox.SelectedItem.ToString());
+        private double MinImprovment => double.Parse(MinImprovmentBox.SelectedItem.ToString());
         public MainWindow() { InitializeComponent(); }
 
         private void Window_Loaded(object sender, RoutedEventArgs e) {
+            ClusterNumberBox.ItemsSource = Enumerable.Range(2, 8);
+            ClusterNumberBox.SelectedIndex = 1;
+            WeightedIndexBox.ItemsSource = new List<double> {1.5, 2.0, 2.5, 3.0};
+            WeightedIndexBox.SelectedIndex = 1;
+            MaxIterationsBox.ItemsSource = new List<int> {100, 200, 500, 1000};
+            MaxIterationsBox.SelectedIndex = 1;
+            MinImprovmentBox.ItemsSource = new List<double> {1e-4, 1e-5, 1e-6, 1e-7};
+            MinImprovmentBox.SelectedIndex = 1;
+
             _pointData = PointDataFromFile("PointData.txt");
             var points = CreatePointList(_pointData);
             AddSeriesOfPoints(points);
@@ -57,19 +74,35 @@ namespace ChartTest {
             return points;
         }
 
-        private void ButtonClustering_Click(object sender, RoutedEventArgs e) {
+        private void RunButton_Click(object sender, RoutedEventArgs e) {
             var matrix = DenseMatrix.OfRowArrays(_pointData);
-            var kmeans = new Kmeans(matrix);
-            var resultKmeans = kmeans.Clustering(3);
+            if (KmeansRadio.IsChecked == true) {
+                var kmeans = new Kmeans(matrix);
+                var resultKmeans = kmeans.Clustering(ClusterNumber, MaxIterations, MinImprovment);
 
-            diagram.Series.Clear();
-            foreach (var cluster in resultKmeans.Clusters) {
-                var points = CreatePointList(cluster);
-                AddSeriesOfPoints(points);
+                diagram.Series.Clear();
+                foreach (var cluster in resultKmeans.Clusters) {
+                    var points = CreatePointList(cluster);
+                    AddSeriesOfPoints(points);
+                }
+
+                var centers = CreatePointList(resultKmeans.Center);
+                AddSeriesOfPoints(centers, 10);
             }
+            else if (CmeansRadio.IsChecked == true) {
+                var cmeans = new Fcm(matrix);
+                var resultKmeans = cmeans.Cluster(ClusterNumber, WeightedIndex, MaxIterations,
+                    MinImprovment);
 
-            var centers = CreatePointList(resultKmeans.Center);
-            AddSeriesOfPoints(centers, 10);
+                diagram.Series.Clear();
+                foreach (var cluster in resultKmeans.Clusters) {
+                    var points = CreatePointList(cluster);
+                    AddSeriesOfPoints(points);
+                }
+
+                var centers = CreatePointList(resultKmeans.Center);
+                AddSeriesOfPoints(centers, 10);
+            }
         }
 
         private void AddSeriesOfPoints(IReadOnlyCollection<Point> points, int pointSize = 4) {
@@ -83,6 +116,32 @@ namespace ChartTest {
 
             // Add it to series of the diagram
             diagram.Series.Add(series);
+        }
+    }
+
+    [ValueConversion(typeof (bool), typeof (Visibility))]
+    public class BoolToVisibilityConverter : IValueConverter {
+        public BoolToVisibilityConverter() : this(true) { }
+        public bool CollapseWhenInvisible { get; set; }
+
+        public BoolToVisibilityConverter(bool collapsewhenInvisible) {
+            CollapseWhenInvisible = collapsewhenInvisible;
+        }
+
+        public Visibility FalseVisibility
+            => CollapseWhenInvisible ? Visibility.Collapsed : Visibility.Hidden;
+
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
+            if (value == null)
+                return Visibility.Visible;
+            return (bool) value ? Visibility.Visible : FalseVisibility;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter,
+            CultureInfo culture) {
+            if (value == null)
+                return true;
+            return ((Visibility) value == Visibility.Visible);
         }
     }
 }

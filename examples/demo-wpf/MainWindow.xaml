@@ -6,15 +6,46 @@
     xmlns:local="clr-namespace:ChartTest"
     xmlns:dxc="http://schemas.devexpress.com/winfx/2008/xaml/charts" x:Class="ChartTest.MainWindow"
     mc:Ignorable="d"
-    Title="MainWindow" Height="600" Width="800" Loaded="Window_Loaded">
+    Title="MainWindow" Height="600" Width="800" Loaded="Window_Loaded" FontSize="16">
+
+    <Window.Resources>
+        <local:BoolToVisibilityConverter CollapseWhenInvisible="True" x:Key="BoolToVisibilityConverter" />
+    </Window.Resources>
+
     <Grid Name="Grid">
-    <Grid.RowDefinitions>
-        <RowDefinition Height="*"></RowDefinition>
-        <RowDefinition Height="Auto"></RowDefinition>
-    </Grid.RowDefinitions>
-        <dxc:ChartControl Grid.Row="0">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <dxc:ChartControl Grid.Column="0">
             <dxc:XYDiagram2D Name="diagram" />
         </dxc:ChartControl>
-        <Button Name="ButtonClustering" Grid.Row="1" Content="Clustering" Click="ButtonClustering_Click"/>
+        <StackPanel Grid.Column="1" Margin="20">
+            <GroupBox Header="Clustering Method" Padding="5" MinWidth="200" Margin="0 5 0 0">
+                <StackPanel>
+                    <RadioButton Name="KmeansRadio" Margin="5" VerticalContentAlignment="Center" IsChecked="True">K-means</RadioButton>
+                    <RadioButton Name="CmeansRadio" Margin="5" VerticalContentAlignment="Center" IsChecked="False">Fuzzy C-means</RadioButton>
+                </StackPanel>
+            </GroupBox>
+            <GroupBox Header="Argument" Padding="5" MinWidth="200" Margin="0 5 0 0">
+                <StackPanel>
+                    <TextBlock>Clusters number:</TextBlock>
+                    <ComboBox Name="ClusterNumberBox" />
+                    <TextBlock Visibility="{Binding ElementName=CmeansRadio, Path=IsChecked, Converter={StaticResource BoolToVisibilityConverter}}">
+                        Weighted Index:
+                    </TextBlock>
+                    <ComboBox Name="WeightedIndexBox"
+                              Visibility="{Binding ElementName=CmeansRadio, Path=IsChecked, Converter={StaticResource BoolToVisibilityConverter}}" />
+                    <TextBlock>Weighted Index:</TextBlock>
+                    <ComboBox Name="MaxIterationsBox" />
+                    <TextBlock>Minimum improvment:</TextBlock>
+                    <ComboBox Name="MinImprovmentBox" />
+                </StackPanel>
+            </GroupBox>
+            <Button Name="RunButton" Content="Run" Click="RunButton_Click" HorizontalAlignment="Center" MinWidth="80"
+                    Margin="5" />
+        </StackPanel>
+        <ComboBox x:Name="comboBox" Grid.Column="1" HorizontalAlignment="Left" Margin="654,521,-534,0"
+                  VerticalAlignment="Top" Width="120" />
     </Grid>
 </Window>

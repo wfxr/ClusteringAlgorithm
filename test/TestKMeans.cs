@@ -1,10 +1,11 @@
 ﻿using System.Linq;
+using ClusteringAlgorithm;
 using MathNet.Numerics.LinearAlgebra.Double;
 using Xunit;
 
 // ReSharper disable InconsistentNaming
 
-namespace ClusteringAlgorithm {
+namespace UnitTest {
     public class TestKmeans {
         [Theory]
         [InlineData(2)]
