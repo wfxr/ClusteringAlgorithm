@@ -3,8 +3,6 @@ using ClusteringAlgorithm;
 using MathNet.Numerics.LinearAlgebra.Double;
 using Xunit;
 
-// ReSharper disable InconsistentNaming
-
 namespace UnitTest {
     public class TestKmeans {
         [Theory]
