@@ -21,7 +21,7 @@ namespace RunoffsClassify {
             Console.WriteLine("聚类中心值:");
             Console.WriteLine(result.Center.Transpose().ToMatrixString());
             Console.WriteLine("隶属向量");
-            Console.WriteLine(result.U.ToVectorString(4, 80));
+            Console.WriteLine(result.U.ToVectorString(1, 1000));
             Console.WriteLine("聚类结果");
 
             for (var i = 0; i < c; ++i) {
