@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using MathNet.Numerics;
 using MathNet.Numerics.LinearAlgebra;
 using Wfxr.Utility.Container;
@@ -172,14 +173,14 @@ namespace ClusteringAlgorithm {
             public Matrix<double> U;
 
             /// <summary>
-            ///     聚类数组
+            ///     聚类列表
             /// </summary>
-            public Cluster[] Clusters;
+            public List<Cluster> Clusters;
 
-            public FcmResult(Matrix<double> center, Matrix<double> u, Cluster[] clusters, Vector<double> obj_fcn) {
+            public FcmResult(Matrix<double> center, Matrix<double> u, IEnumerable<Cluster> clusters, Vector<double> obj_fcn) {
                 Center = center;
                 U = u;
-                Clusters = clusters;
+                Clusters = clusters.ToList();
                 ObjectFunction = obj_fcn;
             }
         }

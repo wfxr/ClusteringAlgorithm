@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using MathNet.Numerics;
 using MathNet.Numerics.LinearAlgebra;
 using Wfxr.Statistics;
@@ -177,9 +178,9 @@ namespace ClusteringAlgorithm {
             public Matrix<double> Center;
 
             /// <summary>
-            ///     聚类数组
+            ///     聚类列表
             /// </summary>
-            public Cluster[] Clusters;
+            public List<Cluster> Clusters;
 
             /// <summary>
             ///     目标函数向量
@@ -191,11 +192,11 @@ namespace ClusteringAlgorithm {
             /// </summary>
             public Vector<double> U;
 
-            public KmeansResult(Matrix<double> center, Cluster[] clusterses, Vector<double> u,
+            public KmeansResult(Matrix<double> center, IEnumerable<Cluster> clusterses, Vector<double> u,
                 Vector<double> obj_fcn) {
                 Center = center;
                 U = u;
-                Clusters = clusterses;
+                Clusters = clusterses.ToList();
                 ObjectFunction = obj_fcn;
             }
         }
