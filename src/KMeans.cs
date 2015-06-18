@@ -21,7 +21,7 @@ namespace ClusteringAlgorithm {
         /// <param name="max_iter">最大迭代次数</param>
         /// <param name="min_impro">最小改进量</param>
         /// <returns>包含聚类中心,隶属向量和目标函数向量的数据结构</returns>
-        public KmeansResult Clustering(int c, int max_iter = 100, double min_impro = 1e-5) {
+        public ClusterResult Clustering(int c, int max_iter = 100, double min_impro = 1e-5) {
             ValidateArgument(c, max_iter, min_impro);
 
             // 创建中心矩阵并初始化
@@ -33,10 +33,13 @@ namespace ClusteringAlgorithm {
             // 创建聚类数组
             var clusters = new Cluster[c];
 
+            // 创建距离矩阵
+            var dist = MatrixBuilder.Dense(c, n);
+
             // 主循环
             for (var i = 0; i < max_iter; ++i) {
                 // 计算距离矩阵
-                var dist = ComputeDistance(C);
+                dist = ComputeDistance(C);
 
                 // 更新聚类集合
                 clusters = ComputeCluster(dist);
@@ -54,10 +57,10 @@ namespace ClusteringAlgorithm {
                 if (i > 1 && Math.Abs(obj_fcn[i] - obj_fcn[i - 1]) < min_impro) break;
             }
 
-            // 计算隶属向量
-            var U = ComputeU(clusters);
+            // 计算隶属矩阵
+            var U = ComputeU(dist);
 
-            return new KmeansResult(C, clusters, U, obj_fcn);
+            return new ClusterResult(C, U, clusters, obj_fcn);
         }
 
         /// <summary>
@@ -134,19 +137,14 @@ namespace ClusteringAlgorithm {
         }
 
         /// <summary>
-        ///     计算隶属向量
+        ///     计算隶属矩阵
         /// </summary>
-        /// <param name="clusters">聚类数组</param>
-        /// <returns>隶属向量</returns>
-        private Vector<double> ComputeU(Cluster[] clusters) {
-            var U = VectorBuilder.Dense(n);
-            //var u = new int[n];
-            var c = clusters.Length;
-            for (var i = 0; i < n; ++i) {
-                for (var j = 0; j < c; ++j)
-                    if (clusters[j].Contains(data.Row(i)))
-                        U[i] = j;
-            }
+        /// <param name="dist">距离矩阵</param>
+        /// <returns>隶属矩阵</returns>
+        private Matrix<double> ComputeU(Matrix<double> dist) {
+            var U = MatrixBuilder.Dense(dist.RowCount, n, 0);
+            for (var i = 0; i < n; ++i) 
+                U[dist.Column(i).MinimumIndex(), i] = 1;
             return U;
         }
 
@@ -166,39 +164,6 @@ namespace ClusteringAlgorithm {
                 throw new ArgumentException("The maximum iterations should be at least 1!");
             if (min_impro < 0.0)
                 throw new ArgumentException("minimum amount of improvement should not be negative!");
-        }
-
-        /// <summary>
-        ///     用以存储K-means聚类结果的数据结构
-        /// </summary>
-        public class KmeansResult {
-            /// <summary>
-            ///     聚类中心
-            /// </summary>
-            public Matrix<double> Center;
-
-            /// <summary>
-            ///     聚类列表
-            /// </summary>
-            public List<Cluster> Clusters;
-
-            /// <summary>
-            ///     目标函数向量
-            /// </summary>
-            public Vector<double> ObjectFunction;
-
-            /// <summary>
-            ///     隶属向量
-            /// </summary>
-            public Vector<double> U;
-
-            public KmeansResult(Matrix<double> center, IEnumerable<Cluster> clusterses, Vector<double> u,
-                Vector<double> obj_fcn) {
-                Center = center;
-                U = u;
-                Clusters = clusterses.ToList();
-                ObjectFunction = obj_fcn;
-            }
         }
     }
 }

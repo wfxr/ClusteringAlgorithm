@@ -36,7 +36,7 @@
                     </TextBlock>
                     <ComboBox Name="WeightedIndexBox"
                               Visibility="{Binding ElementName=CmeansRadio, Path=IsChecked, Converter={StaticResource BoolToVisibilityConverter}}" />
-                    <TextBlock>Weighted Index:</TextBlock>
+                    <TextBlock>Maximum Iterations:</TextBlock>
                     <ComboBox Name="MaxIterationsBox" />
                     <TextBlock>Minimum improvment:</TextBlock>
                     <ComboBox Name="MinImprovmentBox" />

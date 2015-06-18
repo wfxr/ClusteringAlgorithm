@@ -78,29 +78,29 @@ namespace ChartTest {
             var matrix = DenseMatrix.OfRowArrays(_pointData);
             if (KmeansRadio.IsChecked == true) {
                 var kmeans = new Kmeans(matrix);
-                var resultKmeans = kmeans.Clustering(ClusterNumber, MaxIterations, MinImprovment);
+                var result = kmeans.Clustering(ClusterNumber, MaxIterations, MinImprovment);
 
                 diagram.Series.Clear();
-                foreach (var cluster in resultKmeans.Clusters) {
+                foreach (var cluster in result.Clusters) {
                     var points = CreatePointList(cluster);
                     AddSeriesOfPoints(points);
                 }
 
-                var centers = CreatePointList(resultKmeans.Center);
+                var centers = CreatePointList(result.Center);
                 AddSeriesOfPoints(centers, 10);
             }
             else if (CmeansRadio.IsChecked == true) {
                 var cmeans = new Fcm(matrix);
-                var resultKmeans = cmeans.Cluster(ClusterNumber, WeightedIndex, MaxIterations,
+                var result = cmeans.Cluster(ClusterNumber, WeightedIndex, MaxIterations,
                     MinImprovment);
 
                 diagram.Series.Clear();
-                foreach (var cluster in resultKmeans.Clusters) {
+                foreach (var cluster in result.Clusters) {
                     var points = CreatePointList(cluster);
                     AddSeriesOfPoints(points);
                 }
 
-                var centers = CreatePointList(resultKmeans.Center);
+                var centers = CreatePointList(result.Center);
                 AddSeriesOfPoints(centers, 10);
             }
         }

@@ -21,7 +21,7 @@ namespace ClusteringAlgorithm {
         /// <param name="max_iter">maximum number of iterations</param>
         /// <param name="min_impro">minimum amount of improvement</param>
         /// <returns></returns>
-        public FcmResult Cluster(int c, double expo = 2.0, int max_iter = 100,
+        public ClusterResult Cluster(int c, double expo = 2.0, int max_iter = 100,
             double min_impro = 1e-5) {
             ValidateArgument(c, expo, max_iter, min_impro);
 
@@ -61,7 +61,7 @@ namespace ClusteringAlgorithm {
 
             // 创建聚类数组
             var clusters = ComputeCluster(dist);
-            return new FcmResult(C, U, clusters, obj_fcn);
+            return new ClusterResult(C, U, clusters, obj_fcn);
         }
 
         /// <summary>
@@ -151,38 +151,6 @@ namespace ClusteringAlgorithm {
                 throw new ArgumentException("The maximum iterations should be at least 1!");
             if (min_impro < 0.0)
                 throw new ArgumentException("minimum amount of improvement should not be negative!");
-        }
-
-        /// <summary>
-        ///     用以存储FCM聚类结果的数据结构
-        /// </summary>
-        public class FcmResult {
-            /// <summary>
-            ///     聚类中心
-            /// </summary>
-            public Matrix<double> Center;
-
-            /// <summary>
-            ///     目标函数向量
-            /// </summary>
-            public Vector<double> ObjectFunction;
-
-            /// <summary>
-            ///     隶属度矩阵
-            /// </summary>
-            public Matrix<double> U;
-
-            /// <summary>
-            ///     聚类列表
-            /// </summary>
-            public List<Cluster> Clusters;
-
-            public FcmResult(Matrix<double> center, Matrix<double> u, IEnumerable<Cluster> clusters, Vector<double> obj_fcn) {
-                Center = center;
-                U = u;
-                Clusters = clusters.ToList();
-                ObjectFunction = obj_fcn;
-            }
         }
     }
 }
