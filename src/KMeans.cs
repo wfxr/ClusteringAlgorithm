@@ -22,28 +22,28 @@ namespace ClusteringAlgorithm {
             // 创建中心矩阵并初始化
             var C = RandomCenter(c);
 
-            // 创建目标函数向量
-            var obj_fcn = VectorBuilder.Dense(max_iter);
-
-            // 创建聚类列表
-            var clusters = new List<Matrix<double>>();
-
             // 创建距离矩阵
             var dist = MatrixBuilder.Dense(c, n);
 
+            // 创建隶属度矩阵
+            var U = MatrixBuilder.Dense(c, n);
+
+            // 创建目标函数向量
+            var obj_fcn = VectorBuilder.Dense(max_iter);
+
             // 主循环
             for (var i = 0; i < max_iter; ++i) {
-                // 计算距离矩阵
+                // 更新距离矩阵
                 dist = ComputeDistance(C);
 
-                // 更新聚类集合
-                clusters = ComputeCluster(dist);
+                // 更新隶属度矩阵
+                U = ComputeU(dist);
 
                 // 保存原来的中心
                 var oldC = C;
 
                 // 更新中心矩阵和价值函数
-                C = ComputeCenter(clusters);
+                C = ComputeCenter(U);
 
                 // 添加目标函数值
                 obj_fcn[i] = ComputeObjectFunction(oldC, C);
@@ -52,8 +52,9 @@ namespace ClusteringAlgorithm {
                 if (i > 1 && Math.Abs(obj_fcn[i] - obj_fcn[i - 1]) < min_impro) break;
             }
 
-            // 计算隶属矩阵
-            var U = ComputeU(dist);
+
+            // 创建聚类列表
+            var clusters = ComputeCluster(dist);
 
             return new ClusterResult(C, U, clusters, obj_fcn);
         }
@@ -86,20 +87,6 @@ namespace ClusteringAlgorithm {
                 C.SetRow(i, data.Row(irand));
             }
             return C;
-        }
-
-        /// <summary>
-        ///     计算聚类中心
-        /// </summary>
-        /// <param name="clusters">聚类列表</param>
-        /// <returns>聚类中心矩阵和目标函数值元组</returns>
-        private Matrix<double> ComputeCenter(List<Matrix<double>> clusters) {
-            var c = clusters.Count;
-            var centers = MatrixBuilder.Dense(c, d);
-            for (var i = 0; i < c; ++i) 
-                centers.SetRow(i, clusters[i].ColumnSums() / clusters[i].RowCount);
-
-            return centers;
         }
 
         /// <summary>

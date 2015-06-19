@@ -43,6 +43,14 @@ namespace ClusteringAlgorithm {
         }
 
         /// <summary>
+        ///     计算分类中心
+        /// </summary>
+        /// <param name="U">隶属度(加权)矩阵</param>
+        /// <returns>中心矩阵</returns>
+        protected Matrix<double> ComputeCenter(Matrix<double> U)
+            => (U*data).PointwiseDivide(U.RowSums().ToColumnMatrix()*MatrixBuilder.Dense(1, d, 1));
+
+        /// <summary>
         ///     验证参数是否正确
         /// </summary>
         /// <param name="c">分类数目</param>

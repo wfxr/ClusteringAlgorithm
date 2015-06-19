@@ -67,13 +67,6 @@ namespace ClusteringAlgorithm {
         /// <returns>修正后的矩阵</returns>
         private Matrix<double> ComputeUm(Matrix<double> U, double expo) => U.PointwisePower(expo);
 
-        /// <summary>
-        ///     计算分类中心
-        /// </summary>
-        /// <param name="mf">隶属度加权矩阵</param>
-        /// <returns>中心矩阵</returns>
-        private Matrix<double> ComputeCenter(Matrix<double> mf)
-            => (mf*data).PointwiseDivide(mf.RowSums().ToColumnMatrix()*MatrixBuilder.Dense(1, d, 1));
 
         /// <summary>
         ///     计算每个观测值到各分类中心的距离
