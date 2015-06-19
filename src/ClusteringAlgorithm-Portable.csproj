@@ -8,8 +8,8 @@
     <ProjectGuid>{6E922E67-B6A4-48AE-9075-2AD2C83ED6F0}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ClusteringAlgorithm_Portable</RootNamespace>
-    <AssemblyName>ClusteringAlgorithm-Portable</AssemblyName>
+    <RootNamespace>ClusteringAlgorithm</RootNamespace>
+    <AssemblyName>ClusteringAlgorithm</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -44,16 +44,16 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="wfxr.statistics, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Wfxr.Toolkit.1.4.1\lib\portable45-net45+win8\wfxr.statistics.dll</HintPath>
+      <HintPath>..\packages\Wfxr.Toolkit.1.4.2\lib\portable45-net45+win8\wfxr.statistics.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="wfxr.utility, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Wfxr.Toolkit.1.4.1\lib\portable45-net45+win8\wfxr.utility.dll</HintPath>
+      <HintPath>..\packages\Wfxr.Toolkit.1.4.2\lib\portable45-net45+win8\wfxr.utility.dll</HintPath>
       <Private>True</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config">
+    <None Include="packages-portable.config">
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
