@@ -15,7 +15,7 @@ namespace UnitTest {
             var km = new Fcm(data);
             var result = km.Cluster(k);
             Assert.Equal(result.Center.RowCount, k);
-            Assert.Equal(result.UV.Count(), data.RowCount);
+            Assert.Equal(result.IDX.Count(), data.RowCount);
          }
     }
 }

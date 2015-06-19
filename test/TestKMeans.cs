@@ -15,7 +15,7 @@ namespace UnitTest {
             var km = new Kmeans(data);
             var result = km.Clustering(k);
             Assert.Equal(result.Center.RowCount, k);
-            Assert.Equal(result.UV.Count(), data.RowCount);
+            Assert.Equal(result.IDX.Count(), data.RowCount);
          }
     }
 }
