@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows.Forms;
 using System.Xml.Linq;
 using ClusteringAlgorithm;
+using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Double;
 
 namespace RunoffsClustering {
@@ -22,32 +23,65 @@ namespace RunoffsClustering {
         private static List<List<double>> ReadDataFromXml(string path) {
             var rows = new List<List<double>>();
             var xe = XElement.Load(path);
-            var runoffData =
+            var Items =
                 from element in xe.Elements("Data").Elements("Item")
                 select element;
 
-
-            foreach (var runoff in runoffData) {
-                var values = runoff.Value.Split(new[] {' ', ',', '\t'},
+            foreach (var item in Items) {
+                var values = item.Value.Split(new[] {' ', ',', '\t'},
                     StringSplitOptions.RemoveEmptyEntries);
-                var row = new List<double>();
-                foreach (var value in values)
-                    row.Add(double.Parse(value));
+                var row = values.Select(double.Parse).ToList();
                 rows.Add(row);
             }
             return rows;
         }
 
         private static void WriteDataToXml(ClusterResult result, string path) {
-            var root = new XElement("Result");
-            var membershipVectorNode = new XElement("MembershipVector");
-            root.Add(membershipVectorNode);
+            var root = new XElement("ClusterResult");
+            var indexNode = new XElement("Index");
+            var centersNode = new XElement("Centers");
+            var clustersNode = new XElement("Clusters");
 
-            var vectorString = result.UV.Aggregate(string.Empty,
+            // 聚类索引序列
+            var indexString = result.IDX.Aggregate(string.Empty,
                 (current, numCluster) => current + (numCluster + " "));
-            membershipVectorNode.Value = vectorString;
+            indexNode.Value = indexString.Trim();
+
+            // 聚类中心
+            var centerRows = MatrixToRowStrings(result.Center);
+            for (var i = 0; i < centerRows.Length; ++i) {
+                var centerElement = new XElement("Center");
+                centerElement.SetAttributeValue("Index", i);
+                centersNode.Add(centerElement);
+                centerElement.Value = centerRows[i];
+            }
+
+            // 聚类列表
+            var clusters = result.Clusters;
+            for (var i = 0; i < clusters.Count; ++i) {
+                var clusterNode = new XElement("Cluster");
+                clustersNode.Add(clusterNode);
+                clusterNode.SetAttributeValue("Index", i);
+                clusterNode.SetAttributeValue("Count", clusters[i].RowCount);
+
+                var clusterRows = MatrixToRowStrings(clusters[i]);
+                foreach (var t in clusterRows) {
+                    var ele = new XElement("Item");
+                    clusterNode.Add(ele);
+                    ele.Value = t;
+                }
+            }
+
+            root.Add(indexNode);
+            root.Add(centersNode);
+            root.Add(clustersNode);
             root.Save(path);
             MessageBox.Show(@"Complete!");
+        }
+
+        private static string[] MatrixToRowStrings(Matrix<double> matrix) {
+            return matrix.ToMatrixString(matrix.RowCount, matrix.ColumnCount)
+                .Split(new[] {'\n', '\r'}, StringSplitOptions.RemoveEmptyEntries);
         }
 
         private int ClusterNumber => int.Parse(clusterNumberBox.SelectedItem.ToString());
@@ -98,5 +132,7 @@ namespace RunoffsClustering {
 
             WriteDataToXml(result, ResultFilePath);
         }
+
+        private void btnExit_Click(object sender, EventArgs e) { Environment.Exit(0); }
     }
 }

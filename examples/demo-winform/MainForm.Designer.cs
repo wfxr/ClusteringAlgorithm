@@ -47,6 +47,7 @@
             this.clusterNumberBox = new System.Windows.Forms.ComboBox();
             this.label3 = new System.Windows.Forms.Label();
             this.btnRun = new System.Windows.Forms.Button();
+            this.btnExit = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
@@ -266,19 +267,30 @@
             // 
             // btnRun
             // 
-            this.btnRun.Location = new System.Drawing.Point(196, 441);
+            this.btnRun.Location = new System.Drawing.Point(139, 441);
             this.btnRun.Name = "btnRun";
-            this.btnRun.Size = new System.Drawing.Size(184, 30);
+            this.btnRun.Size = new System.Drawing.Size(138, 30);
             this.btnRun.TabIndex = 10;
             this.btnRun.Text = "Run";
             this.btnRun.UseVisualStyleBackColor = true;
             this.btnRun.Click += new System.EventHandler(this.btnRun_Click);
+            // 
+            // btnExit
+            // 
+            this.btnExit.Location = new System.Drawing.Point(309, 441);
+            this.btnExit.Name = "btnExit";
+            this.btnExit.Size = new System.Drawing.Size(138, 30);
+            this.btnExit.TabIndex = 11;
+            this.btnExit.Text = "Exit";
+            this.btnExit.UseVisualStyleBackColor = true;
+            this.btnExit.Click += new System.EventHandler(this.btnExit_Click);
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(578, 490);
+            this.Controls.Add(this.btnExit);
             this.Controls.Add(this.btnRun);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
@@ -322,6 +334,7 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.ComboBox weightedIndexBox;
         private System.Windows.Forms.Button btnRun;
+        private System.Windows.Forms.Button btnExit;
     }
 }
 
