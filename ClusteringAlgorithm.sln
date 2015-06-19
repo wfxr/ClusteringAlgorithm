@@ -15,16 +15,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Examples", "Examples", "{47
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTest", "test\UnitTest.csproj", "{A13D0BC9-7F7D-4C65-A764-EBEF7FC4FEF0}"
 EndProject
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RunoffsClustering", "examples\demo-winform\RunoffsClustering.csproj", "{D42BBD6A-51F9-4E2A-AA50-E77BAA178F09}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Data", "Data", "{2AC2010D-3727-48C7-8F0F-9DF7DFFB108B}"
 	ProjectSection(SolutionItems) = preProject
 		examples\data\PointData.txt = examples\data\PointData.txt
-		examples\data\RunoffData.txt = examples\data\RunoffData.txt
 		examples\data\RunoffData.xml = examples\data\RunoffData.xml
 	EndProjectSection
-
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -140,7 +138,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{05360543-0071-40B0-8D31-D209F95BE3D7} = {4738D726-2C78-4CF5-8655-C977644B4384}
 		{F8E43672-B1DE-41B1-929B-B7F1BD9A6AD9} = {4738D726-2C78-4CF5-8655-C977644B4384}
-		{2AC2010D-3727-48C7-8F0F-9DF7DFFB108B} = {4738D726-2C78-4CF5-8655-C977644B4384}
 		{D42BBD6A-51F9-4E2A-AA50-E77BAA178F09} = {4738D726-2C78-4CF5-8655-C977644B4384}
+		{2AC2010D-3727-48C7-8F0F-9DF7DFFB108B} = {4738D726-2C78-4CF5-8655-C977644B4384}
 	EndGlobalSection
 EndGlobal
