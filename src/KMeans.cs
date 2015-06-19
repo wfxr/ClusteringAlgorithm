@@ -30,8 +30,8 @@ namespace ClusteringAlgorithm {
             // 创建目标函数向量
             var obj_fcn = VectorBuilder.Dense(max_iter);
 
-            // 创建聚类数组
-            var clusters = new Cluster[c];
+            // 创建聚类列表
+            var clusters = new List<Matrix<double>>();
 
             // 创建距离矩阵
             var dist = MatrixBuilder.Dense(c, n);
@@ -79,23 +79,6 @@ namespace ClusteringAlgorithm {
         }
 
         /// <summary>
-        ///     根据距离矩阵计算聚类数组
-        /// </summary>
-        /// <param name="dist"></param>
-        /// <returns></returns>
-        private Cluster[] ComputeCluster(Matrix<double> dist) {
-            var c = dist.RowCount;
-
-            // PopulateDefault调用默认构造函数将将数组的每个元素赋值
-            var clusters = new Cluster[c].PopulateDefault();
-            // dist.Column(i).MinimumIndex()即距离矩阵中第i列距离最小的索引,
-            // 也就是距离第i个观测值最近的聚类中心的索引
-            for (var i = 0; i < n; ++i)
-                clusters[dist.Column(i).MinimumIndex()].Add(data.Row(i));
-            return clusters;
-        }
-
-        /// <summary>
         ///     随机选取观测值作为聚类中心
         /// </summary>
         /// <param name="c"></param>
@@ -115,11 +98,12 @@ namespace ClusteringAlgorithm {
         /// </summary>
         /// <param name="clusters">聚类列表</param>
         /// <returns>聚类中心矩阵和目标函数值元组</returns>
-        private Matrix<double> ComputeCenter(Cluster[] clusters) {
-            var c = clusters.Length;
+        private Matrix<double> ComputeCenter(List<Matrix<double>> clusters) {
+            var c = clusters.Count;
             var centers = MatrixBuilder.Dense(c, d);
-            for (var i = 0; i < c; ++i)
-                centers.SetRow(i, clusters[i].Average((x, y) => x + y, (x, y) => (x/y)));
+            for (var i = 0; i < c; ++i) 
+                centers.SetRow(i, clusters[i].ColumnSums() / clusters[i].RowCount);
+
             return centers;
         }
 

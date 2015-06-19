@@ -46,11 +46,11 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
     <Reference Include="wfxr.statistics, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Wfxr.Toolkit.1.4.1\lib\net40\wfxr.statistics.dll</HintPath>
+      <HintPath>..\packages\Wfxr.Toolkit.1.4.2\lib\net40\wfxr.statistics.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="wfxr.utility, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Wfxr.Toolkit.1.4.1\lib\net40\wfxr.utility.dll</HintPath>
+      <HintPath>..\packages\Wfxr.Toolkit.1.4.2\lib\net40\wfxr.utility.dll</HintPath>
       <Private>True</Private>
     </Reference>
   </ItemGroup>

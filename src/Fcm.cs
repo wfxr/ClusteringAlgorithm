@@ -8,8 +8,6 @@ using Wfxr.Utility.Container;
 // ReSharper disable InconsistentNaming
 
 namespace ClusteringAlgorithm {
-    using Cluster = List<Vector<double>>;
-
     public class Fcm : Clustering {
         public Fcm(Matrix<double> data) : base(data) { }
 
@@ -62,23 +60,6 @@ namespace ClusteringAlgorithm {
             // 创建聚类数组
             var clusters = ComputeCluster(dist);
             return new ClusterResult(C, U, clusters, obj_fcn);
-        }
-
-        /// <summary>
-        ///     根据距离矩阵计算聚类数组
-        /// </summary>
-        /// <param name="dist"></param>
-        /// <returns></returns>
-        private Cluster[] ComputeCluster(Matrix<double> dist) {
-            var c = dist.RowCount;
-
-            // PopulateDefault调用默认构造函数将将数组的每个元素赋值
-            var clusters = new Cluster[c].PopulateDefault();
-            // dist.Column(i).MinimumIndex()即距离矩阵中第i列距离最小的索引,
-            // 也就是距离第i个观测值最近的聚类中心的索引
-            for (var i = 0; i < n; ++i)
-                clusters[dist.Column(i).MinimumIndex()].Add(data.Row(i));
-            return clusters;
         }
 
         /// <summary>
