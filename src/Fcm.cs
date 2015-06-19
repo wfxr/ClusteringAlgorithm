@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using MathNet.Numerics;
 using MathNet.Numerics.LinearAlgebra;
-using Wfxr.Utility.Container;
 
 // ReSharper disable InconsistentNaming
 
@@ -121,17 +118,9 @@ namespace ClusteringAlgorithm {
         /// <param name="max_iter">结束条件:最大迭代次数</param>
         /// <param name="min_impro">结束条件:目标函数最小改进值</param>
         private void ValidateArgument(int c, double expo, int max_iter, double min_impro) {
-            if (c > n)
-                throw new ArgumentException(
-                    "The clusters number should not be greater than observations number!");
-            if (c < 2)
-                throw new ArgumentException("The clusters number should be at least 2!");
+            ValidateArgument(c,max_iter,min_impro);
             if (expo <= 1.0)
                 throw new ArgumentException("The exponent should be greater than 1!");
-            if (max_iter < 1)
-                throw new ArgumentException("The maximum iterations should be at least 1!");
-            if (min_impro < 0.0)
-                throw new ArgumentException("minimum amount of improvement should not be negative!");
         }
     }
 }

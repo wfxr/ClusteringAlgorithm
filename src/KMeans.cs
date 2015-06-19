@@ -1,16 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using MathNet.Numerics;
 using MathNet.Numerics.LinearAlgebra;
 using Wfxr.Statistics;
-using Wfxr.Utility.Container;
-
 // ReSharper disable InconsistentNaming
 
 namespace ClusteringAlgorithm {
-    using Cluster = List<Vector<double>>;
-
     public class Kmeans : Clustering {
         public Kmeans(Matrix<double> data) : base(data) { }
 
@@ -130,24 +125,6 @@ namespace ClusteringAlgorithm {
             for (var i = 0; i < n; ++i) 
                 U[dist.Column(i).MinimumIndex(), i] = 1;
             return U;
-        }
-
-        /// <summary>
-        ///     验证参数是否正确
-        /// </summary>
-        /// <param name="c">分类数目</param>
-        /// <param name="max_iter">结束条件:最大迭代次数</param>
-        /// <param name="min_impro">结束条件:目标函数最小改进值</param>
-        private void ValidateArgument(int c, int max_iter, double min_impro) {
-            if (c > n)
-                throw new ArgumentException(
-                    "The clusterses number should not be greater than observations number!");
-            if (c < 2)
-                throw new ArgumentException("The clusterses number should be at least 2!");
-            if (max_iter < 1)
-                throw new ArgumentException("The maximum iterations should be at least 1!");
-            if (min_impro < 0.0)
-                throw new ArgumentException("minimum amount of improvement should not be negative!");
         }
     }
 }
