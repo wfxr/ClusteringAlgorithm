@@ -122,10 +122,10 @@ namespace ClusteringAlgorithm {
             IDX = ComputeIDX(u);
         }
 
-        private Vector<double> ComputeIDX(Matrix<double> u) {
-            var uv = DenseVector.Build.Dense(U.ColumnCount);
-            for (var i = 0; i < U.ColumnCount; ++i)
-                uv[i] = U.Column(i).MaximumIndex();
+        private static Vector<double> ComputeIDX(Matrix<double> u) {
+            var uv = DenseVector.Build.Dense(u.ColumnCount);
+            for (var i = 0; i < u.ColumnCount; ++i)
+                uv[i] = u.Column(i).MaximumIndex();
             return uv;
         }
     }
