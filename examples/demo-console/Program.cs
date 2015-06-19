@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.CompilerServices;
 using ClusteringAlgorithm;
 using MathNet.Numerics.LinearAlgebra.Double;
 
@@ -76,7 +77,7 @@ namespace RunoffsClassify {
             Console.WriteLine(result.Center.Transpose().ToMatrixString());
 
             Console.WriteLine("隶属向量");
-            Console.WriteLine(result.UV.ToVectorString(1, 1000));
+            Console.WriteLine(result.IDX.ToRowMatrix().ToMatrixString(1,result.IDX.Count));
         }
 
         //private static List<double[,]> ReadData(string path) {
