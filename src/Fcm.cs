@@ -1,5 +1,4 @@
 ﻿using System;
-using MathNet.Numerics;
 using MathNet.Numerics.LinearAlgebra;
 
 // ReSharper disable InconsistentNaming
@@ -40,7 +39,7 @@ namespace ClusteringAlgorithm {
                 // 更新中心矩阵
                 C = ComputeCenter(Um);
 
-                // 距离矩阵
+                // 更新距离矩阵
                 dist = ComputeDistance(C);
 
                 // 计算目标函数值
@@ -49,13 +48,13 @@ namespace ClusteringAlgorithm {
                 // 更新隶属度矩阵
                 U = ComputeU(dist, expo);
 
-
                 // 改进程度小于指定值则结束循环
                 if (i > 1 && Math.Abs(obj_fcn[i] - obj_fcn[i - 1]) < min_impro) break;
             }
 
-            // 创建聚类数组
+            // 创建聚类列表
             var clusters = ComputeCluster(dist);
+
             return new ClusterResult(C, U, clusters, obj_fcn);
         }
 
@@ -66,20 +65,6 @@ namespace ClusteringAlgorithm {
         /// <param name="expo">加权指数</param>
         /// <returns>修正后的矩阵</returns>
         private Matrix<double> ComputeUm(Matrix<double> U, double expo) => U.PointwisePower(expo);
-
-
-        /// <summary>
-        ///     计算每个观测值到各分类中心的距离
-        /// </summary>
-        /// <param name="C">分类中心矩阵</param>
-        /// <returns>距离矩阵</returns>
-        private Matrix<double> ComputeDistance(Matrix<double> C) {
-            var dist = MatrixBuilder.Dense(C.RowCount, n);
-            for (var i = 0; i < C.RowCount; ++i)
-                for (var j = 0; j < n; ++j)
-                    dist[i, j] = Distance.Euclidean(data.Row(j), C.Row(i));
-            return dist;
-        }
 
         /// <summary>
         ///     计算目标函数值
@@ -99,8 +84,8 @@ namespace ClusteringAlgorithm {
         private Matrix<double> ComputeU(Matrix<double> dist, double expo) {
             var tmp = dist.PointwisePower(-2/(expo - 1));
             return
-                tmp.PointwiseDivide(MatrixBuilder.Dense(dist.RowCount, 1, 1)*
-                                    tmp.ColumnSums().ToRowMatrix());
+                tmp.PointwiseDivide(
+                    MatrixBuilder.Dense(dist.RowCount, 1, 1)*tmp.ColumnSums().ToRowMatrix());
         }
 
         /// <summary>
@@ -111,7 +96,7 @@ namespace ClusteringAlgorithm {
         /// <param name="max_iter">结束条件:最大迭代次数</param>
         /// <param name="min_impro">结束条件:目标函数最小改进值</param>
         private void ValidateArgument(int c, double expo, int max_iter, double min_impro) {
-            ValidateArgument(c,max_iter,min_impro);
+            ValidateArgument(c, max_iter, min_impro);
             if (expo <= 1.0)
                 throw new ArgumentException("The exponent should be greater than 1!");
         }

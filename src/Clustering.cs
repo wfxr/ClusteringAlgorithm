@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using MathNet.Numerics;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Double;
 using Wfxr.Utility.Container;
@@ -25,10 +26,10 @@ namespace ClusteringAlgorithm {
         protected int d => data.ColumnCount;
 
         /// <summary>
-        ///     根据距离矩阵计算聚类数组
+        ///     计算观测值的聚类划分
         /// </summary>
-        /// <param name="dist"></param>
-        /// <returns></returns>
+        /// <param name="dist">距离矩阵</param>
+        /// <returns>聚类列表</returns>
         protected List<Matrix<double>> ComputeCluster(Matrix<double> dist) {
             var c = dist.RowCount;
 
@@ -40,6 +41,20 @@ namespace ClusteringAlgorithm {
                 listlist[dist.Column(i).MinimumIndex()].Add(data.Row(i));
 
             return listlist.Select(list => MatrixBuilder.DenseOfRowVectors(list)).ToList();
+        }
+
+
+        /// <summary>
+        ///     计算每个观测值到各分类中心的距离
+        /// </summary>
+        /// <param name="C">聚类中心矩阵</param>
+        /// <returns>距离矩阵</returns>
+        protected Matrix<double> ComputeDistance(Matrix<double> C) {
+            var dist = MatrixBuilder.Dense(C.RowCount, n);
+            for (var i = 0; i < C.RowCount; ++i)
+                for (var j = 0; j < n; ++j)
+                    dist[i, j] = Distance.Euclidean(data.Row(j), C.Row(i));
+            return dist;
         }
 
         /// <summary>
@@ -89,9 +104,9 @@ namespace ClusteringAlgorithm {
         public Vector<double> ObjectFunction { get;}
 
         /// <summary>
-        ///     隶属向量
+        ///     观测值所属类别的索引序列
         /// </summary>
-        public Vector<double> UV { get; }
+        public Vector<double> IDX { get; }
 
         /// <summary>
         ///     隶属矩阵
@@ -104,10 +119,10 @@ namespace ClusteringAlgorithm {
             U = u;
             Clusters = clusterses;
             ObjectFunction = obj_fcn;
-            UV = ComputeUV();
+            IDX = ComputeIDX(u);
         }
 
-        private Vector<double> ComputeUV() {
+        private Vector<double> ComputeIDX(Matrix<double> u) {
             var uv = DenseVector.Build.Dense(U.ColumnCount);
             for (var i = 0; i < U.ColumnCount; ++i)
                 uv[i] = U.Column(i).MaximumIndex();

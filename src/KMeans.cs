@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using MathNet.Numerics;
 using MathNet.Numerics.LinearAlgebra;
 using Wfxr.Statistics;
@@ -39,14 +38,11 @@ namespace ClusteringAlgorithm {
                 // 更新隶属度矩阵
                 U = ComputeU(dist);
 
-                // 保存原来的中心
-                var oldC = C;
-
                 // 更新中心矩阵和价值函数
                 C = ComputeCenter(U);
 
-                // 添加目标函数值
-                obj_fcn[i] = ComputeObjectFunction(oldC, C);
+                // 计算目标函数值
+                obj_fcn[i] = ComputeObjectFunction(dist, U);
 
                 // 改进程度小于指定值则结束循环
                 if (i > 1 && Math.Abs(obj_fcn[i] - obj_fcn[i - 1]) < min_impro) break;
@@ -68,11 +64,19 @@ namespace ClusteringAlgorithm {
         private double ComputeObjectFunction(Matrix<double> oldC, Matrix<double> newC) {
             var c = newC.RowCount;
             var dis = VectorBuilder.Dense(c);
-            for (var i = 0; i < c; ++i) {
+            for (var i = 0; i < c; ++i) 
                 dis[i] = Distance.Euclidean(oldC.Row(i), newC.Row(i));
-            }
             return dis.Sum();
         }
+
+        ///// <summary>
+        /////     计算目标函数值
+        ///// </summary>
+        ///// <param name="dist">距离矩阵</param>
+        ///// <param name="U">隶属度矩阵</param>
+        ///// <returns>目标函数值</returns>
+        //private double ComputeObjectFunctionn(Matrix<double> dist, Matrix<double> U)
+        //    => dist.PointwisePower(2).PointwiseMultiply(U).RowSums().Sum();
 
         /// <summary>
         ///     随机选取观测值作为聚类中心
@@ -87,19 +91,6 @@ namespace ClusteringAlgorithm {
                 C.SetRow(i, data.Row(irand));
             }
             return C;
-        }
-
-        /// <summary>
-        ///     计算每个观测值到各聚类中心的距离
-        /// </summary>
-        /// <param name="C">聚类中心矩阵</param>
-        /// <returns>距离矩阵</returns>
-        private Matrix<double> ComputeDistance(Matrix<double> C) {
-            var dist = MatrixBuilder.Dense(C.RowCount, n);
-            for (var i = 0; i < C.RowCount; ++i)
-                for (var j = 0; j < n; ++j)
-                    dist[i, j] = Distance.Euclidean(data.Row(j), C.Row(i));
-            return dist;
         }
 
         /// <summary>
