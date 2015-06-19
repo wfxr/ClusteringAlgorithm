@@ -23,11 +23,11 @@ namespace RunoffsClustering {
         private static List<List<double>> ReadDataFromXml(string path) {
             var rows = new List<List<double>>();
             var xe = XElement.Load(path);
-            var Items =
+            var items =
                 from element in xe.Elements("Data").Elements("Item")
                 select element;
 
-            foreach (var item in Items) {
+            foreach (var item in items) {
                 var values = item.Value.Split(new[] {' ', ',', '\t'},
                     StringSplitOptions.RemoveEmptyEntries);
                 var row = values.Select(double.Parse).ToList();
@@ -76,7 +76,6 @@ namespace RunoffsClustering {
             root.Add(centersNode);
             root.Add(clustersNode);
             root.Save(path);
-            MessageBox.Show(@"Complete!");
         }
 
         private static string[] MatrixToRowStrings(Matrix<double> matrix) {
@@ -89,12 +88,12 @@ namespace RunoffsClustering {
         private int MaxIterations => int.Parse(maxIterationsBox.SelectedItem.ToString());
         private double MinImprovment => double.Parse(minImprovmentBox.SelectedItem.ToString());
 
-        private string SourceFilePath {
+        private string InputPath {
             get { return txtSourcePath.Text; }
             set { txtSourcePath.Text = value; }
         }
 
-        private string ResultFilePath {
+        private string OutputPath {
             get { return txtResultPath.Text; }
             set { txtResultPath.Text = value; }
         }
@@ -105,7 +104,7 @@ namespace RunoffsClustering {
                 Title = @"Source path"
             };
             if (dialog.ShowDialog() == DialogResult.OK)
-                SourceFilePath = dialog.FileName;
+                InputPath = dialog.FileName;
         }
 
         private void btnResultPath_Click(object sender, EventArgs e) {
@@ -114,23 +113,33 @@ namespace RunoffsClustering {
                 Title = @"Result path"
             };
             if (dialog.ShowDialog() == DialogResult.OK)
-                ResultFilePath = dialog.FileName;
+                OutputPath = dialog.FileName;
         }
 
         private void btnRun_Click(object sender, EventArgs e) {
-            var rows = ReadDataFromXml(SourceFilePath);
-            var matrix = DenseMatrix.OfRows(rows);
-            ClusterResult result = null;
-            if (btnKmeans.Checked) {
-                var kmeans = new Kmeans(matrix);
-                result = kmeans.Clustering(ClusterNumber, MaxIterations, MinImprovment);
+            try {
+                var rows = ReadDataFromXml(InputPath);
+                var matrix = DenseMatrix.OfRows(rows);
+
+                ClusterResult result = null;
+                if (btnKmeans.Checked) {
+                    var kmeans = new Kmeans(matrix);
+                    result = kmeans.Clustering(ClusterNumber, MaxIterations, MinImprovment);
+                }
+                else if (btnFCM.Checked) {
+                    var cmeans = new Fcm(matrix);
+                    result = cmeans.Cluster(ClusterNumber, WeightedIndex, MaxIterations,
+                        MinImprovment);
+                }
+
+                WriteDataToXml(result, OutputPath);
             }
-            else if (btnFCM.Checked) {
-                var cmeans = new Fcm(matrix);
-                result = cmeans.Cluster(ClusterNumber, WeightedIndex, MaxIterations, MinImprovment);
+            catch (Exception ex) {
+                MessageBox.Show(ex.Message, @"Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
             }
 
-            WriteDataToXml(result, ResultFilePath);
+            MessageBox.Show(@"Clustering complete!");
         }
 
         private void btnExit_Click(object sender, EventArgs e) { Environment.Exit(0); }
