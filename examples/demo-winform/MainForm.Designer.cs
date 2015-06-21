@@ -31,9 +31,6 @@
             this.btnSourcePath = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.txtSourcePath = new System.Windows.Forms.TextBox();
-            this.label2 = new System.Windows.Forms.Label();
-            this.btnResultPath = new System.Windows.Forms.Button();
-            this.txtResultPath = new System.Windows.Forms.TextBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.btnFCM = new System.Windows.Forms.RadioButton();
             this.btnKmeans = new System.Windows.Forms.RadioButton();
@@ -81,40 +78,11 @@
             this.txtSourcePath.Size = new System.Drawing.Size(467, 26);
             this.txtSourcePath.TabIndex = 4;
             // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(54, 98);
-            this.label2.Margin = new System.Windows.Forms.Padding(4, 10, 4, 0);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(119, 20);
-            this.label2.TabIndex = 6;
-            this.label2.Text = "Result file path:";
-            // 
-            // btnResultPath
-            // 
-            this.btnResultPath.Location = new System.Drawing.Point(484, 123);
-            this.btnResultPath.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.btnResultPath.Name = "btnResultPath";
-            this.btnResultPath.Size = new System.Drawing.Size(41, 26);
-            this.btnResultPath.TabIndex = 5;
-            this.btnResultPath.Text = "...";
-            this.btnResultPath.UseVisualStyleBackColor = true;
-            this.btnResultPath.Click += new System.EventHandler(this.btnResultPath_Click);
-            // 
-            // txtResultPath
-            // 
-            this.txtResultPath.Location = new System.Drawing.Point(58, 123);
-            this.txtResultPath.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.txtResultPath.Name = "txtResultPath";
-            this.txtResultPath.Size = new System.Drawing.Size(467, 26);
-            this.txtResultPath.TabIndex = 7;
-            // 
             // groupBox1
             // 
             this.groupBox1.Controls.Add(this.btnFCM);
             this.groupBox1.Controls.Add(this.btnKmeans);
-            this.groupBox1.Location = new System.Drawing.Point(58, 164);
+            this.groupBox1.Location = new System.Drawing.Point(58, 98);
             this.groupBox1.Margin = new System.Windows.Forms.Padding(3, 10, 3, 3);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Padding = new System.Windows.Forms.Padding(10);
@@ -155,7 +123,7 @@
             this.groupBox2.Controls.Add(this.weightedIndexBox);
             this.groupBox2.Controls.Add(this.clusterNumberBox);
             this.groupBox2.Controls.Add(this.label3);
-            this.groupBox2.Location = new System.Drawing.Point(58, 254);
+            this.groupBox2.Location = new System.Drawing.Point(58, 188);
             this.groupBox2.Margin = new System.Windows.Forms.Padding(3, 10, 3, 3);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Padding = new System.Windows.Forms.Padding(10);
@@ -267,7 +235,7 @@
             // 
             // btnRun
             // 
-            this.btnRun.Location = new System.Drawing.Point(139, 441);
+            this.btnRun.Location = new System.Drawing.Point(139, 375);
             this.btnRun.Name = "btnRun";
             this.btnRun.Size = new System.Drawing.Size(138, 30);
             this.btnRun.TabIndex = 10;
@@ -277,7 +245,7 @@
             // 
             // btnExit
             // 
-            this.btnExit.Location = new System.Drawing.Point(309, 441);
+            this.btnExit.Location = new System.Drawing.Point(309, 375);
             this.btnExit.Name = "btnExit";
             this.btnExit.Size = new System.Drawing.Size(138, 30);
             this.btnExit.TabIndex = 11;
@@ -289,14 +257,11 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(578, 490);
+            this.ClientSize = new System.Drawing.Size(578, 418);
             this.Controls.Add(this.btnExit);
             this.Controls.Add(this.btnRun);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.btnResultPath);
-            this.Controls.Add(this.txtResultPath);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.btnSourcePath);
             this.Controls.Add(this.txtSourcePath);
@@ -319,9 +284,6 @@
         private System.Windows.Forms.Button btnSourcePath;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox txtSourcePath;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Button btnResultPath;
-        private System.Windows.Forms.TextBox txtResultPath;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.RadioButton btnFCM;
         private System.Windows.Forms.RadioButton btnKmeans;

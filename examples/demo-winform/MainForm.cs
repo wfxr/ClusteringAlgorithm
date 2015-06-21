@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using System.Xml.Linq;
@@ -36,53 +35,6 @@ namespace RunoffsClustering {
             return rows;
         }
 
-        private static void WriteDataToXml(ClusterResult result, string path) {
-            var root = new XElement("ClusterResult");
-            var indexNode = new XElement("Index");
-            var centersNode = new XElement("Centers");
-            var clustersNode = new XElement("Clusters");
-
-            // 聚类索引序列
-            var indexString = result.IDX.Aggregate(string.Empty,
-                (current, numCluster) => current + (numCluster + " "));
-            indexNode.Value = indexString.Trim();
-
-            // 聚类中心
-            var centerRows = MatrixToRowStrings(result.Center);
-            for (var i = 0; i < centerRows.Length; ++i) {
-                var centerElement = new XElement("Center");
-                centerElement.SetAttributeValue("Index", i);
-                centersNode.Add(centerElement);
-                centerElement.Value = centerRows[i];
-            }
-
-            // 聚类列表
-            var clusters = result.Clusters;
-            for (var i = 0; i < clusters.Count; ++i) {
-                var clusterNode = new XElement("Cluster");
-                clustersNode.Add(clusterNode);
-                clusterNode.SetAttributeValue("Index", i);
-                clusterNode.SetAttributeValue("Count", clusters[i].RowCount);
-
-                var clusterRows = MatrixToRowStrings(clusters[i]);
-                foreach (var t in clusterRows) {
-                    var ele = new XElement("Item");
-                    clusterNode.Add(ele);
-                    ele.Value = t;
-                }
-            }
-
-            root.Add(indexNode);
-            root.Add(centersNode);
-            root.Add(clustersNode);
-            root.Save(path);
-        }
-
-        private static string[] MatrixToRowStrings(Matrix<double> matrix) {
-            return matrix.ToMatrixString(matrix.RowCount, matrix.ColumnCount)
-                .Split(new[] {'\n', '\r'}, StringSplitOptions.RemoveEmptyEntries);
-        }
-
         private int ClusterNumber => int.Parse(clusterNumberBox.SelectedItem.ToString());
         private double WeightedIndex => double.Parse(weightedIndexBox.SelectedItem.ToString());
         private int MaxIterations => int.Parse(maxIterationsBox.SelectedItem.ToString());
@@ -93,11 +45,6 @@ namespace RunoffsClustering {
             set { txtSourcePath.Text = value; }
         }
 
-        private string OutputPath {
-            get { return txtResultPath.Text; }
-            set { txtResultPath.Text = value; }
-        }
-
         private void btnSourcePath_Click(object sender, EventArgs e) {
             var dialog = new OpenFileDialog {
                 Filter = @"径流数据文件(*.xml)|*.xml",
@@ -105,15 +52,6 @@ namespace RunoffsClustering {
             };
             if (dialog.ShowDialog() == DialogResult.OK)
                 InputPath = dialog.FileName;
-        }
-
-        private void btnResultPath_Click(object sender, EventArgs e) {
-            var dialog = new SaveFileDialog {
-                Filter = @"径流数据文件(*.xml)|*.xml",
-                Title = @"Result path"
-            };
-            if (dialog.ShowDialog() == DialogResult.OK)
-                OutputPath = dialog.FileName;
         }
 
         private void btnRun_Click(object sender, EventArgs e) {
@@ -132,14 +70,11 @@ namespace RunoffsClustering {
                         MinImprovment);
                 }
 
-                WriteDataToXml(result, OutputPath);
+                new ResultDisplayForm(result).Show();
             }
             catch (Exception ex) {
                 MessageBox.Show(ex.Message, @"Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
             }
-
-            MessageBox.Show(@"Clustering complete!");
         }
 
         private void btnExit_Click(object sender, EventArgs e) { Environment.Exit(0); }
