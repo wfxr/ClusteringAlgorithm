@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -10,6 +9,7 @@ using ClusteringAlgorithm;
 using DevExpress.Xpf.Charts;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Double;
+using Wfxr.Utility.Container;
 
 namespace ChartTest {
     /// <summary>
@@ -17,11 +17,11 @@ namespace ChartTest {
     /// </summary>
     public partial class MainWindow : Window {
         private List<double[]> _pointData;
+        public MainWindow() { InitializeComponent(); }
         private int ClusterNumber => int.Parse(ClusterNumberBox.SelectedItem.ToString());
         private double WeightedIndex => double.Parse(WeightedIndexBox.SelectedItem.ToString());
         private int MaxIterations => int.Parse(MaxIterationsBox.SelectedItem.ToString());
         private double MinImprovment => double.Parse(MinImprovmentBox.SelectedItem.ToString());
-        public MainWindow() { InitializeComponent(); }
 
         private void Window_Loaded(object sender, RoutedEventArgs e) {
             ClusterNumberBox.ItemsSource = Enumerable.Range(2, 8);
@@ -47,17 +47,21 @@ namespace ChartTest {
                 points.Add(new Point(m[i, 0], m[i, 1]));
             return points;
         }
-
-        private Point CreatePointList(IList<double> v) {
-            if (v.Count != 2) throw new FormatException("not a 2D vector");
-            return new Point(v[1], v[2]);
-        }
-
         private List<Point> CreatePointList(IEnumerable<double[]> list)
             => CreatePointList(DenseMatrix.OfRowArrays(list));
 
-        private List<Point> CreatePointList(IEnumerable<Vector<double>> list)
-            => CreatePointList(DenseMatrix.OfRowVectors(list));
+        private List<List<Point>> GroupPoints(Matrix<double> m, int[] idx) {
+            var row = m.RowCount;
+            var col = m.ColumnCount;
+            var groupCount = idx.Max() + 1;
+            if (col != 2) throw new FormatException("not a n*2 matrix");
+
+            var group = new List<List<Point>>(groupCount).PopulateDefault();
+            for (var i = 0; i < row; ++i)
+                group[idx[i]].Add(new Point(m[i, 0], m[i, 1]));
+
+            return group;
+        }
 
         private static List<double[]> PointDataFromFile(string path) {
             var points = new List<double[]>();
@@ -76,33 +80,26 @@ namespace ChartTest {
 
         private void RunButton_Click(object sender, RoutedEventArgs e) {
             var matrix = DenseMatrix.OfRowArrays(_pointData);
+            ClusterReport report = null;
             if (KmeansRadio.IsChecked == true) {
                 var kmeans = new Kmeans(matrix);
-                var result = kmeans.Clustering(ClusterNumber, MaxIterations, MinImprovment);
-
-                diagram.Series.Clear();
-                foreach (var cluster in result.Clusters) {
-                    var points = CreatePointList(cluster);
-                    AddSeriesOfPoints(points);
-                }
-
-                var centers = CreatePointList(result.Center);
-                AddSeriesOfPoints(centers, 10);
+                report = kmeans.Run(ClusterNumber, MaxIterations, MinImprovment);
             }
             else if (CmeansRadio.IsChecked == true) {
                 var cmeans = new Fcm(matrix);
-                var result = cmeans.Cluster(ClusterNumber, WeightedIndex, MaxIterations,
+                report = cmeans.Run(ClusterNumber, WeightedIndex, MaxIterations,
                     MinImprovment);
-
-                diagram.Series.Clear();
-                foreach (var cluster in result.Clusters) {
-                    var points = CreatePointList(cluster);
-                    AddSeriesOfPoints(points);
-                }
-
-                var centers = CreatePointList(result.Center);
-                AddSeriesOfPoints(centers, 10);
             }
+
+            if (report == null) return;
+
+            diagram.Series.Clear();
+            var groups = GroupPoints(report.Obs, report.Idx);
+            foreach (var group in groups) 
+                AddSeriesOfPoints(group);
+
+            var centers = CreatePointList(report.Center);
+            AddSeriesOfPoints(centers, 10);
         }
 
         private void AddSeriesOfPoints(IReadOnlyCollection<Point> points, int pointSize = 4) {
@@ -122,11 +119,12 @@ namespace ChartTest {
     [ValueConversion(typeof (bool), typeof (Visibility))]
     public class BoolToVisibilityConverter : IValueConverter {
         public BoolToVisibilityConverter() : this(true) { }
-        public bool CollapseWhenInvisible { get; set; }
 
         public BoolToVisibilityConverter(bool collapsewhenInvisible) {
             CollapseWhenInvisible = collapsewhenInvisible;
         }
+
+        public bool CollapseWhenInvisible { get; set; }
 
         public Visibility FalseVisibility
             => CollapseWhenInvisible ? Visibility.Collapsed : Visibility.Hidden;

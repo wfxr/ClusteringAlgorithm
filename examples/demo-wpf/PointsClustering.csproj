@@ -59,6 +59,14 @@
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
+    <Reference Include="wfxr.statistics, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Wfxr.Toolkit.1.4.2\lib\net40\wfxr.statistics.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="wfxr.utility, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Wfxr.Toolkit.1.4.2\lib\net40\wfxr.utility.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
