@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using ClusteringAlgorithm;
 using MathNet.Numerics.LinearAlgebra.Double;
@@ -70,29 +71,15 @@ namespace RunoffsClassify {
                 {1756, 3040, 2140, 1604, 1458, 759},
                 {2243, 5821, 3003, 3598, 2458, 1175},
             });
-            var kmeans = new Kmeans(data);
-            var c = 3; // 聚类数目
-            var result = kmeans.Clustering(c);
+            const int c = 3; // 聚类数目
+            var result = new Fcm(data).Run(c);
             Console.WriteLine("聚类中心值:");
             Console.WriteLine(result.Center.Transpose().ToMatrixString());
 
-            Console.WriteLine("隶属向量");
-            Console.WriteLine(result.IDX.ToRowMatrix().ToMatrixString(1,result.IDX.Count));
-        }
+            Console.WriteLine("观测值所属聚类索引:");
+            result.Idx.ToList().ForEach(i => Console.Write($"{i,2}"));
 
-        //private static List<double[,]> ReadData(string path) {
-        //    var runoffs = new List<double[,]>();
-        //    var lines = File.ReadAllLines(path);
-        //    foreach (var line in lines) {
-        //        var xy = line.Split(new[] {' ', '\t'}, StringSplitOptions.RemoveEmptyEntries);
-        //        if (xy.Length == 0) continue;
-        //        if (xy.Length != 2)
-        //            throw new FormatException("there should be 2 number in one line");
-        //        var x = double.Parse(xy[0]);
-        //        var y = double.Parse(xy[1]);
-        //        runoffs.Add(new[] {x, y});
-        //    }
-        //    return runoffs;
-        //}
+            Console.WriteLine();
+        }
     }
 }
