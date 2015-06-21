@@ -59,18 +59,18 @@ namespace RunoffsClustering {
                 var rows = ReadDataFromXml(InputPath);
                 var matrix = DenseMatrix.OfRows(rows);
 
-                ClusterResult result = null;
+                ClusterReport report = null;
                 if (btnKmeans.Checked) {
                     var kmeans = new Kmeans(matrix);
-                    result = kmeans.Clustering(ClusterNumber, MaxIterations, MinImprovment);
+                    report = kmeans.Run(ClusterNumber, MaxIterations, MinImprovment);
                 }
                 else if (btnFCM.Checked) {
                     var cmeans = new Fcm(matrix);
-                    result = cmeans.Cluster(ClusterNumber, WeightedIndex, MaxIterations,
+                    report = cmeans.Run(ClusterNumber, WeightedIndex, MaxIterations,
                         MinImprovment);
                 }
 
-                new ResultDisplayForm(result).Show();
+                new ReportForm(report).Show();
             }
             catch (Exception ex) {
                 MessageBox.Show(ex.Message, @"Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
