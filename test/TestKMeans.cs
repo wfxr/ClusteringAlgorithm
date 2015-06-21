@@ -13,9 +13,9 @@ namespace UnitTest {
                 {1, 2, 3, 7, 8, 9, 13, 14, 15, 100, 120, 130}
             }).Transpose();
             var km = new Kmeans(data);
-            var result = km.Clustering(k);
+            var result = km.Run(k);
             Assert.Equal(result.Center.RowCount, k);
-            Assert.Equal(result.IDX.Count(), data.RowCount);
+            Assert.Equal(result.Idx.Count(), data.RowCount);
          }
     }
 }
