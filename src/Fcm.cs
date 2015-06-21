@@ -15,7 +15,7 @@ namespace ClusteringAlgorithm {
         /// <param name="max_iter">maximum number of iterations</param>
         /// <param name="min_impro">minimum amount of improvement</param>
         /// <returns></returns>
-        public ClusterResult Cluster(int c, double expo = 2.0, int max_iter = 100,
+        public ClusterReport Run(int c, double expo = 2.0, int max_iter = 100,
             double min_impro = 1e-5) {
             ValidateArgument(c, expo, max_iter, min_impro);
 
@@ -28,19 +28,16 @@ namespace ClusteringAlgorithm {
             // 创建目标函数向量
             var obj_fcn = VectorBuilder.Dense(max_iter);
 
-            // 创建距离矩阵
-            var dist = ComputeDistance(C);
-
             // 主循环
             for (var i = 0; i < max_iter; ++i) {
-                // 隶属度加权矩阵
+                // 计算隶属度加权矩阵
                 var Um = ComputeUm(U, expo);
 
                 // 更新中心矩阵
                 C = ComputeCenter(Um);
 
-                // 更新距离矩阵
-                dist = ComputeDistance(C);
+                // 计算距离矩阵
+                var dist = ComputeDistance(C);
 
                 // 计算目标函数值
                 obj_fcn[i] = ComputeObjectFunctionn(dist, Um);
@@ -52,10 +49,7 @@ namespace ClusteringAlgorithm {
                 if (i > 1 && Math.Abs(obj_fcn[i] - obj_fcn[i - 1]) < min_impro) break;
             }
 
-            // 创建聚类列表
-            var clusters = ComputeCluster(dist);
-
-            return new ClusterResult(C, U, clusters, obj_fcn);
+            return new ClusterReport(data, C, U, obj_fcn);
         }
 
         /// <summary>

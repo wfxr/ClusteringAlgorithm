@@ -25,24 +25,6 @@ namespace ClusteringAlgorithm {
         /// </summary>
         protected int d => data.ColumnCount;
 
-        /// <summary>
-        ///     计算观测值的聚类划分
-        /// </summary>
-        /// <param name="dist">距离矩阵</param>
-        /// <returns>聚类列表</returns>
-        protected List<Matrix<double>> ComputeCluster(Matrix<double> dist) {
-            var c = dist.RowCount;
-
-            // PopulateDefault调用默认构造函数将将数组的每个元素赋值
-            var listlist = new List<List<Vector<double>>>(c).PopulateDefault();
-            // dist.Column(i).MinimumIndex()即距离矩阵中第i列距离最小的索引,
-            // 也就是距离第i个观测值最近的聚类中心的索引
-            for (var i = 0; i < n; ++i)
-                listlist[dist.Column(i).MinimumIndex()].Add(data.Row(i));
-
-            return listlist.Select(list => MatrixBuilder.DenseOfRowVectors(list)).ToList();
-        }
-
 
         /// <summary>
         ///     计算每个观测值到各分类中心的距离
@@ -87,46 +69,86 @@ namespace ClusteringAlgorithm {
     /// <summary>
     ///     用以存储聚类结果的数据结构
     /// </summary>
-    public class ClusterResult {
+    public class ClusterReport {
+        private static readonly MatrixBuilder<double> MatrixBuilder = Matrix<double>.Build;
+        private static readonly VectorBuilder<double> VectorBuilder = Vector<double>.Build;
+
+        public ClusterReport(Matrix<double> obs, Matrix<double> center, Matrix<double> u,
+            Vector<double> obj_fcn) {
+            Obs = obs;
+            Center = center;
+            U = u;
+            Idx = ComputeIdx(u);
+            ObjectFunction = obj_fcn;
+        }
+
         /// <summary>
         ///     聚类中心
         /// </summary>
         public Matrix<double> Center { get; }
 
         /// <summary>
-        ///     聚类列表
+        ///     计算观测值的所属聚类序列
         /// </summary>
-        public List<Matrix<double>> Clusters { get; }
+        /// <param name="u">隶属度矩阵</param>
+        /// <returns>聚类序列</returns>
+        private int[] ComputeIdx(Matrix<double> u) {
+            var idx = new int[ObsCount];
+            for (var i = 0; i < ObsCount; ++i)
+                idx[i] = u.Column(i).MaximumIndex();
+            return idx;
+        }
+
+        /// <summary>
+        ///     返回聚类列表
+        /// </summary>
+        /// <returns>聚类列表</returns>
+        public List<Matrix<double>> GetClusterList() {
+            var list = new List<Matrix<double>>();
+            for (var cluster = 0; cluster < ClusterCount; ++cluster) {
+                var rows = new List<Vector<double>>();
+                for (var j = 0; j < ObsCount; ++j)
+                    if (Idx[j] == cluster) // 如果该观测值属于该类,就将其加入rows
+                        rows.Add(Obs.Row(j));
+                list.Add(MatrixBuilder.DenseOfRows(rows));
+            }
+            return list;
+        }
 
         /// <summary>
         ///     目标函数向量
         /// </summary>
-        public Vector<double> ObjectFunction { get;}
+        public Vector<double> ObjectFunction { get; }
 
         /// <summary>
-        ///     观测值所属类别的索引序列
+        ///     观测值数目
         /// </summary>
-        public Vector<double> IDX { get; }
+        public int ObsCount => Obs.RowCount;
+
+        /// <summary>
+        ///     观测值维度
+        /// </summary>
+        public int ObsDimension => Obs.ColumnCount;
+
+        /// <summary>
+        ///     聚类数目
+        /// </summary>
+        public int ClusterCount => Center.RowCount;
 
         /// <summary>
         ///     隶属矩阵
         /// </summary>
-        public Matrix<double> U { get;} 
+        public Matrix<double> U { get; }
 
-        public ClusterResult(Matrix<double> center, Matrix<double> u, List<Matrix<double>> clusterses,
-            Vector<double> obj_fcn) {
-            Center = center;
-            U = u;
-            Clusters = clusterses;
-            ObjectFunction = obj_fcn;
-            IDX = ComputeIDX(u);
-        }
+        /// <summary>
+        ///     获取观测值所属聚类的索引序列
+        /// </summary>
+        public int[] Idx { get; }
 
-        private static Vector<double> ComputeIDX(Matrix<double> u) {
-            var uv = DenseVector.Build.Dense(u.ColumnCount);
-            for (var i = 0; i < u.ColumnCount; ++i)
-                uv[i] = u.Column(i).MaximumIndex();
-            return uv;
-        }
+        /// <summary>
+        ///     获取观测值矩阵
+        /// </summary>
+        /// <value></value>
+        public Matrix<double> Obs { get; }
     }
 }

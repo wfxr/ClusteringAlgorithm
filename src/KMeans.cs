@@ -15,14 +15,11 @@ namespace ClusteringAlgorithm {
         /// <param name="max_iter">最大迭代次数</param>
         /// <param name="min_impro">最小改进量</param>
         /// <returns>包含聚类中心,隶属向量和目标函数向量的数据结构</returns>
-        public ClusterResult Clustering(int c, int max_iter = 100, double min_impro = 1e-5) {
+        public ClusterReport Run(int c, int max_iter = 100, double min_impro = 1e-5) {
             ValidateArgument(c, max_iter, min_impro);
 
             // 创建中心矩阵并初始化
             var C = RandomCenter(c);
-
-            // 创建距离矩阵
-            var dist = MatrixBuilder.Dense(c, n);
 
             // 创建隶属度矩阵
             var U = MatrixBuilder.Dense(c, n);
@@ -32,8 +29,8 @@ namespace ClusteringAlgorithm {
 
             // 主循环
             for (var i = 0; i < max_iter; ++i) {
-                // 更新距离矩阵
-                dist = ComputeDistance(C);
+                // 计算距离矩阵
+                var dist = ComputeDistance(C);
 
                 // 更新隶属度矩阵
                 U = ComputeU(dist);
@@ -48,11 +45,7 @@ namespace ClusteringAlgorithm {
                 if (i > 1 && Math.Abs(obj_fcn[i] - obj_fcn[i - 1]) < min_impro) break;
             }
 
-
-            // 创建聚类列表
-            var clusters = ComputeCluster(dist);
-
-            return new ClusterResult(C, U, clusters, obj_fcn);
+            return new ClusterReport(data, C, U, obj_fcn);
         }
 
         /// <summary>
@@ -68,15 +61,6 @@ namespace ClusteringAlgorithm {
                 dis[i] = Distance.Euclidean(oldC.Row(i), newC.Row(i));
             return dis.Sum();
         }
-
-        ///// <summary>
-        /////     计算目标函数值
-        ///// </summary>
-        ///// <param name="dist">距离矩阵</param>
-        ///// <param name="U">隶属度矩阵</param>
-        ///// <returns>目标函数值</returns>
-        //private double ComputeObjectFunctionn(Matrix<double> dist, Matrix<double> U)
-        //    => dist.PointwisePower(2).PointwiseMultiply(U).RowSums().Sum();
 
         /// <summary>
         ///     随机选取观测值作为聚类中心
